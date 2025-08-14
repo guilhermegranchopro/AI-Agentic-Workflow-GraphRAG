@@ -1,0 +1,144 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+test-results/
+test-reports/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Streamlit
+.streamlit/
+streamlit_cache/
+
+# Neo4j
+*.db
+*.log
+logs/
+import/
+plugins/
+conf/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Data files (if you want to exclude large datasets)
+data/raw/
+data/processed/
+*.csv
+*.json
+*.parquet
+*.xlsx
+
+# Model files and embeddings cache
+models/
+embeddings_cache/
+.cache/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Terraform (if used for infrastructure)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Azure specific
+.azure/
+
+# Logs
+*.log
+logs/
+
+# EY Internal - Proprietary content markers
+# (Uncomment if needed for internal file tracking)
+# proprietary/
+# internal/
+# confidential/
