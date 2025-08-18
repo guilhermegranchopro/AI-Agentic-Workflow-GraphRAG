@@ -171,7 +171,7 @@ def explore_provision_relationships(
     # Display relationship paths
     neighbors = local_result.get("neighbors", [])
     if neighbors:
-        render_paths(neighbors, str(as_of_date))
+        render_paths(neighbors, str(as_of_date), "local_rag")
         
         if show_statistics:
             render_path_statistics(neighbors)

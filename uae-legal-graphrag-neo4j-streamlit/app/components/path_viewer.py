@@ -4,13 +4,14 @@ from typing import List, Dict, Any
 from src.utils.formatting import format_path_display, format_date_range
 
 
-def render_paths(paths: List[Dict[str, Any]], as_of: str) -> None:
+def render_paths(paths: List[Dict[str, Any]], as_of: str, key_prefix: str = "default") -> None:
     """
     Render path chips showing relationships between legal entities.
     
     Args:
         paths: List of path data from graph queries
         as_of: As-of date for temporal context
+        key_prefix: Unique prefix for Streamlit component keys
     """
     if not paths:
         st.info("No relationship paths found for the selected provision.")
@@ -26,16 +27,18 @@ def render_paths(paths: List[Dict[str, Any]], as_of: str) -> None:
             paths_by_type[rel_type] = []
         paths_by_type[rel_type].append(path)
     
-    # Render each relationship type
+    # Render each relationship type with global index counter
+    global_index = 0
     for rel_type, type_paths in paths_by_type.items():
         with st.expander(f"{rel_type.replace('_', ' ').title()} ({len(type_paths)} connections)", 
                         expanded=True):
             
-            for i, path in enumerate(type_paths):
-                render_single_path(path, i)
+            for path in type_paths:
+                render_single_path(path, global_index, key_prefix)
+                global_index += 1
 
 
-def render_single_path(path_data: Dict[str, Any], index: int) -> None:
+def render_single_path(path_data: Dict[str, Any], index: int, key_prefix: str = "default") -> None:
     """Render a single relationship path as a visual chip."""
     col1, col2 = st.columns([3, 1])
     
@@ -57,7 +60,7 @@ def render_single_path(path_data: Dict[str, Any], index: int) -> None:
     
     with col2:
         # Show details button
-        if st.button("Details", key=f"path_details_{index}"):
+        if st.button("Details", key=f"{key_prefix}_path_details_{index}"):
             show_path_details(path_data)
 
 

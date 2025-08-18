@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     environment: Optional[str] = Field("development", env="ENVIRONMENT")
     
     model_config = {
-        "env_file": ".env",
+        "env_file": [".env", "../.env", "../../.env"],  # Look for .env in multiple locations
         "env_file_encoding": "utf-8",
         "extra": "ignore"
     }

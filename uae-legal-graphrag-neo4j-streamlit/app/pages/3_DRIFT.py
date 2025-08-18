@@ -201,7 +201,7 @@ def display_drift_results(drift_result: Dict[str, Any], fusion_strategy: str, ma
         # Display each community's contribution
         for community_id, paths in paths_by_community.items():
             with st.expander(f"🏘️ Community {community_id} ({len(paths)} paths)", expanded=True):
-                render_paths(paths, str(drift_result.get("as_of_date", "")))
+                render_paths(paths, str(drift_result.get("as_of_date", "")), f"drift_community_{community_id}")
                 render_path_statistics(paths)
     
     else:

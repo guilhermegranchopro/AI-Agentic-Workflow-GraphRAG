@@ -11,6 +11,7 @@ ENV/
 .env.staging
 .env.development
 *.env
+app/.env  # Streamlit local copy
 
 # Python
 __pycache__/
