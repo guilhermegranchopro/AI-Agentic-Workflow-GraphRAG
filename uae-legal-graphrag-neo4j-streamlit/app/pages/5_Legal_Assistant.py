@@ -13,7 +13,8 @@ try:
     # Import wrapper functions that match the expected signatures
     from utils.rag_wrapper import local_rag_query, global_rag_query, drift_rag_query
     from src.embeddings.azure_openai import get_azure_openai_client
-    from src.graph.queries import search_provisions_by_text, get_node_details
+    from src.config import settings
+    from src.graph.queries import search_provisions_by_text
     from src.db import db
     from utils.chatbot_utils import (
         analyze_legal_query, enhanced_source_extraction, 
@@ -227,7 +228,7 @@ def generate_legal_response(query: str, rag_strategy: str, response_style: str,
         client = get_azure_openai_client()
         
         response = client.chat.completions.create(
-            model="gpt-4",  # or your deployed model name
+            model=settings.azure_openai_chat_deployment,  # Use the configured deployment name
             messages=context,
             temperature=0.3,  # Lower temperature for more factual responses
             max_tokens=1500,

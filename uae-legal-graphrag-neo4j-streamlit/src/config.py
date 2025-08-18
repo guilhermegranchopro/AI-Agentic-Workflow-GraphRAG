@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     azure_openai_endpoint: str = Field(..., env="AZURE_OPENAI_ENDPOINT")
     azure_openai_api_key: str = Field(..., env="AZURE_OPENAI_API_KEY")
     azure_openai_embedding_deployment: str = Field(..., env="AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
+    azure_openai_chat_deployment: str = Field("gpt-4", env="AZURE_OPENAI_CHAT_DEPLOYMENT")
     embedding_dim: int = Field(3072, env="EMBEDDING_DIM")
     
     # Application Settings

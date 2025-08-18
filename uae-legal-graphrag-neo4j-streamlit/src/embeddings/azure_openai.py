@@ -3,6 +3,7 @@ import httpx
 import logging
 from typing import List
 from tenacity import retry, stop_after_attempt, wait_exponential
+from openai import AzureOpenAI
 from src.config import settings
 
 logger = logging.getLogger(__name__)
@@ -95,3 +96,17 @@ class AzureOpenAIEmbeddings:
 
 # Global embeddings instance
 embeddings_client = AzureOpenAIEmbeddings()
+
+
+def get_azure_openai_client() -> AzureOpenAI:
+    """
+    Get an Azure OpenAI client for chat completions.
+    
+    Returns:
+        AzureOpenAI client instance configured for chat completions
+    """
+    return AzureOpenAI(
+        api_key=settings.azure_openai_api_key,
+        api_version="2024-02-01",
+        azure_endpoint=settings.azure_openai_endpoint
+    )
