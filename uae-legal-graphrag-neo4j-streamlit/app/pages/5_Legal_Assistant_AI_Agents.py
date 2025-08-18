@@ -20,6 +20,56 @@ except ImportError as e:
     st.stop()
 
 
+def format_agent_response_for_chatbot(response: str) -> str:
+    """
+    Convert raw agent response with escape characters to chatbot-friendly format.
+    
+    Args:
+        response: Raw response from AI agents containing \\n escape sequences
+        
+    Returns:
+        Formatted response suitable for chatbot display
+    """
+    if not response:
+        return "I apologize, but I couldn't generate a response to your query."
+    
+    # Replace literal \n with actual newlines
+    formatted = response.replace('\\n', '\n')
+    
+    # Clean up any double newlines
+    formatted = formatted.replace('\n\n\n', '\n\n')
+    
+    # Ensure proper spacing around sections
+    formatted = formatted.replace('**Temporal Legal Analysis:**', '\n**Temporal Legal Analysis:**')
+    formatted = formatted.replace('**Historical Legal Context:**', '\n**Historical Legal Context:**')
+    formatted = formatted.replace('**Legal Framework Overview:**', '\n**Legal Framework Overview:**')
+    formatted = formatted.replace('**Primary Legal Provision:**', '\n**Primary Legal Provision:**')
+    formatted = formatted.replace('**Temporal Evolution Across Legal Domains:**', '\n**Temporal Evolution Across Legal Domains:**')
+    formatted = formatted.replace('**Cross-Domain Legal Analysis:**', '\n**Cross-Domain Legal Analysis:**')
+    formatted = formatted.replace('**Reference Date Analysis:**', '\n**Reference Date Analysis:**')
+    formatted = formatted.replace('**Legal Evolution:**', '\n**Legal Evolution:**')
+    formatted = formatted.replace('**Related Legal Context:**', '\n**Related Legal Context:**')
+    formatted = formatted.replace('**Relevant Legal Provisions:**', '\n**Relevant Legal Provisions:**')
+    
+    # Clean up any leading/trailing whitespace
+    formatted = formatted.strip()
+    
+    # If response is too technical/raw, add a friendly intro
+    if any(keyword in formatted for keyword in ['Historical Provision 1:', 'Legal Provision 1:', 'Domain 1:']):
+        if 'temporal' in formatted.lower() or 'evolution' in formatted.lower():
+            intro = "Based on my temporal analysis of UAE legal documents, here's what I found regarding the changes in this area:\n\n"
+        elif 'framework' in formatted.lower() or 'overview' in formatted.lower():
+            intro = "Here's a comprehensive overview of the legal framework you asked about:\n\n"
+        elif 'provision' in formatted.lower():
+            intro = "I found the following specific legal provisions relevant to your question:\n\n"
+        else:
+            intro = "Based on my analysis of UAE legal documents:\n\n"
+        
+        formatted = intro + formatted
+    
+    return formatted
+
+
 def main():
     """Main Legal Assistant chatbot page."""
     st.set_page_config(
@@ -234,13 +284,16 @@ def main():
                     loop.close()
                     
                     if result.get('error'):
-                        st.error(f"❌ Agent Error: {result['response']}")
-                        chat_messages.append({"role": "assistant", "content": result['response']})
+                        error_response = f"❌ I apologize, but I encountered an issue: {result['response']}"
+                        st.error(error_response)
+                        chat_messages.append({"role": "assistant", "content": error_response})
                     else:
                         response = result['response']
                         sources = result.get('sources', [])
                         
-                        st.markdown(response)
+                        # Format the agent response for chatbot display
+                        formatted_response = format_agent_response_for_chatbot(response)
+                        st.markdown(formatted_response)
                         
                         # Display sources with agent information
                         if sources:
@@ -257,7 +310,7 @@ def main():
                         # Add assistant response to chat
                         chat_messages.append({
                             "role": "assistant", 
-                            "content": response,
+                            "content": formatted_response,
                             "sources": sources,
                             "agent_info": {
                                 "strategy": result.get('strategy_used', 'unknown'),

@@ -220,34 +220,43 @@ class DriftRAGAgent(BaseAgent):
             # Enhance query for temporal analysis
             enhanced_query = await self._enhance_temporal_query(query, time_scope)
             
-            # Execute DRIFT RAG query
+            # Execute DRIFT RAG query - this returns a dictionary
             rag_result = await asyncio.to_thread(drift_rag_query, enhanced_query, reference_date)
             
-            # Perform temporal analysis
-            temporal_analysis = await self._perform_temporal_analysis(query, rag_result, reference_date)
+            # Check for errors in the RAG result
+            if isinstance(rag_result, dict) and 'error' in rag_result:
+                return {
+                    'response': f"DRIFT RAG query failed: {rag_result['error']}",
+                    'sources': [],
+                    'confidence': 0.0,
+                    'error': True,
+                    'processing_time': (datetime.now() - start_time).total_seconds()
+                }
+            
+            # Generate response from RAG result dictionary
+            response_text = await self._generate_response_from_drift_rag_result(query, rag_result, reference_date)
+            
+            # Extract temporal elements from dictionary
+            timeline = self._extract_timeline_from_dict(rag_result)
+            amendments = self._extract_amendments_from_dict(rag_result)
+            sources = self._extract_sources_from_drift_result(rag_result)
+            confidence = self._calculate_drift_confidence(query, rag_result, timeline, amendments)
             
             processing_time = (datetime.now() - start_time).total_seconds()
-            
-            # Extract temporal elements
-            timeline = self._extract_timeline(rag_result)
-            amendments = self._extract_amendments(rag_result)
-            evolution_pattern = self._identify_evolution_pattern(rag_result, timeline)
-            confidence = self._calculate_temporal_confidence(query, rag_result, timeline, amendments)
             
             # Update performance metrics
             self._update_performance_metrics(processing_time, confidence, len(timeline), len(amendments))
             
             return {
-                'response': temporal_analysis['enhanced_response'],
+                'response': response_text,
+                'sources': sources,
                 'timeline': timeline,
                 'amendments': amendments,
                 'confidence': confidence,
-                'evolution_pattern': evolution_pattern,
                 'reference_date': reference_date_str,
                 'time_scope': time_scope,
                 'processing_time': processing_time,
                 'query_type': 'drift_rag',
-                'temporal_depth': temporal_analysis['temporal_depth'],
                 'specialization_applied': self._get_applied_specialization(query)
             }
             
@@ -297,6 +306,120 @@ class DriftRAGAgent(BaseAgent):
         
         return query
     
+    async def _generate_response_from_drift_rag_result(self, query: str, rag_result: Dict[str, Any], reference_date) -> str:
+        """Generate response from DRIFT RAG result dictionary."""
+        try:
+            response_parts = []
+            response_parts.append("**Temporal Legal Analysis:**")
+            
+            # Add semantic seeds with temporal context
+            if 'semantic_seeds' in rag_result and rag_result['semantic_seeds']:
+                response_parts.append("\\n**Historical Legal Context:**")
+                for i, seed in enumerate(rag_result['semantic_seeds'][:3], 1):
+                    if 'provision' in seed:
+                        provision = seed['provision']
+                        title = provision.get('title', f'Historical Provision {i}')
+                        content = provision.get('content', '')[:200] + "..." if len(provision.get('content', '')) > 200 else provision.get('content', '')
+                        response_parts.append(f"{i}. {title}: {content}")
+            
+            # Add community temporal analysis
+            if 'community_results' in rag_result and rag_result['community_results']:
+                response_parts.append("\\n**Temporal Evolution Across Legal Domains:**")
+                for i, community in enumerate(rag_result['community_results'][:2], 1):
+                    community_id = community.get('community_id', f'Domain {i}')
+                    paths = community.get('paths', [])
+                    response_parts.append(f"**Domain {i}**: {len(paths)} temporal relationships identified")
+            
+            # Add temporal-specific analysis
+            response_parts.append(f"\\n**Reference Date Analysis:** {reference_date}")
+            response_parts.append("The above provisions represent the legal framework as it existed or evolved around the specified timeframe.")
+            
+            # Query-specific temporal insights
+            query_lower = query.lower()
+            if any(term in query_lower for term in ['change', 'evolve', 'amendment', 'history']):
+                response_parts.append("\\n**Legal Evolution:** The analysis reveals how legal provisions have evolved over time, showing patterns of legislative development.")
+            
+            return "\\n".join(response_parts) if response_parts else "No temporal legal analysis available for the specified timeframe."
+            
+        except Exception as e:
+            logger.error(f"DRIFT response generation failed: {e}")
+            return f"Error generating temporal analysis: {str(e)}"
+
+    def _extract_timeline_from_dict(self, rag_result: Dict[str, Any]) -> List[Dict]:
+        """Extract timeline from DRIFT RAG result dictionary."""
+        timeline = []
+        try:
+            if 'community_results' in rag_result:
+                for community in rag_result['community_results']:
+                    paths = community.get('paths', [])
+                    for path in paths:
+                        if 'as_of_date' in path:
+                            timeline.append({
+                                'date': path['as_of_date'],
+                                'event': 'Legal provision reference',
+                                'significance': 'medium'
+                            })
+            return timeline[:5]  # Limit timeline entries
+        except:
+            return []
+
+    def _extract_amendments_from_dict(self, rag_result: Dict[str, Any]) -> List[Dict]:
+        """Extract amendments from DRIFT RAG result dictionary."""
+        amendments = []
+        try:
+            if 'community_results' in rag_result:
+                for community in rag_result['community_results']:
+                    paths = community.get('paths', [])
+                    for path in paths:
+                        if 'amendments' in path and path['amendments']:
+                            for amendment in path['amendments'][:2]:
+                                amendments.append({
+                                    'type': 'amendment',
+                                    'date': path.get('as_of_date', 'unknown'),
+                                    'description': 'Legal provision amendment'
+                                })
+            return amendments[:5]
+        except:
+            return []
+
+    def _extract_sources_from_drift_result(self, rag_result: Dict[str, Any]) -> List[Dict]:
+        """Extract sources from DRIFT RAG result dictionary."""
+        sources = []
+        try:
+            # Extract semantic seeds as sources
+            if 'semantic_seeds' in rag_result:
+                for i, seed in enumerate(rag_result['semantic_seeds'][:3]):
+                    if 'provision' in seed:
+                        provision = seed['provision']
+                        sources.append({
+                            'title': provision.get('title', f'Temporal Provision {i+1}'),
+                            'content': provision.get('content', 'No content available')[:300] + "..." if len(provision.get('content', '')) > 300 else provision.get('content', ''),
+                            'source_agent': 'DRIFT RAG',
+                            'confidence': seed.get('similarity', 0.7),
+                            'type': 'Temporal Analysis'
+                        })
+            return sources[:5]
+        except:
+            return []
+
+    def _calculate_drift_confidence(self, query: str, rag_result: Dict[str, Any], timeline: List, amendments: List) -> float:
+        """Calculate confidence for DRIFT RAG results."""
+        base_confidence = 0.6
+        
+        # Boost for temporal elements found
+        if 'community_results' in rag_result and rag_result['community_results']:
+            base_confidence += 0.1 * min(len(rag_result['community_results']), 3)
+        
+        if 'semantic_seeds' in rag_result and rag_result['semantic_seeds']:
+            base_confidence += 0.15
+        
+        # Boost for temporal keywords
+        query_lower = query.lower()
+        if any(term in query_lower for term in ['temporal', 'time', 'history', 'evolution', 'change']):
+            base_confidence += 0.1
+        
+        return min(base_confidence, 1.0)
+
     async def _perform_temporal_analysis(self, original_query: str, rag_result: str, reference_date: date) -> Dict[str, Any]:
         """Perform deep temporal analysis of the RAG result."""
         try:

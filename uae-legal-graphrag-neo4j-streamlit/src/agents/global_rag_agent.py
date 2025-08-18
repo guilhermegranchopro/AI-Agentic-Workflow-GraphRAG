@@ -213,11 +213,52 @@ class GlobalRAGAgent(BaseAgent):
             # Enhance query for conceptual understanding
             enhanced_query = await self._enhance_conceptual_query(query, scope)
             
-            # Execute global RAG query
+            # Execute global RAG query - this returns a dictionary
             rag_result = await asyncio.to_thread(global_rag_query, enhanced_query)
             
-            # Perform conceptual analysis
-            conceptual_analysis = await self._perform_conceptual_analysis(query, rag_result)
+            # Check for errors in the RAG result
+            if isinstance(rag_result, dict) and 'error' in rag_result:
+                return {
+                    'response': f"Global RAG query failed: {rag_result['error']}",
+                    'sources': [],
+                    'confidence': 0.0,
+                    'error': True,
+                    'processing_time': (datetime.now() - start_time).total_seconds()
+                }
+            
+            # Generate response from RAG result dictionary
+            response_text = await self._generate_response_from_global_rag_result(query, rag_result)
+            
+            # Extract sources and confidence
+            sources = self._extract_sources_from_global_result(rag_result)
+            confidence = self._calculate_global_confidence(query, rag_result, sources)
+            
+            processing_time = (datetime.now() - start_time).total_seconds()
+            
+            # Update performance metrics
+            concept_count = len(rag_result.get('semantic_results', []))
+            framework_count = len(rag_result.get('community_analysis', []))
+            self._update_performance_metrics(processing_time, confidence, concept_count, framework_count)
+            
+            return {
+                'response': response_text,
+                'sources': sources,
+                'confidence': confidence,
+                'conceptual_framework': self._extract_conceptual_framework(rag_result),
+                'processing_time': processing_time,
+                'query_type': 'global_rag',
+                'scope': scope
+            }
+            
+        except Exception as e:
+            logger.error(f"Global RAG query failed: {e}")
+            return {
+                'response': f"Global RAG query failed: {str(e)}",
+                'sources': [],
+                'confidence': 0.0,
+                'error': True,
+                'processing_time': (datetime.now() - start_time).total_seconds()
+            }
             
             # Add comparative analysis if requested
             if include_comparisons:
@@ -257,6 +298,149 @@ class GlobalRAGAgent(BaseAgent):
                 'processing_time': (datetime.now() - start_time).total_seconds()
             }
     
+    async def _generate_response_from_global_rag_result(self, query: str, rag_result: Dict[str, Any]) -> str:
+        """Generate a comprehensive response from the Global RAG result dictionary."""
+        try:
+            response_parts = []
+            
+            # Add conceptual overview
+            response_parts.append("**Legal Framework Overview:**")
+            
+            # Add semantic results context
+            if 'semantic_results' in rag_result and rag_result['semantic_results']:
+                response_parts.append("\\n**Relevant Legal Provisions:**")
+                for i, result in enumerate(rag_result['semantic_results'][:3], 1):
+                    if 'provision' in result:
+                        provision = result['provision']
+                        title = provision.get('title', f'Legal Provision {i}')
+                        content = provision.get('content', '')[:300] + "..." if len(provision.get('content', '')) > 300 else provision.get('content', '')
+                        response_parts.append(f"{i}. {title}: {content}")
+            
+            # Add community analysis
+            if 'community_analysis' in rag_result and rag_result['community_analysis']:
+                response_parts.append("\\n**Cross-Domain Legal Analysis:**")
+                for i, community in enumerate(rag_result['community_analysis'][:3], 1):
+                    community_id = community.get('community_id', f'Domain {i}')
+                    summary = community.get('summary', 'Legal domain analysis')
+                    size = community.get('size', 0)
+                    response_parts.append(f"**Domain {i}** ({size} interconnected provisions): {summary}")
+                    
+                    # Add provisions from this community
+                    provisions = community.get('relevant_provisions', [])
+                    for j, provision in enumerate(provisions[:2]):
+                        title = provision.get('title', 'Legal Provision')
+                        content = provision.get('content', 'No content available')[:200] + "..." if len(provision.get('content', '')) > 200 else provision.get('content', '')
+                        response_parts.append(f"  - {title}: {content}")
+            
+            # Add cross-community patterns
+            if 'cross_community_patterns' in rag_result and rag_result['cross_community_patterns']:
+                response_parts.append("\\n**Cross-Domain Implications:**")
+                for pattern in rag_result['cross_community_patterns']:
+                    response_parts.append(f"• {pattern}")
+            
+            # Add query-specific conceptual analysis
+            query_lower = query.lower()
+            if any(term in query_lower for term in ['constitutional', 'constitution']):
+                response_parts.append("\\n**Constitutional Framework Analysis:**")
+                response_parts.append("Constitutional law establishes the fundamental legal principles and governmental structure. The provisions above represent key constitutional concepts that form the foundation of the legal system.")
+            
+            if any(term in query_lower for term in ['principle', 'concept', 'framework']):
+                response_parts.append("\\n**Conceptual Analysis:**")
+                response_parts.append("The legal concepts identified demonstrate the interconnected nature of legal principles across different domains of law.")
+            
+            if any(term in query_lower for term in ['rights', 'duties', 'obligations']):
+                response_parts.append("\\n**Rights and Obligations Framework:**")
+                response_parts.append("The legal framework establishes a comprehensive system of rights and corresponding obligations across multiple legal domains.")
+            
+            # Combine all parts
+            if response_parts:
+                return "\\n".join(response_parts)
+            else:
+                return "No comprehensive legal framework found for your query. Please try expanding your search terms or using more general legal concepts."
+            
+        except Exception as e:
+            logger.error(f"Global response generation failed: {e}")
+            return f"Error generating response: {str(e)}"
+
+    def _extract_sources_from_global_result(self, rag_result: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Extract sources from the Global RAG result dictionary."""
+        sources = []
+        
+        try:
+            # Extract semantic results as sources
+            if 'semantic_results' in rag_result:
+                for i, result in enumerate(rag_result['semantic_results'][:3]):
+                    if 'provision' in result:
+                        provision = result['provision']
+                        sources.append({
+                            'title': provision.get('title', f'Legal Framework {i+1}'),
+                            'content': provision.get('content', 'No content available')[:300] + "..." if len(provision.get('content', '')) > 300 else provision.get('content', ''),
+                            'source_agent': 'Global RAG',
+                            'confidence': result.get('similarity', 0.8),
+                            'type': 'Conceptual Framework'
+                        })
+            
+            # Extract community provisions as sources
+            if 'community_analysis' in rag_result:
+                for community in rag_result['community_analysis'][:2]:
+                    provisions = community.get('relevant_provisions', [])
+                    for provision in provisions[:1]:  # One per community
+                        sources.append({
+                            'title': provision.get('title', 'Cross-Domain Provision'),
+                            'content': provision.get('content', 'No content available')[:300] + "..." if len(provision.get('content', '')) > 300 else provision.get('content', ''),
+                            'source_agent': 'Global RAG',
+                            'confidence': 0.7,
+                            'type': 'Cross-Domain Analysis'
+                        })
+            
+            return sources[:5]  # Limit to 5 sources
+            
+        except Exception as e:
+            logger.error(f"Global source extraction failed: {e}")
+            return []
+
+    def _calculate_global_confidence(self, query: str, rag_result: Dict[str, Any], sources: List[Dict]) -> float:
+        """Calculate confidence score for Global RAG results."""
+        base_confidence = 0.6  # Higher base for global conceptual queries
+        
+        # Check if we have meaningful community analysis
+        if 'community_analysis' in rag_result and rag_result['community_analysis']:
+            communities_count = len(rag_result['community_analysis'])
+            base_confidence += 0.1 * min(communities_count, 3)
+        
+        # Check semantic results quality
+        if 'semantic_results' in rag_result and rag_result['semantic_results']:
+            base_confidence += 0.15
+        
+        # Boost for cross-community patterns
+        if 'cross_community_patterns' in rag_result and rag_result['cross_community_patterns']:
+            base_confidence += 0.1
+        
+        # Boost for global/conceptual query terms
+        query_lower = query.lower()
+        if any(term in query_lower for term in ['concept', 'principle', 'framework', 'constitutional', 'general']):
+            base_confidence += 0.1
+        
+        # Source quality boost
+        if sources:
+            avg_source_confidence = sum(s.get('confidence', 0.7) for s in sources) / len(sources)
+            base_confidence += (avg_source_confidence * 0.15)
+        
+        return min(base_confidence, 1.0)
+
+    def _extract_conceptual_framework(self, rag_result: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract conceptual framework information from the result."""
+        try:
+            framework = {
+                'domains_analyzed': len(rag_result.get('community_analysis', [])),
+                'cross_domain_patterns': rag_result.get('cross_community_patterns', []),
+                'semantic_matches': len(rag_result.get('semantic_results', [])),
+                'framework_type': 'comprehensive' if len(rag_result.get('community_analysis', [])) > 1 else 'focused'
+            }
+            return framework
+        except:
+            return {'framework_type': 'basic'}
+
     async def _enhance_conceptual_query(self, query: str, scope: str) -> str:
         """Enhance query for better conceptual understanding."""
         query_lower = query.lower()
