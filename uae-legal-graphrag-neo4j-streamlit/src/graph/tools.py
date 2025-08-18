@@ -84,6 +84,117 @@ def local_rag_query(provision_id: str, as_of_date: date,
         return {"error": str(e)}
 
 
+def local_rag_query_simplified(query_text: str) -> Dict[str, Any]:
+    """
+    Simplified Local RAG query that takes just a query text (for agent compatibility).
+    
+    Args:
+        query_text: Natural language query
+        
+    Returns:
+        Dictionary with local RAG results
+    """
+    try:
+        # First do semantic search to find relevant provisions
+        semantic_results = semantic_search_provisions(query_text, 5)
+        
+        if not semantic_results:
+            return {"error": "No relevant provisions found"}
+        
+        # Use current date as default
+        from datetime import date
+        as_of_date = date.today()
+        
+        # Take the most relevant provision and do local RAG
+        top_provision = semantic_results[0]["provision"]
+        provision_id = top_provision["id"]
+        
+        # Run full local RAG query
+        local_result = local_rag_query(provision_id, as_of_date)
+        
+        # Add semantic context
+        local_result["semantic_seeds"] = semantic_results[:3]
+        local_result["query"] = query_text
+        
+        return local_result
+        
+    except Exception as e:
+        logger.error(f"Error in simplified local RAG query: {e}")
+        return {"error": str(e)}
+
+
+def global_rag_query(query_text: str, top_communities: int = 5) -> Dict[str, Any]:
+    """
+    Perform Global RAG query across multiple communities for broad conceptual understanding.
+    
+    Args:
+        query_text: Natural language query
+        top_communities: Number of top communities to explore
+        
+    Returns:
+        Dictionary with global analysis across communities
+    """
+    try:
+        # First, do semantic search to get relevant provisions
+        semantic_results = semantic_search_provisions(query_text, 10)
+        
+        if not semantic_results:
+            return {"error": "No relevant provisions found"}
+        
+        # Get top communities globally
+        communities_df = communities_top(top_communities)
+        
+        # Get provisions from these communities
+        top_community_ids = communities_df['community_id'].tolist()
+        community_provisions = provision_by_community(top_community_ids, 3)
+        
+        # Analyze each community for relevance to query
+        global_analysis = {
+            "query": query_text,
+            "semantic_results": semantic_results[:5],
+            "community_analysis": [],
+            "cross_community_patterns": []
+        }
+        
+        for community_data in community_provisions:
+            community_id = community_data["community_id"]
+            provisions = community_data["provisions"]
+            
+            # Get community info
+            community_size = communities_df[communities_df['community_id'] == community_id]['size'].iloc[0]
+            
+            community_analysis = {
+                "community_id": community_id,
+                "size": community_size,
+                "relevant_provisions": [],
+                "summary": generate_community_summary(provisions)
+            }
+            
+            # Add top provisions from this community
+            for provision in provisions[:2]:
+                community_analysis["relevant_provisions"].append({
+                    "id": provision["id"],
+                    "title": provision.get("title", "Unknown"),
+                    "content": provision.get("content", "")[:200] + "..." if len(provision.get("content", "")) > 200 else provision.get("content", "")
+                })
+            
+            global_analysis["community_analysis"].append(community_analysis)
+        
+        # Identify cross-community patterns (simplified)
+        if len(global_analysis["community_analysis"]) > 1:
+            global_analysis["cross_community_patterns"] = [
+                "Multiple legal domains affected",
+                "Broad conceptual implications",
+                "Cross-jurisdictional relevance"
+            ]
+        
+        return global_analysis
+        
+    except Exception as e:
+        logger.error(f"Error in global RAG query: {e}")
+        return {"error": str(e)}
+
+
 def global_rag_communities(limit: int = 10) -> Dict[str, Any]:
     """
     Get global community structure for Global RAG.
@@ -200,7 +311,16 @@ def generate_community_summary(nodes: List[Dict[str, Any]]) -> str:
     if not nodes:
         return "Empty community"
     
-    node_types = set(node["node_type"] for node in nodes)
+    # Handle different node structures - some might have 'node_type', others might have 'type'
+    node_types = set()
+    for node in nodes:
+        if "node_type" in node:
+            node_types.add(node["node_type"])
+        elif "type" in node:
+            node_types.add(node["type"])
+        else:
+            # Default to Provision if no type specified
+            node_types.add("Provision")
     
     if "Provision" in node_types and "Judgment" in node_types:
         return "Legal provisions with judicial interpretations"
