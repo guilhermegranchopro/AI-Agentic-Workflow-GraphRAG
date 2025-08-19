@@ -131,10 +131,10 @@ const LegalAssistantPage: React.FC = () => {
   };
 
   const getConfidenceColor = (confidence?: number) => {
-    if (!confidence) return 'text-gray-500';
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (!confidence) return 'text-gray-400';
+    if (confidence >= 0.8) return 'text-green-400';
+    if (confidence >= 0.6) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
   return (
@@ -142,18 +142,18 @@ const LegalAssistantPage: React.FC = () => {
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         <div className="mb-6">
           <div className="flex items-center space-x-3 mb-4">
-            <MessageSquare className="h-8 w-8 text-primary-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Legal Assistant AI</h1>
+            <MessageSquare className="h-8 w-8 text-cyan-400" />
+            <h1 className="text-3xl font-bold text-white">Legal Assistant AI</h1>
           </div>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-300">
             Multi-agent system for complex legal queries with autonomous reasoning
           </p>
-          <div className="mt-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
+          <div className="mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-lg p-4 backdrop-blur-sm">
             <div className="flex items-start space-x-2">
-              <Brain className="h-5 w-5 text-blue-600 mt-0.5" />
+              <Brain className="h-5 w-5 text-cyan-400 mt-0.5" />
               <div>
-                <h3 className="font-medium text-blue-900 mb-1">AI Agents Workflow</h3>
-                <p className="text-blue-800 text-sm">
+                <h3 className="font-medium text-cyan-100 mb-1">AI Agents Workflow</h3>
+                <p className="text-gray-300 text-sm">
                   Powered by advanced multi-agent reasoning with Local RAG, Global RAG, and DRIFT strategies. 
                   Each query is intelligently routed to the most appropriate agent for optimal results.
                 </p>
@@ -163,7 +163,7 @@ const LegalAssistantPage: React.FC = () => {
         </div>
 
         {/* Chat Container */}
-        <div className="flex-1 flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 shadow-2xl backdrop-blur-sm">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.map((message) => (
@@ -172,12 +172,12 @@ const LegalAssistantPage: React.FC = () => {
                   <div className="flex justify-end">
                     <div className="max-w-3xl">
                       <div className="flex items-center justify-end space-x-2 mb-2">
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
-                        <User className="h-4 w-4 text-gray-400" />
+                        <User className="h-4 w-4 text-cyan-400" />
                       </div>
-                      <div className="bg-primary-600 text-white rounded-lg px-4 py-3">
+                      <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg px-4 py-3 shadow-lg">
                         <p className="whitespace-pre-wrap">{message.content}</p>
                       </div>
                     </div>
@@ -188,12 +188,12 @@ const LegalAssistantPage: React.FC = () => {
                   <div className="flex justify-start">
                     <div className="max-w-4xl">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Bot className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm font-medium text-gray-700">
+                        <Bot className="h-4 w-4 text-purple-400" />
+                        <span className="text-sm font-medium text-gray-300">
                           {formatAgentName(message.metadata?.agent_used)}
                         </span>
                         {message.metadata?.strategy_used && (
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded border border-purple-500/30">
                             {getStrategyIcon(message.metadata.strategy_used)} {message.metadata.strategy_used}
                           </span>
                         )}
@@ -202,41 +202,41 @@ const LegalAssistantPage: React.FC = () => {
                             {Math.round(message.metadata.confidence * 100)}% confidence
                           </span>
                         )}
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
                       </div>
                       
-                      <div className="bg-gray-100 text-gray-900 rounded-lg px-4 py-3">
-                        <div className="prose max-w-none">
-                          <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                      <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 text-gray-100 rounded-lg px-4 py-3 border border-purple-500/20 backdrop-blur-sm shadow-lg">
+                        <div className="prose max-w-none prose-invert">
+                          <p className="whitespace-pre-wrap leading-relaxed text-gray-100">{message.content}</p>
                         </div>
                       </div>
 
                       {/* Sources */}
                       {message.metadata?.sources && message.metadata.sources.length > 0 && (
-                        <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                          <h4 className="text-sm font-medium text-blue-900 mb-2">
+                        <div className="mt-3 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-lg p-3 backdrop-blur-sm">
+                          <h4 className="text-sm font-medium text-blue-300 mb-2">
                             📚 Sources ({message.metadata.sources.length})
                           </h4>
                           <div className="space-y-2">
                             {message.metadata.sources.slice(0, 3).map((source, index) => (
                               <div key={source.id || index} className="text-sm">
                                 <div className="flex items-center justify-between">
-                                  <span className="font-medium text-blue-800">
+                                  <span className="font-medium text-blue-200">
                                     {source.title || `Source ${index + 1}`}
                                   </span>
-                                  <span className="text-xs text-blue-600">
+                                  <span className="text-xs text-cyan-400">
                                     {(source.relevanceScore * 100).toFixed(1)}%
                                   </span>
                                 </div>
-                                <p className="text-blue-700 text-xs mt-1 line-clamp-2">
+                                <p className="text-gray-300 text-xs mt-1 line-clamp-2">
                                   {source.content.substring(0, 150)}...
                                 </p>
                               </div>
                             ))}
                             {message.metadata.sources.length > 3 && (
-                              <p className="text-xs text-blue-600">
+                              <p className="text-xs text-blue-400">
                                 +{message.metadata.sources.length - 3} more sources
                               </p>
                             )}
@@ -249,8 +249,8 @@ const LegalAssistantPage: React.FC = () => {
 
                 {message.type === 'system' && (
                   <div className="flex justify-center">
-                    <div className="max-w-2xl bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-center">
-                      <p className="text-yellow-800 text-sm">{message.content}</p>
+                    <div className="max-w-2xl bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg px-4 py-3 text-center backdrop-blur-sm">
+                      <p className="text-yellow-200 text-sm">{message.content}</p>
                     </div>
                   </div>
                 )}
@@ -261,13 +261,13 @@ const LegalAssistantPage: React.FC = () => {
               <div className="flex justify-start animate-fade-in">
                 <div className="max-w-xs">
                   <div className="flex items-center space-x-2 mb-2">
-                    <Bot className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm text-gray-600">AI is thinking...</span>
+                    <Bot className="h-4 w-4 text-purple-400" />
+                    <span className="text-sm text-gray-300">AI is thinking...</span>
                   </div>
-                  <div className="bg-gray-100 rounded-lg px-4 py-3">
+                  <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-lg px-4 py-3 backdrop-blur-sm">
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-gray-600" />
-                      <span className="text-gray-600 text-sm">Processing your query...</span>
+                      <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
+                      <span className="text-gray-300 text-sm">Processing your query...</span>
                     </div>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ const LegalAssistantPage: React.FC = () => {
           </div>
 
           {/* Input */}
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-purple-500/20 p-4 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm">
             <div className="flex space-x-4">
               <div className="flex-1">
                 <textarea
@@ -287,7 +287,7 @@ const LegalAssistantPage: React.FC = () => {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask a legal question (e.g., 'What are the liability rules for commercial companies and how are they interpreted by courts?')"
-                  className="textarea-field h-20 resize-none"
+                  className="w-full h-20 resize-none bg-gray-800/80 border border-purple-500/30 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 backdrop-blur-sm"
                   disabled={isLoading}
                 />
               </div>
@@ -295,7 +295,7 @@ const LegalAssistantPage: React.FC = () => {
                 <button
                   onClick={handleSendMessage}
                   disabled={isLoading || !inputValue.trim()}
-                  className="btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 flex items-center space-x-2"
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -307,15 +307,15 @@ const LegalAssistantPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-gray-400">
               Press Enter to send, Shift+Enter for new line
             </div>
           </div>
         </div>
 
         {/* Quick Examples */}
-        <div className="mt-6 bg-gray-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">💡 Try these examples:</h3>
+        <div className="mt-6 bg-gradient-to-r from-gray-900/50 to-gray-800/50 border border-purple-500/20 rounded-lg p-4 backdrop-blur-sm">
+          <h3 className="text-sm font-medium text-gray-300 mb-3">💡 Try these examples:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {[
               "What are the liability rules for commercial companies?",
@@ -326,7 +326,7 @@ const LegalAssistantPage: React.FC = () => {
               <button
                 key={index}
                 onClick={() => setInputValue(example)}
-                className="text-left text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded px-2 py-1 transition-colors"
+                className="text-left text-sm text-cyan-400 hover:text-cyan-300 hover:bg-cyan-900/20 rounded px-2 py-1 transition-colors border border-transparent hover:border-cyan-500/30"
                 disabled={isLoading}
               >
                 "{example}"
