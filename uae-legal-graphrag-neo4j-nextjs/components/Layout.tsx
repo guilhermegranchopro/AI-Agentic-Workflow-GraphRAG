@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import Head from 'next/head';
 import Navigation from './Navigation';
-import Sidebar from './Sidebar';
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,18 +22,29 @@ const Layout: React.FC<LayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Navigation />
         
-        <div className="flex">
-          <Sidebar />
-          
-          <main className="flex-1 ml-64 p-8">
-            <div className="max-w-7xl mx-auto">
-              {children}
+        <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-white border-t border-gray-200 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center text-xs text-gray-500">
+              <div>
+                <p>UAE Legal GraphRAG v1.0</p>
+                <p>Next.js + Neo4j + Azure AI</p>
+              </div>
+              <div className="hidden sm:block">
+                <p>Advanced legal research with GraphRAG and AI agents</p>
+              </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </footer>
       </div>
     </>
   );
