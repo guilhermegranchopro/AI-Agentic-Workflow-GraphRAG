@@ -28,79 +28,87 @@ const Navigation: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:bg-gray-900/80 dark:border-gray-700/50 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo and Brand */}
+    <nav className="bg-gray-900/95 backdrop-blur-xl shadow-2xl border-b border-purple-500/20 transition-all duration-300 relative overflow-hidden">
+      {/* Epic Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-blue-900/10 to-indigo-900/10"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/5 via-transparent to-transparent"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex justify-between h-18">
+          {/* Epic Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link href="/" className="flex items-center space-x-4 group">
               <div className="relative">
-                <Scale className="h-8 w-8 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200" />
-                <div className="absolute -inset-1 bg-primary-600/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-20 group-hover:opacity-40 blur transition-opacity duration-300"></div>
+                <Scale className="h-10 w-10 text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text relative z-10 group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
+                <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300">
                   UAE Legal GraphRAG
                 </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
-                  Neo4j + Next.js + Azure OpenAI
+                <p className="text-sm text-purple-300/70 group-hover:text-purple-300 transition-colors duration-300 hidden sm:block">
+                  ⚡ Neo4j + Next.js + Azure AI ⚡
                 </p>
               </div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          {/* Epic Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-2">
             {navigationItems.map((item) => {
               const isActive = router.pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`group relative flex items-center px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
                     isActive 
-                      ? 'bg-primary-100 text-primary-700 border border-primary-200 shadow-sm dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800/50'
+                      ? 'text-white bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 shadow-lg shadow-purple-500/20' 
+                      : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/30 border border-transparent'
                   }`}
                 >
-                  <item.icon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  {item.name}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <item.icon className="mr-3 h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
+                  <span className="relative z-10">{item.name}</span>
+                  {isActive && (
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-20 blur transition-opacity duration-300"></div>
+                  )}
                 </Link>
               );
             })}
           </div>
           
-          {/* Status Indicators and Controls */}
+          {/* Epic Status Indicators and Controls */}
           <div className="flex items-center space-x-4">
-            {/* Status Indicators */}
-            <div className="hidden md:flex items-center space-x-4">
-              <div className="flex items-center space-x-1 px-2 py-1 rounded-md bg-gray-50 dark:bg-gray-800/50">
-                <Database className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-400 hidden lg:block">Connected</span>
+            {/* Futuristic Status Indicators */}
+            <div className="hidden md:flex items-center space-x-3">
+              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
+                <Database className="h-4 w-4 text-green-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-sm text-green-300 hidden lg:block font-medium">Neo4j</span>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               </div>
               
-              <div className="flex items-center space-x-1 px-2 py-1 rounded-md bg-gray-50 dark:bg-gray-800/50">
-                <Cpu className="h-4 w-4 text-blue-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-400 hidden lg:block">AI Ready</span>
+              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
+                <Cpu className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-sm text-blue-300 hidden lg:block font-medium">AI</span>
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
               </div>
               
-              <div className="flex items-center space-x-1 px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/20">
-                <Activity className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-green-600 dark:text-green-400 hidden lg:block">Healthy</span>
+              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
+                <Activity className="h-4 w-4 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-sm text-purple-300 hidden lg:block font-medium">Live</span>
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
               </div>
             </div>
 
-            {/* Theme Toggle */}
+            {/* Epic Theme Toggle - Ultimate Dark Mode */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-              aria-label="Toggle theme"
+              className="group relative p-3 rounded-xl bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 text-purple-300 hover:text-purple-100 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transform hover:scale-110"
+              aria-label="Ultimate Dark Mode"
             >
-              {theme === 'dark' ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Moon className="h-6 w-6 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-300"></div>
             </button>
 
             {/* Mobile menu button */}
@@ -121,10 +129,11 @@ const Navigation: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Epic Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="lg:hidden border-t border-purple-500/20 bg-gray-900/98 backdrop-blur-xl relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 to-blue-900/5"></div>
+            <div className="px-4 pt-4 pb-6 space-y-3 sm:px-6 relative z-10">
               {navigationItems.map((item) => {
                 const isActive = router.pathname === item.href;
                 return (
@@ -132,34 +141,32 @@ const Navigation: React.FC = () => {
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
+                    className={`group relative flex items-center px-4 py-4 rounded-xl text-base font-semibold transition-all duration-300 ${
                       isActive 
-                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800/50'
+                        ? 'text-white bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 shadow-lg shadow-purple-500/20' 
+                        : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/30 border border-transparent'
                     }`}
                   >
-                    <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
-                    {item.name}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <item.icon className="mr-4 h-6 w-6 relative z-10 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
+                    <span className="relative z-10">{item.name}</span>
+                    {isActive && (
+                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-20 blur transition-opacity duration-300"></div>
+                    )}
                   </Link>
                 );
               })}
               
-              {/* Mobile Theme Toggle */}
+              {/* Epic Mobile Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="flex items-center px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800/50 w-full transition-all duration-200"
+                className="group flex items-center px-4 py-4 rounded-xl text-base font-semibold text-purple-300 hover:text-purple-100 w-full transition-all duration-300 bg-gradient-to-r from-purple-600/10 to-blue-600/10 hover:from-purple-600/20 hover:to-blue-600/20 border border-purple-500/20 hover:border-purple-400/40"
               >
-                {theme === 'dark' ? (
-                  <>
-                    <Sun className="mr-3 h-5 w-5" />
-                    Switch to Light Mode
-                  </>
-                ) : (
-                  <>
-                    <Moon className="mr-3 h-5 w-5" />
-                    Switch to Dark Mode
-                  </>
-                )}
+                <div className="relative mr-4">
+                  <Moon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 group-hover:opacity-30 blur transition-opacity duration-300"></div>
+                </div>
+                <span>Ultimate Dark Mode ⚡</span>
               </button>
               
               {/* Mobile Status Indicators */}
