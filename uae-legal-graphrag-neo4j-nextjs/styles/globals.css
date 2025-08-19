@@ -50,6 +50,24 @@
 }
 
 @layer components {
+  /* Enhanced glass morphism card with better contrast */
+  .glass-card {
+    @apply bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  .dark .glass-card {
+    @apply bg-gray-800/90 border-gray-700/80 shadow-gray-900/30;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-50 via-white to-blue-50;
+  }
+
+  .dark .gradient-bg {
+    @apply bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900;
+  }
+
   .card {
     @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300;
   }

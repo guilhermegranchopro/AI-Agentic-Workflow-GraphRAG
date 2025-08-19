@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
         </div>
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary-700 dark:group-hover:text-primary-300 mb-2 transition-colors duration-200">{title}</h3>
-          <p className="text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors duration-200 leading-relaxed">{description}</p>
+          <p className="text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-200 leading-relaxed">{description}</p>
           <div className="mt-4 flex items-center text-sm text-primary-600 dark:text-primary-400 group-hover:text-primary-700 dark:group-hover:text-primary-300 font-medium">
             <span>Click to access</span>
             <svg className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +95,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           <div className="ml-4 flex-1">
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{value}</p>
           </div>
         </div>
@@ -111,7 +111,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
             ⚖️ UAE Legal GraphRAG
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Advanced legal research with GraphRAG and AI agents
           </p>
         </div>
@@ -133,19 +133,19 @@ const HomePage: React.FC = () => {
               <Database className={`h-6 w-6 ${
                 healthStatus?.database ? 'text-green-500' : 'text-red-500'
               }`} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Database Connection</span>
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">Database Connection</span>
             </div>
             <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
               <Zap className={`h-6 w-6 ${
                 healthStatus?.embeddings ? 'text-green-500' : 'text-red-500'
               }`} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Embeddings Service</span>
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">Embeddings Service</span>
             </div>
             <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
               <Activity className={`h-6 w-6 ${
                 healthStatus?.ai_service ? 'text-green-500' : 'text-red-500'
               }`} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AI Service</span>
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">AI Service</span>
             </div>
           </div>
         </div>
