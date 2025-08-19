@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '@/components/Layout';
 import { Network, Share2, Search, Filter, ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
+import { GRAPH_CONFIG, NODE_COLORS, API_ENDPOINTS } from '@/utils/constants';
 
 interface GraphNode {
   id: string;
@@ -32,7 +33,7 @@ interface GraphData {
 
 const GraphVisualizationPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [nodeLimit, setNodeLimit] = useState(50);
+  const [nodeLimit, setNodeLimit] = useState(GRAPH_CONFIG.DEFAULT_NODE_LIMIT);
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +47,7 @@ const GraphVisualizationPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/graph-data', {
+      const response = await fetch(API_ENDPOINTS.GRAPH_DATA, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

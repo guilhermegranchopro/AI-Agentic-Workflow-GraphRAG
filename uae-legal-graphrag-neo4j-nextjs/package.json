@@ -1,13 +1,19 @@
 {
   "name": "uae-legal-graphrag-nextjs",
   "version": "1.0.0",
+  "description": "Advanced legal research with GraphRAG and AI agents - Next.js frontend",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf .next",
+    "clean:all": "rimraf .next node_modules package-lock.json && npm install",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "dependencies": {
     "@headlessui/react": "^2.1.0",

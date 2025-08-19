@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { MessageSquare, Send, Bot, User, Loader2, Brain, Zap } from 'lucide-react';
+import { API_ENDPOINTS } from '@/utils/constants';
+import { generateId } from '@/utils/helpers';
 
 interface Message {
   id: string;
@@ -47,7 +49,7 @@ const LegalAssistantPage: React.FC = () => {
     if (!inputValue.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: generateId(),
       type: 'user',
       content: inputValue.trim(),
       timestamp: new Date(),
@@ -58,7 +60,7 @@ const LegalAssistantPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/agents/query', {
+      const response = await fetch(API_ENDPOINTS.AGENTS_QUERY, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +78,7 @@ const LegalAssistantPage: React.FC = () => {
       }
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateId(),
         type: 'assistant',
         content: data.response,
         timestamp: new Date(),
@@ -92,7 +94,7 @@ const LegalAssistantPage: React.FC = () => {
 
     } catch (error) {
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateId(),
         type: 'system',
         content: `Error: ${error instanceof Error ? error.message : 'An error occurred'}`,
         timestamp: new Date(),
