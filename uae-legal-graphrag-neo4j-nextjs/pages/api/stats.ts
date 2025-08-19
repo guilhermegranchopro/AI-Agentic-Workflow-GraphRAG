@@ -100,19 +100,3 @@ except Exception as e:
     });
   });
 }
-      total_documents: stats.total_documents || 0,
-      total_entities: stats.total_entities || 0,
-      total_relationships: stats.total_relationships || 0,
-      communities: stats.communities || 0,
-      last_updated: stats.last_updated || new Date().toISOString()
-    };
-
-    res.status(200).json(formattedStats);
-
-  } catch (error) {
-    console.error('Database stats error:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch database statistics' 
-    });
-  }
-}
