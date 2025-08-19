@@ -76,11 +76,14 @@ const GraphVisualizationPage: React.FC = () => {
     const loadVisNetwork = async () => {
       if (typeof window !== 'undefined' && graphData) {
         try {
-          const vis = await import('vis-network');
+          const [{ DataSet }, { Network }] = await Promise.all([
+            import('vis-data'),
+            import('vis-network')
+          ]);
           
           if (containerRef.current) {
             // Prepare nodes with vis-network format
-            const nodes = new vis.DataSet(
+            const nodes = new DataSet(
               graphData.nodes.map(node => ({
                 id: node.id,
                 label: node.label,
@@ -94,7 +97,7 @@ const GraphVisualizationPage: React.FC = () => {
             );
 
             // Prepare edges with vis-network format
-            const edges = new vis.DataSet(
+            const edges = new DataSet(
               graphData.edges.map(edge => ({
                 id: edge.id,
                 from: edge.from,
@@ -158,7 +161,7 @@ const GraphVisualizationPage: React.FC = () => {
               },
             };
 
-            const network = new vis.Network(containerRef.current, data, options);
+            const network = new Network(containerRef.current, data, options);
 
             // Event listeners
             network.on('selectNode', (params) => {
@@ -191,7 +194,7 @@ const GraphVisualizationPage: React.FC = () => {
           }
         } catch (error) {
           console.error('Failed to load vis-network:', error);
-          setError('Graph visualization dependencies not installed. Run: npm install');
+          setError(`Graph visualization dependencies not installed. Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
           
           // Fallback: Create a beautiful dark-themed graph placeholder
           if (containerRef.current) {
