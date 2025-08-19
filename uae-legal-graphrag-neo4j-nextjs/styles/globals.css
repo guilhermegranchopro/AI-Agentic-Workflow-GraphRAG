@@ -46,7 +46,7 @@
 }
 
 @layer components {
-  /* Ultimate Premium Glass Cards */
+  /* Ultimate Premium Glass Cards - Dark Mode Only */
   .glass-card {
     @apply bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl transition-all duration-500;
     background: linear-gradient(145deg, rgba(31, 41, 55, 0.6) 0%, rgba(17, 24, 39, 0.8) 100%);
@@ -65,7 +65,7 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
-  /* Stunning Gradient Backgrounds */
+  /* Stunning Gradient Backgrounds - Dark Mode Only */
   .gradient-bg {
     background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
     position: relative;
@@ -82,7 +82,7 @@
     pointer-events: none;
   }
 
-  /* Premium Solid Cards */
+  /* Premium Solid Cards - Dark Mode Only */
   .card {
     @apply bg-gray-800/90 border border-gray-700/60 rounded-2xl p-6 shadow-xl transition-all duration-300;
     background: linear-gradient(145deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTheme } from '@/lib/ThemeContext';
 import { 
   Scale, 
   Database, 
@@ -11,14 +10,11 @@ import {
   Network, 
   MessageSquare,
   Menu,
-  X,
-  Sun,
-  Moon
+  X
 } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
@@ -100,22 +96,11 @@ const Navigation: React.FC = () => {
               </div>
             </div>
 
-            {/* Epic Theme Toggle - Ultimate Dark Mode */}
-            <button
-              onClick={toggleTheme}
-              className="group relative p-3 rounded-xl bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 text-purple-300 hover:text-purple-100 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transform hover:scale-110"
-              aria-label="Ultimate Dark Mode"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <Moon className="h-6 w-6 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-300"></div>
-            </button>
-
             {/* Mobile menu button */}
             <div className="lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 transition-all duration-200"
+                className="inline-flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-gray-200 hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 transition-all duration-300"
                 aria-expanded="false"
               >
                 <span className="sr-only">Open main menu</span>
@@ -157,32 +142,24 @@ const Navigation: React.FC = () => {
                 );
               })}
               
-              {/* Epic Mobile Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="group flex items-center px-4 py-4 rounded-xl text-base font-semibold text-purple-300 hover:text-purple-100 w-full transition-all duration-300 bg-gradient-to-r from-purple-600/10 to-blue-600/10 hover:from-purple-600/20 hover:to-blue-600/20 border border-purple-500/20 hover:border-purple-400/40"
-              >
-                <div className="relative mr-4">
-                  <Moon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
-                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 group-hover:opacity-30 blur transition-opacity duration-300"></div>
-                </div>
-                <span>Ultimate Dark Mode ⚡</span>
-              </button>
-              
-              {/* Mobile Status Indicators */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+              {/* Epic Mobile Status Indicators */}
+              <div className="border-t border-purple-500/20 pt-6 mt-6">
+                <h3 className="text-purple-300 font-semibold mb-4 text-sm uppercase tracking-wider">System Status</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20">
-                    <Database className="h-4 w-4 text-green-500 mr-3" />
-                    <span className="text-sm text-green-600 dark:text-green-400 font-medium">Database Connected</span>
+                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
+                    <Database className="h-5 w-5 text-green-400 mr-3" />
+                    <span className="text-sm text-green-300 font-medium">Neo4j Connected</span>
+                    <div className="ml-auto w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="flex items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <Cpu className="h-4 w-4 text-blue-500 mr-3" />
-                    <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">AI Ready</span>
+                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
+                    <Cpu className="h-5 w-5 text-blue-400 mr-3" />
+                    <span className="text-sm text-blue-300 font-medium">AI Service Active</span>
+                    <div className="ml-auto w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="flex items-center px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20">
-                    <Activity className="h-4 w-4 text-green-500 mr-3" />
-                    <span className="text-sm text-green-600 dark:text-green-400 font-medium">System Healthy</span>
+                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
+                    <Activity className="h-5 w-5 text-purple-400 mr-3" />
+                    <span className="text-sm text-purple-300 font-medium">System Healthy</span>
+                    <div className="ml-auto w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
                   </div>
                 </div>
               </div>
