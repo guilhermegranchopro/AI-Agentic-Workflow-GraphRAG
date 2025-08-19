@@ -138,12 +138,13 @@ const LegalAssistantPage: React.FC = () => {
   };
 
   return (
-    <Layout title="Legal Assistant AI - UAE Legal GraphRAG">
-      <div className="flex flex-col h-[calc(100vh-8rem)]">
-        <div className="mb-6">
+    <Layout title="AI Assistant - UAE Legal GraphRAG">
+      <div className="flex flex-col h-screen max-h-screen overflow-hidden">
+        {/* Fixed Header */}
+        <div className="flex-shrink-0 mb-6">
           <div className="flex items-center space-x-3 mb-4">
             <MessageSquare className="h-8 w-8 text-cyan-400" />
-            <h1 className="text-3xl font-bold text-white">Legal Assistant AI</h1>
+            <h1 className="text-3xl font-bold text-white">AI Assistant</h1>
           </div>
           <p className="text-lg text-gray-300">
             Multi-agent system for complex legal queries with autonomous reasoning
@@ -162,10 +163,10 @@ const LegalAssistantPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Chat Container */}
-        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 shadow-2xl backdrop-blur-sm">
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Chat Container - Fixed Height with Internal Scrolling */}
+        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 shadow-2xl backdrop-blur-sm overflow-hidden">
+          {/* Messages - Scrollable Area */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-gray-800/20">
             {messages.map((message) => (
               <div key={message.id} className="animate-fade-in">
                 {message.type === 'user' && (
@@ -277,61 +278,64 @@ const LegalAssistantPage: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="border-t border-purple-500/20 p-4 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm">
-            <div className="flex space-x-4">
-              <div className="flex-1">
-                <textarea
-                  ref={inputRef}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask a legal question (e.g., 'What are the liability rules for commercial companies and how are they interpreted by courts?')"
-                  className="w-full h-20 resize-none bg-gray-800/80 border border-purple-500/30 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 backdrop-blur-sm"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="flex flex-col justify-end">
-                <button
-                  onClick={handleSendMessage}
-                  disabled={isLoading || !inputValue.trim()}
-                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 flex items-center space-x-2"
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <Send className="h-5 w-5" />
-                  )}
-                  <span>Send</span>
-                </button>
+          {/* Fixed Input Section */}
+          <div className="flex-shrink-0 border-t border-purple-500/20 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm">
+            {/* Quick Examples - Compact Version */}
+            <div className="px-4 py-2 border-b border-purple-500/10">
+              <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                <span className="text-xs text-gray-400 whitespace-nowrap">💡 Examples:</span>
+                {[
+                  "Liability rules for companies",
+                  "Contract disputes in UAE",
+                  "Business establishment in Dubai",
+                  "IP protection framework"
+                ].map((example, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setInputValue(example + " - explain in detail")}
+                    className="text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-900/20 hover:bg-cyan-900/30 rounded px-2 py-1 transition-colors border border-cyan-500/30 whitespace-nowrap"
+                    disabled={isLoading}
+                  >
+                    {example}
+                  </button>
+                ))}
               </div>
             </div>
             
-            <div className="mt-2 text-xs text-gray-400">
-              Press Enter to send, Shift+Enter for new line
+            {/* Input Area */}
+            <div className="p-4">
+              <div className="flex space-x-4">
+                <div className="flex-1">
+                  <textarea
+                    ref={inputRef}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask a legal question (e.g., 'What are the liability rules for commercial companies and how are they interpreted by courts?')"
+                    className="w-full h-20 resize-none bg-gray-800/80 border border-purple-500/30 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 backdrop-blur-sm"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex flex-col justify-end">
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !inputValue.trim()}
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 flex items-center space-x-2"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Send className="h-5 w-5" />
+                    )}
+                    <span>Send</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mt-2 text-xs text-gray-400">
+                Press Enter to send, Shift+Enter for new line
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Quick Examples */}
-        <div className="mt-6 bg-gradient-to-r from-gray-900/50 to-gray-800/50 border border-purple-500/20 rounded-lg p-4 backdrop-blur-sm">
-          <h3 className="text-sm font-medium text-gray-300 mb-3">💡 Try these examples:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {[
-              "What are the liability rules for commercial companies?",
-              "How are contract disputes resolved in UAE law?",
-              "What are the requirements for establishing a business in Dubai?",
-              "Explain the intellectual property protection framework"
-            ].map((example, index) => (
-              <button
-                key={index}
-                onClick={() => setInputValue(example)}
-                className="text-left text-sm text-cyan-400 hover:text-cyan-300 hover:bg-cyan-900/20 rounded px-2 py-1 transition-colors border border-transparent hover:border-cyan-500/30"
-                disabled={isLoading}
-              >
-                "{example}"
-              </button>
-            ))}
           </div>
         </div>
       </div>

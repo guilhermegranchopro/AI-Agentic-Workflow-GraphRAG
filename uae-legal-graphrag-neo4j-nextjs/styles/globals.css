@@ -437,3 +437,55 @@
 .message-system {
   @apply bg-yellow-50 text-yellow-800 text-center text-sm py-2 px-4 mx-auto max-w-md rounded-lg;
 }
+
+/* Custom Scrollbar Styles for Dark Theme */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.1);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.5);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 51, 234, 0.7);
+}
+
+.scrollbar-thumb-purple-500\/50::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.5);
+}
+
+.scrollbar-track-gray-800\/20::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.2);
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling for chat */
+.chat-scroll {
+  scroll-behavior: smooth;
+}

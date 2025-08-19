@@ -20,7 +20,7 @@ const Navigation: React.FC = () => {
   const navigationItems = [
     { name: 'Overview', href: '/', icon: Home },
     { name: 'Graph', href: '/graph', icon: Network },
-    { name: 'Assistant', href: '/assistant', icon: MessageSquare },
+    { name: 'AI Assistant', href: '/assistant', icon: MessageSquare },
   ];
 
   return (
