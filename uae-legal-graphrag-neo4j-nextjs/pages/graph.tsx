@@ -191,7 +191,36 @@ const GraphVisualizationPage: React.FC = () => {
           }
         } catch (error) {
           console.error('Failed to load vis-network:', error);
-          setError('Failed to load graph visualization library');
+          setError('Graph visualization dependencies not installed. Run: npm install');
+          
+          // Fallback: Create a beautiful dark-themed graph placeholder
+          if (containerRef.current) {
+            containerRef.current.innerHTML = `
+              <div class="flex items-center justify-center h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl border border-purple-500/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-blue-600/5 to-cyan-600/5"></div>
+                <div class="relative z-10 text-center p-8">
+                  <div class="text-8xl mb-6 animate-pulse">🕸️</div>
+                  <h3 class="text-2xl font-bold text-white mb-3 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Graph Visualization</h3>
+                  <p class="text-gray-300 mb-6 text-lg">Dependencies need to be installed</p>
+                  <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 max-w-md mx-auto">
+                    <div class="grid grid-cols-2 gap-4 text-left">
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-400">${graphData?.nodes.length || 0}</div>
+                        <div class="text-purple-300 text-sm">Nodes</div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-400">${graphData?.edges.length || 0}</div>
+                        <div class="text-blue-300 text-sm">Edges</div>
+                      </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-gray-900/50 rounded-lg">
+                      <code class="text-green-400 text-sm font-mono">npm install vis-network</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
         }
       }
     };
