@@ -7,9 +7,6 @@ import {
   Cpu, 
   Activity,
   Home, 
-  Target, 
-  Globe, 
-  Sparkles, 
   Network, 
   MessageSquare,
   Menu,
@@ -22,9 +19,6 @@ const Navigation: React.FC = () => {
 
   const navigationItems = [
     { name: 'Overview', href: '/', icon: Home },
-    { name: 'Local RAG', href: '/local', icon: Target },
-    { name: 'Global RAG', href: '/global', icon: Globe },
-    { name: 'DRIFT RAG', href: '/drift', icon: Sparkles },
     { name: 'Graph', href: '/graph', icon: Network },
     { name: 'Assistant', href: '/assistant', icon: MessageSquare },
   ];

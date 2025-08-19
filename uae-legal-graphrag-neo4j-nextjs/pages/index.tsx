@@ -46,15 +46,18 @@ const HomePage: React.FC = () => {
     icon: any; 
     href: string; 
   }) => (
-    <div className="card hover:shadow-md transition-shadow duration-200 cursor-pointer"
+    <div className="card hover:shadow-lg hover:border-primary-200 transition-all duration-200 cursor-pointer group"
          onClick={() => window.location.href = href}>
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0">
-          <Icon className="h-8 w-8 text-primary-600" />
+          <Icon className="h-8 w-8 text-primary-600 group-hover:text-primary-700 transition-colors duration-200" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600">{description}</p>
+          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary-700 mb-2 transition-colors duration-200">{title}</h3>
+          <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-200">{description}</p>
+          <div className="mt-3 text-sm text-primary-600 group-hover:text-primary-700 font-medium">
+            Click to access →
+          </div>
         </div>
       </div>
     </div>
