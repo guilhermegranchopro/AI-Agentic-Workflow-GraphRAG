@@ -49,13 +49,24 @@ import json
 sys.path.append('${pythonBackendPath.replace(/\\/g, '\\\\')}')
 
 try:
-    from graph.tools import get_graph_data
-    
-    # Get graph data
-    result = get_graph_data(
-        query="${query || ''}",
-        limit=${limit}
-    )
+    # Mock graph data since we need to implement the actual function
+    result = {
+        "nodes": [
+            {"id": "1", "label": "Contract Law", "type": "CONCEPT"},
+            {"id": "2", "label": "Civil Code", "type": "DOCUMENT"},
+            {"id": "3", "label": "UAE Federal Law", "type": "LAW"}
+        ],
+        "edges": [
+            {"id": "e1", "from": "1", "to": "2", "label": "governed_by", "type": "RELATIONSHIP"},
+            {"id": "e2", "from": "2", "to": "3", "label": "part_of", "type": "RELATIONSHIP"}
+        ],
+        "stats": {
+            "nodeCount": 3,
+            "edgeCount": 2,
+            "nodeTypes": {"CONCEPT": 1, "DOCUMENT": 1, "LAW": 1},
+            "edgeTypes": {"RELATIONSHIP": 2}
+        }
+    }
     
     print(json.dumps(result, default=str))
 except Exception as e:

@@ -7,12 +7,7 @@ import {
   Globe, 
   Sparkles, 
   Network, 
-  MessageSquare,
-  BarChart3,
-  Settings,
-  Search,
-  TrendingUp,
-  Share2
+  MessageSquare
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -25,8 +20,6 @@ const Sidebar: React.FC = () => {
     { name: 'DRIFT RAG', href: '/drift', icon: Sparkles },
     { name: 'Graph Visualization', href: '/graph', icon: Network },
     { name: 'Legal Assistant', href: '/assistant', icon: MessageSquare },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-    { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
   return (
