@@ -285,7 +285,6 @@
   .sidebar-link-inactive {
     @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100;
   }
-}
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
