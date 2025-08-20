@@ -49,14 +49,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     console.error('Assistant API error:', error);
     
+    // Check if it's a configuration error
+    const isConfigError = error instanceof Error && 
+      error.message.includes('Missing environment variables');
+    
     if (!res.headersSent) {
       res.setHeader('Content-Type', 'application/json');
-      res.status(500).json({ 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      
+      if (isConfigError) {
+        res.status(503).json({ 
+          error: 'Service configuration incomplete',
+          message: 'Azure OpenAI environment variables not configured. Please check your .env.local file.',
+          details: error.message
+        });
+      } else {
+        res.status(500).json({ 
+          error: 'Internal server error',
+          details: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
     } else {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Internal server error' })}\n\n`);
+      const errorMessage = isConfigError 
+        ? 'Service configuration incomplete' 
+        : 'Internal server error';
+      res.write(`event: error\ndata: ${JSON.stringify({ error: errorMessage })}\n\n`);
       res.end();
     }
   }
