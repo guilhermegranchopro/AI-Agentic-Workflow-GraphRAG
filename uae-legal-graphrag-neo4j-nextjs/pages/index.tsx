@@ -224,7 +224,7 @@ const HomePage: React.FC = () => {
         {/* Additional Features */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Additional Features</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <OverviewCard
               title="📊 Graph Visualization"
               description="Interactive exploration of legal knowledge graphs with advanced filtering"
@@ -236,6 +236,12 @@ const HomePage: React.FC = () => {
               description="Multi-agent system for complex legal queries with autonomous reasoning"
               icon={Activity}
               href="/assistant"
+            />
+            <OverviewCard
+              title="⚖️ AI Analysis"
+              description="Automated contradiction finder with harmonisation recommendations"
+              icon={Activity}
+              href="/ai-analysis"
             />
           </div>
         </div>

@@ -10,7 +10,8 @@ import {
   Network, 
   MessageSquare,
   Menu,
-  X
+  X,
+  AlertTriangle
 } from 'lucide-react';
 
 const Navigation: React.FC = () => {
@@ -21,6 +22,7 @@ const Navigation: React.FC = () => {
     { name: 'Overview', href: '/', icon: Home },
     { name: 'Graph', href: '/graph', icon: Network },
     { name: 'AI Assistant', href: '/assistant', icon: MessageSquare },
+    { name: 'AI Analysis', href: '/ai-analysis', icon: AlertTriangle },
   ];
 
   return (
