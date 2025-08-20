@@ -34,7 +34,6 @@ export default function Graph() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [networkLoaded, setNetworkLoaded] = useState(false);
   const [maxNodes, setMaxNodes] = useState(50);
   const [selectedRelationships, setSelectedRelationships] = useState(['HAS_PROVISION', 'CITES', 'INTERPRETED_BY']);
   const networkRef = useRef<HTMLDivElement>(null);
@@ -58,22 +57,9 @@ export default function Graph() {
     if (graphData && networkRef.current && !networkInstance.current && typeof window !== 'undefined') {
       initializeNetwork();
     }
-  }, [graphData, networkLoaded]);
+  }, [graphData]);
 
-  // Load vis-network dynamically on client side only
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('vis-network')
-        .then(() => {
-          console.log('vis-network loaded successfully');
-          setNetworkLoaded(true);
-        })
-        .catch((err) => {
-          console.error('Failed to load vis-network:', err);
-          setError('Failed to load graph visualization library. Please refresh the page.');
-        });
-    }
-  }, []);
+  // No need for separate vis-network loading since we import dynamically
 
   const fetchGraphData = async () => {
     try {
@@ -120,36 +106,44 @@ export default function Graph() {
   };
 
   const initializeNetwork = async () => {
-    if (!graphData || !networkRef.current || !networkLoaded) return;
+    if (!graphData || !networkRef.current) {
+      console.log('❌ Cannot initialize network:', { 
+        graphData: !!graphData,
+        networkRef: !!networkRef.current
+      });
+      return;
+    }
 
     try {
-      // Import vis-network components
-      const { Network, DataSet } = await import('vis-network');
-
-      // Transform data for vis-network  
-      const nodesData = graphData.nodes.map(node => ({
-        id: node.id,
-        label: node.label,
-        group: node.type,
-        title: `${node.type}: ${node.label}`, // Tooltip
-        color: getNodeColor(node.type),
-        font: { color: '#ffffff', size: 12 },
-      }));
-
-      const edgesData = graphData.edges.map((edge, index) => ({
-        id: edge.id || `edge-${index}`,
-        from: edge.from,
-        to: edge.to,
-        label: edge.type,
-        arrows: 'to',
-        color: { color: '#6366f1', opacity: 0.6 },
-        font: { color: '#9ca3af', size: 10 },
-      }));
-
-      const nodes = new DataSet(nodesData);
-      const edges = new DataSet(edgesData);
+      console.log('🔄 Initializing network with data:', graphData);
+      console.log('📊 Nodes count:', graphData.nodes.length);
+      console.log('🔗 Edges count:', graphData.edges.length);
       
-      const data = { nodes, edges };
+      // Dynamic import of vis-network
+      const { Network } = await import('vis-network/standalone/umd/vis-network.min');
+
+      // Simple data transformation (no DataSet)
+      const data = {
+        nodes: graphData.nodes.map(node => ({
+          id: node.id,
+          label: node.label,
+          color: getNodeColor(node.type),
+          title: `${node.type}: ${node.label}`,
+          shape: 'dot',
+          size: 20,
+          font: { color: '#ffffff', size: 12 }
+        })),
+        edges: graphData.edges.map(edge => ({
+          from: edge.from,
+          to: edge.to,
+          label: edge.type,
+          arrows: 'to',
+          color: { color: '#6366f1', opacity: 0.6 }
+        }))
+      };
+
+      console.log('📝 Sample transformed node:', data.nodes[0]);
+      console.log('🔗 Sample transformed edge:', data.edges[0]);
 
       const options = {
         nodes: {
@@ -191,7 +185,20 @@ export default function Graph() {
         },
       };
 
+      if (data.nodes.length === 0) {
+        setError('No nodes available to display');
+        return;
+      }
+
+      console.log('Creating Network instance...');
+      
+      // Clear container first
+      if (networkRef.current) {
+        networkRef.current.innerHTML = '';
+      }
+
       networkInstance.current = new Network(networkRef.current, data, options);
+      console.log('Network created successfully!');
 
       // Add event listeners
       networkInstance.current.on('click', (params: any) => {
@@ -216,9 +223,15 @@ export default function Graph() {
         }
       });
 
+      networkInstance.current.on('stabilizationIterationsDone', () => {
+        console.log('✅ Network stabilization complete');
+      });
+
+      console.log('✅ Network initialized successfully!');
+
     } catch (err) {
-      console.error('Error initializing network:', err);
-      setError('Failed to initialize graph visualization');
+      console.error('❌ Error initializing network:', err);
+      setError(`Failed to initialize graph visualization: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -260,14 +273,20 @@ export default function Graph() {
     setSelectedNode(null);
   };
 
-  if (loading || !networkLoaded) {
+  if (loading) {
     return (
       <Layout title="Graph Visualization - UAE Legal GraphRAG">
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-          <span className="ml-4 text-gray-300">
-            {loading ? 'Loading knowledge graph...' : 'Loading visualization library...'}
-          </span>
+          <div className="text-center space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
+            <div className="text-gray-300">
+              Loading knowledge graph...
+            </div>
+            <div className="text-sm text-gray-400 space-y-1">
+              <div>Loading: {loading ? '✅' : '❌'}</div>
+              <div>Graph Data: {graphData ? '✅' : '❌'}</div>
+            </div>
+          </div>
         </div>
       </Layout>
     );
@@ -431,6 +450,16 @@ NEO4J_PASSWORD=your-password`}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
             >
               🔄 Refresh
+            </button>
+            <button
+              onClick={() => {
+                console.log('Manual re-initialization triggered');
+                setError(null);
+                initializeNetwork();
+              }}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            >
+              🔧 Force Init
             </button>
           </div>
         </div>
