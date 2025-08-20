@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Config is successful if we reach here
     } catch (configError) {
       return res.status(503).json({ 
-        error: 'Neo4j not configured. Please check your .env.local file.',
+        error: 'Neo4j not configured. Please check your .env file.',
         details: configError instanceof Error ? configError.message : 'Configuration error',
         nodes: [],
         edges: [],

@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error instanceof Error && error.message.includes('Missing Neo4j env')) {
       return res.status(503).json({ 
         error: 'Neo4j service configuration incomplete',
-        message: 'Neo4j environment variables not configured. Please check your .env.local file.',
+        message: 'Neo4j environment variables not configured. Please check your .env file.',
         details: error.message,
         present: (error as any).present ?? {}
       });

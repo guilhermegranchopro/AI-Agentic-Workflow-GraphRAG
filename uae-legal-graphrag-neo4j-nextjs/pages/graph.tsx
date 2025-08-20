@@ -86,7 +86,7 @@ export default function Graph() {
           
           // Show configuration help for 503 errors
           if (response.status === 503) {
-            errorMessage += '\n\nPlease check your .env.local file and ensure Neo4j credentials are configured.';
+            errorMessage += '\n\nPlease check your .env file and ensure Neo4j credentials are configured.';
           }
         } catch {
           // Fall back to status text if JSON parsing fails
@@ -304,7 +304,7 @@ export default function Graph() {
               <h3 className="text-yellow-400 font-semibold mb-2">⚠️ Configuration Required</h3>
               <p className="text-gray-300 text-sm mb-3">
                 The graph visualization requires Neo4j database connection. 
-                Please create a <code className="bg-gray-700 px-1 rounded">.env.local</code> file with:
+                Please create a <code className="bg-gray-700 px-1 rounded">.env</code> file with:
               </p>
               <pre className="bg-gray-900 p-3 rounded text-xs text-gray-300 overflow-x-auto">
 {`NEO4J_URI=bolt+s://your-host:7687

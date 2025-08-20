@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (isAzureConfigError) {
         res.status(503).json({ 
           error: 'Azure OpenAI service configuration incomplete',
-          message: 'Azure OpenAI environment variables not configured. Please check your .env.local file.',
+          message: 'Azure OpenAI environment variables not configured. Please check your .env file.',
           details: error.message,
           present: (error as any).present ?? {}
         });
