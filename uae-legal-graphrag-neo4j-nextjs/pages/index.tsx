@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
 
   const fetchDatabaseStats = async () => {
     try {
-      const response = await fetch('/api/stats');
+      const response = await fetch('/api/stats-new');
       const data = await response.json();
       setDbStats(data);
       setLoading(false);
@@ -204,19 +204,19 @@ const HomePage: React.FC = () => {
               title="🎯 Local RAG"
               description="Entity-centric traversal with temporal filtering for precise legal research"
               icon={Database}
-              href="/local"
+              href="/assistant"
             />
             <OverviewCard
               title="🌐 Global RAG"
               description="Community-based analysis using Graph Data Science for comprehensive insights"
               icon={Network}
-              href="/global"
+              href="/assistant"
             />
             <OverviewCard
               title="🎪 DRIFT RAG"
-              description="Community-guided local search combining global context with local precision"
+              description="Dynamic temporal analysis for tracking legal evolution over time"
               icon={Zap}
-              href="/drift"
+              href="/assistant"
             />
           </div>
         </div>
@@ -232,7 +232,7 @@ const HomePage: React.FC = () => {
               href="/graph"
             />
             <OverviewCard
-              title="🤖 Legal Assistant AI"
+              title="🤖 AI Assistant"
               description="Multi-agent system for complex legal queries with autonomous reasoning"
               icon={Activity}
               href="/assistant"
