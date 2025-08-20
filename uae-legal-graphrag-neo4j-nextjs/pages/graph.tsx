@@ -4,13 +4,15 @@ import Layout from '../components/Layout';
 interface GraphNode {
   id: string;
   label: string;
-  group: string;
+  type: string;
   properties?: Record<string, unknown>;
 }
 
 interface GraphEdge {
-  source: string;
-  target: string;
+  id: string;
+  from: string;
+  to: string;
+  label: string;
   type: string;
   properties?: Record<string, unknown>;
 }
@@ -21,7 +23,8 @@ interface GraphData {
   stats: {
     nodeCount: number;
     edgeCount: number;
-    timestamp: string;
+    nodeTypes: Record<string, number>;
+    edgeTypes: Record<string, number>;
   };
 }
 
@@ -32,12 +35,24 @@ export default function Graph() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [networkLoaded, setNetworkLoaded] = useState(false);
+  const [maxNodes, setMaxNodes] = useState(50);
+  const [selectedRelationships, setSelectedRelationships] = useState(['HAS_PROVISION', 'CITES', 'INTERPRETED_BY']);
   const networkRef = useRef<HTMLDivElement>(null);
   const networkInstance = useRef<any>(null);
 
+  const availableRelationships = [
+    'HAS_PROVISION',
+    'CITES', 
+    'INTERPRETED_BY',
+    'AMENDED_BY',
+    'PUBLISHED_IN',
+    'AFFECTS',
+    'ISSUED'
+  ];
+
   useEffect(() => {
     fetchGraphData();
-  }, []);
+  }, [maxNodes, selectedRelationships]);
 
   useEffect(() => {
     if (graphData && networkRef.current && !networkInstance.current && typeof window !== 'undefined') {
@@ -64,7 +79,13 @@ export default function Graph() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/graph');
+      
+      const params = new URLSearchParams({
+        max_nodes: maxNodes.toString(),
+        relationships: selectedRelationships.join(',')
+      });
+      
+      const response = await fetch(`/api/graph-data?${params}`);
       
       if (!response.ok) {
         // Try to get detailed error information
@@ -105,20 +126,20 @@ export default function Graph() {
       // Import vis-network components
       const { Network, DataSet } = await import('vis-network');
 
-      // Transform data for vis-network
+      // Transform data for vis-network  
       const nodesData = graphData.nodes.map(node => ({
         id: node.id,
         label: node.label,
-        group: node.group,
-        title: `${node.group}: ${node.label}`, // Tooltip
-        color: getNodeColor(node.group),
+        group: node.type,
+        title: `${node.type}: ${node.label}`, // Tooltip
+        color: getNodeColor(node.type),
         font: { color: '#ffffff', size: 12 },
       }));
 
       const edgesData = graphData.edges.map((edge, index) => ({
-        id: `edge-${index}`,
-        from: edge.source,
-        to: edge.target,
+        id: edge.id || `edge-${index}`,
+        from: edge.from,
+        to: edge.to,
         label: edge.type,
         arrows: 'to',
         color: { color: '#6366f1', opacity: 0.6 },
@@ -201,15 +222,17 @@ export default function Graph() {
     }
   };
 
-  const getNodeColor = (group: string): string => {
+  const getNodeColor = (nodeType: string): string => {
     const colors: Record<string, string> = {
-      Document: '#ef4444',
-      Entity: '#10b981',
-      Concept: '#f59e0b',
-      Relationship: '#8b5cf6',
-      default: '#6b7280',
+      'Instrument': '#ff6b6b',    // Red for legal instruments
+      'Provision': '#4ecdc4',     // Teal for provisions  
+      'Court': '#45b7d1',         // Blue for courts
+      'Judgment': '#f9ca24',      // Yellow for judgments
+      'GazetteIssue': '#6c5ce7',  // Purple for gazette issues
+      'Event': '#fd79a8',         // Pink for events
+      'Unknown': '#95a5a6',       // Gray for unknown
     };
-    return colors[group] || colors.default;
+    return colors[nodeType] || colors['Unknown'];
   };
 
   const focusNode = () => {
@@ -325,12 +348,58 @@ NEO4J_PASSWORD=your-password`}
             <div className="flex justify-center space-x-6 mt-4 text-sm text-gray-400">
               <span>📊 {graphData.stats.nodeCount} nodes</span>
               <span>🔗 {graphData.stats.edgeCount} edges</span>
-              <span>🕒 {new Date(graphData.stats.timestamp).toLocaleTimeString()}</span>
+              <span>� {Object.keys(graphData.stats.nodeTypes).length} node types</span>
             </div>
           )}
         </div>
 
-        {/* Controls */}
+        {/* Graph Configuration Controls */}
+        <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Max Nodes Control */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Max Nodes: {maxNodes}
+              </label>
+              <input
+                type="range"
+                min="10"
+                max="100"
+                value={maxNodes}
+                onChange={(e) => setMaxNodes(parseInt(e.target.value))}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+              />
+            </div>
+
+            {/* Relationships Filter */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Relationship Types
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {availableRelationships.map(rel => (
+                  <label key={rel} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedRelationships.includes(rel)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedRelationships([...selectedRelationships, rel]);
+                        } else {
+                          setSelectedRelationships(selectedRelationships.filter(r => r !== rel));
+                        }
+                      }}
+                      className="mr-1 rounded"
+                    />
+                    <span className="text-xs text-gray-300">{rel}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Controls */}
         <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex-1 min-w-64">
@@ -403,9 +472,9 @@ NEO4J_PASSWORD=your-password`}
                     <div className="text-white text-sm">
                       <span 
                         className="inline-block px-2 py-1 rounded text-xs font-medium"
-                        style={{ backgroundColor: getNodeColor(selectedNode.group) + '40', color: getNodeColor(selectedNode.group) }}
+                        style={{ backgroundColor: getNodeColor(selectedNode.type) + '40', color: getNodeColor(selectedNode.type) }}
                       >
-                        {selectedNode.group}
+                        {selectedNode.type}
                       </span>
                     </div>
                   </div>
@@ -427,16 +496,36 @@ NEO4J_PASSWORD=your-password`}
         {/* Legend */}
         <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
           <h4 className="text-white font-semibold mb-3">🎨 Node Types</h4>
-          <div className="flex flex-wrap gap-4">
-            {['Document', 'Entity', 'Concept', 'Relationship'].map(type => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { type: 'Instrument', desc: 'Legal instruments' },
+              { type: 'Provision', desc: 'Legal provisions' },
+              { type: 'Court', desc: 'Courts & judicial bodies' },
+              { type: 'Judgment', desc: 'Court decisions' },
+              { type: 'GazetteIssue', desc: 'Official publications' },
+              { type: 'Event', desc: 'Legal events' }
+            ].map(({ type, desc }) => (
               <div key={type} className="flex items-center space-x-2">
                 <div 
                   className="w-4 h-4 rounded-full"
                   style={{ backgroundColor: getNodeColor(type) }}
                 />
-                <span className="text-gray-300 text-sm">{type}</span>
+                <div>
+                  <div className="text-gray-300 text-sm font-medium">{type}</div>
+                  <div className="text-gray-500 text-xs">{desc}</div>
+                </div>
               </div>
             ))}
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <h5 className="text-gray-400 font-medium mb-2">Relationship Types:</h5>
+            <div className="text-xs text-gray-500 space-y-1">
+              <div><strong>HAS_PROVISION:</strong> Instrument contains provision</div>
+              <div><strong>CITES:</strong> One provision cites another</div>
+              <div><strong>INTERPRETED_BY:</strong> Provision interpreted by judgment</div>
+              <div><strong>AMENDED_BY:</strong> Provision amended by event</div>
+            </div>
           </div>
         </div>
       </div>

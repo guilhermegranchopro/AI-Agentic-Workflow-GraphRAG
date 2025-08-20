@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { spawn } from 'child_process';
-import path from 'path';
+import { runQuery } from '../../lib/graph/neo4j';
+import { getNeo4jConfig } from '../../lib/config';
 
 interface GraphNode {
   id: string;
@@ -29,129 +29,20 @@ interface GraphData {
   };
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { query, limit = 50 } = req.body;
-
-  // Path to the Python backend
-  const pythonBackendPath = path.join(process.cwd(), 'python-backend');
-  const scriptPath = path.join(pythonBackendPath, 'graph', 'queries.py');
-
-  const pythonProcess = spawn('python', [
-    '-c',
-    `
-import sys
-import os
-import json
-sys.path.append('${pythonBackendPath.replace(/\\/g, '\\\\')}')
-
-try:
-    # Mock graph data since we need to implement the actual function
-    result = {
-        "nodes": [
-            {"id": "1", "label": "Contract Law", "type": "CONCEPT"},
-            {"id": "2", "label": "Civil Code", "type": "DOCUMENT"},
-            {"id": "3", "label": "UAE Federal Law", "type": "LAW"}
-        ],
-        "edges": [
-            {"id": "e1", "from": "1", "to": "2", "label": "governed_by", "type": "RELATIONSHIP"},
-            {"id": "e2", "from": "2", "to": "3", "label": "part_of", "type": "RELATIONSHIP"}
-        ],
-        "stats": {
-            "nodeCount": 3,
-            "edgeCount": 2,
-            "nodeTypes": {"CONCEPT": 1, "DOCUMENT": 1, "LAW": 1},
-            "edgeTypes": {"RELATIONSHIP": 2}
-        }
-    }
-    
-    print(json.dumps(result, default=str))
-except Exception as e:
-    error_result = {
-        "error": str(e),
-        "nodes": [],
-        "edges": [],
-        "stats": {
-            "nodeCount": 0,
-            "edgeCount": 0,
-            "nodeTypes": {},
-            "edgeTypes": {}
-        }
-    }
-    print(json.dumps(error_result))
-    `
-  ], {
-    cwd: pythonBackendPath,
-    env: { ...process.env, PYTHONPATH: pythonBackendPath }
-  });
-
-  let output = '';
-  let errorOutput = '';
-
-  pythonProcess.stdout.on('data', (data) => {
-    output += data.toString();
-  });
-
-  pythonProcess.stderr.on('data', (data) => {
-    errorOutput += data.toString();
-  });
-
-  pythonProcess.on('close', (code) => {
+  try {
+    // Check Neo4j configuration
     try {
-      if (code === 0 && output.trim()) {
-        const result = JSON.parse(output.trim());
-        
-        if (result.error) {
-          console.error('Python script error:', result.error);
-          return res.status(500).json({ 
-            error: result.error,
-            nodes: [],
-            edges: [],
-            stats: {
-              nodeCount: 0,
-              edgeCount: 0,
-              nodeTypes: {},
-              edgeTypes: {}
-            }
-          });
-        }
-        
-        // Ensure we have the required structure
-        const graphData: GraphData = {
-          nodes: result.nodes || [],
-          edges: result.edges || [],
-          stats: {
-            nodeCount: result.stats?.nodeCount || (result.nodes?.length || 0),
-            edgeCount: result.stats?.edgeCount || (result.edges?.length || 0),
-            nodeTypes: result.stats?.nodeTypes || {},
-            edgeTypes: result.stats?.edgeTypes || {}
-          }
-        };
-        
-        res.status(200).json(graphData);
-      } else {
-        console.error('Python process failed:', errorOutput);
-        res.status(500).json({ 
-          error: errorOutput || 'Failed to fetch graph data',
-          nodes: [],
-          edges: [],
-          stats: {
-            nodeCount: 0,
-            edgeCount: 0,
-            nodeTypes: {},
-            edgeTypes: {}
-          }
-        });
-      }
-    } catch (parseError) {
-      console.error('Failed to parse Python output:', parseError);
-      console.error('Raw output:', output);
-      console.error('Error output:', errorOutput);
-      res.status(500).json({ 
-        error: 'Failed to parse graph data response',
+      const neo4jConfig = getNeo4jConfig();
+      // Config is successful if we reach here
+    } catch (configError) {
+      return res.status(503).json({ 
+        error: 'Neo4j not configured. Please check your .env.local file.',
+        details: configError instanceof Error ? configError.message : 'Configuration error',
         nodes: [],
         edges: [],
         stats: {
@@ -162,12 +53,21 @@ except Exception as e:
         }
       });
     }
-  });
 
-  pythonProcess.on('error', (error) => {
-    console.error('Failed to start Python process:', error);
+    // Get query parameters with defaults
+    const maxNodes = parseInt(req.query.max_nodes as string) || 50;
+    const includeRelationships = req.query.relationships 
+      ? (req.query.relationships as string).split(',')
+      : ["HAS_PROVISION", "CITES", "INTERPRETED_BY", "AMENDED_BY"];
+
+    // Fetch graph data using the same logic as Streamlit
+    const graphData = await fetchGraphData(maxNodes, includeRelationships);
+    
+    res.status(200).json(graphData);
+  } catch (error) {
+    console.error('Graph data error:', error);
     res.status(500).json({ 
-      error: 'Failed to start graph data process',
+      error: error instanceof Error ? error.message : 'Failed to fetch graph data',
       nodes: [],
       edges: [],
       stats: {
@@ -177,5 +77,115 @@ except Exception as e:
         edgeTypes: {}
       }
     });
+  }
+}
+
+async function fetchGraphData(maxNodes: number, includeRelationships: string[]): Promise<GraphData> {
+  const relFilter = includeRelationships.map(rel => `'${rel}'`).join(', ');
+  
+  // Neo4j query using the same logic as Streamlit
+  const query = `
+    MATCH (n)
+    WITH n LIMIT ${maxNodes}
+    OPTIONAL MATCH (n)-[r]->(m)
+    WHERE type(r) IN [${relFilter}]
+    RETURN 
+        collect(DISTINCT {
+            id: elementId(n),
+            labels: labels(n),
+            properties: properties(n)
+        }) + collect(DISTINCT {
+            id: elementId(m),
+            labels: labels(m),
+            properties: properties(m)
+        }) as nodes,
+        collect(DISTINCT {
+            source: elementId(n),
+            target: elementId(m),
+            type: type(r),
+            properties: properties(r)
+        }) as edges
+  `;
+
+  const result = await runQuery(query);
+  const data = result.records[0];
+  
+  if (!data) {
+    return {
+      nodes: [],
+      edges: [],
+      stats: {
+        nodeCount: 0,
+        edgeCount: 0,
+        nodeTypes: {},
+        edgeTypes: {}
+      }
+    };
+  }
+
+  // Process nodes - filter out nulls and deduplicate
+  const allNodes = data.get('nodes') || [];
+  const edges = data.get('edges') || [];
+
+  const filteredNodes = allNodes.filter((node: any) => node.id !== null);
+  
+  // Deduplicate nodes by ID
+  const seenIds = new Set();
+  const uniqueNodes = filteredNodes.filter((node: any) => {
+    if (seenIds.has(node.id)) {
+      return false;
+    }
+    seenIds.add(node.id);
+    return true;
   });
+
+  // Filter edges to only include those with valid source and target
+  const validEdges = edges.filter((edge: any) => 
+    edge.source !== null && edge.target !== null
+  );
+
+  // Transform to vis-network format
+  const nodes: GraphNode[] = uniqueNodes.map((node: any) => {
+    const nodeType = node.labels && node.labels.length > 0 ? node.labels[0] : 'Unknown';
+    const label = node.properties?.id || node.properties?.title || String(node.id);
+    
+    return {
+      id: String(node.id),
+      label: label.length > 20 ? label.substring(0, 17) + '...' : label,
+      type: nodeType,
+      properties: node.properties
+    };
+  });
+
+  const formattedEdges: GraphEdge[] = validEdges.map((edge: any, index: number) => ({
+    id: `edge_${index}`,
+    from: String(edge.source),
+    to: String(edge.target),
+    label: edge.type,
+    type: edge.type,
+    properties: edge.properties
+  }));
+
+  // Calculate statistics
+  const nodeTypes: Record<string, number> = {};
+  const edgeTypes: Record<string, number> = {};
+
+  nodes.forEach(node => {
+    nodeTypes[node.type] = (nodeTypes[node.type] || 0) + 1;
+  });
+
+  formattedEdges.forEach(edge => {
+    edgeTypes[edge.type] = (edgeTypes[edge.type] || 0) + 1;
+  });
+
+  return {
+    nodes,
+    edges: formattedEdges,
+    stats: {
+      nodeCount: nodes.length,
+      edgeCount: formattedEdges.length,
+      nodeTypes,
+      edgeTypes
+    }
+  };
 }
