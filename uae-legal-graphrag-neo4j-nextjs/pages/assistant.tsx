@@ -3,6 +3,9 @@ import Layout from '@/components/Layout';
 import { MessageSquare, Send, Bot, User, Loader2, Brain, Zap } from 'lucide-react';
 import { API_ENDPOINTS } from '@/utils/constants';
 import { generateId } from '@/utils/helpers';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 interface Message {
   id: string;
@@ -265,8 +268,40 @@ const LegalAssistantPage: React.FC = () => {
                       </div>
                       
                       <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 text-gray-100 rounded-lg px-4 py-3 border border-purple-500/20 backdrop-blur-sm shadow-lg">
-                        <div className="prose max-w-none prose-invert">
-                          <p className="whitespace-pre-wrap leading-relaxed text-gray-100">{message.content}</p>
+                        <div className="prose max-w-none prose-invert prose-purple">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeRaw]}
+                            className="text-gray-100"
+                            components={{
+                              // Custom styling for markdown elements
+                              h1: ({node, ...props}) => <h1 className="text-2xl font-bold text-purple-300 mb-4 border-b border-purple-500/30 pb-2" {...props} />,
+                              h2: ({node, ...props}) => <h2 className="text-xl font-semibold text-purple-300 mb-3 mt-6" {...props} />,
+                              h3: ({node, ...props}) => <h3 className="text-lg font-medium text-purple-300 mb-2 mt-4" {...props} />,
+                              h4: ({node, ...props}) => <h4 className="text-base font-medium text-purple-300 mb-2 mt-3" {...props} />,
+                              p: ({node, ...props}) => <p className="text-gray-100 mb-3 leading-relaxed" {...props} />,
+                              ul: ({node, ...props}) => <ul className="list-disc list-inside text-gray-100 mb-3 space-y-1" {...props} />,
+                              ol: ({node, ...props}) => <ol className="list-decimal list-inside text-gray-100 mb-3 space-y-1" {...props} />,
+                              li: ({node, ...props}) => <li className="text-gray-100 ml-4" {...props} />,
+                              blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-purple-500/50 pl-4 italic text-gray-300 my-4" {...props} />,
+                              code: ({node, ...props}: any) => {
+                                const inline = 'inline' in props;
+                                return inline ? 
+                                  <code className="bg-gray-700/60 text-cyan-300 px-1.5 py-0.5 rounded text-sm font-mono" {...props} /> :
+                                  <code className="block bg-gray-800/80 text-cyan-300 p-3 rounded text-sm font-mono overflow-x-auto border border-gray-600/50" {...props} />
+                              },
+                              pre: ({node, ...props}) => <pre className="bg-gray-800/80 p-3 rounded overflow-x-auto border border-gray-600/50 mb-3" {...props} />,
+                              strong: ({node, ...props}) => <strong className="font-semibold text-white" {...props} />,
+                              em: ({node, ...props}) => <em className="italic text-gray-200" {...props} />,
+                              a: ({node, ...props}) => <a className="text-cyan-400 hover:text-cyan-300 underline decoration-cyan-400/50 hover:decoration-cyan-300" {...props} />,
+                              hr: ({node, ...props}) => <hr className="border-gray-600/50 my-6" {...props} />,
+                              table: ({node, ...props}) => <table className="min-w-full table-auto border-collapse border border-gray-600/50 my-4" {...props} />,
+                              th: ({node, ...props}) => <th className="border border-gray-600/50 px-3 py-2 bg-gray-700/50 font-semibold text-purple-300" {...props} />,
+                              td: ({node, ...props}) => <td className="border border-gray-600/50 px-3 py-2 text-gray-100" {...props} />,
+                            }}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
                         </div>
                       </div>
 
