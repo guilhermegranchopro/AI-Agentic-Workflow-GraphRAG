@@ -4,8 +4,12 @@ import { DarkModeProvider } from '@/lib/ThemeContext'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <DarkModeProvider>
-      <Component {...pageProps} />
-    </DarkModeProvider>
+    <div id="app-scroll">
+      <div id="page-shell" className="min-h-full flex flex-col">
+        <DarkModeProvider>
+          <Component {...pageProps} />
+        </DarkModeProvider>
+      </div>
+    </div>
   )
 }

@@ -5,6 +5,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
+/* Root scroll fix: eliminate trackpad overscroll white gaps */
+:root { 
+  --app-bg: #0b0b0b; 
+}
+
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0; 
+  background: var(--app-bg); 
+}
+
+*, *::before, *::after { 
+  box-sizing: border-box; 
+}
+
+body { 
+  overflow-x: hidden; 
+  color-scheme: dark; 
+}
+
+/* Dedicated scroll container with safe viewport units and bounce control */
+#app-scroll {
+  /* fallback → modern override order */
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+
+  overflow: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Page shell for sticky footer layout within scroll container */
+#page-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content takes remaining space - target the gradient-bg div in Layout */
+.gradient-bg.flex-1 {
+  flex: 1 1 auto;
+}
+
+/* Footer sticky to bottom with safe area support */
+footer {
+  margin-top: auto;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
