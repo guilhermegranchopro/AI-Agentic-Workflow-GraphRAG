@@ -50,11 +50,12 @@ export default function Graph() {
     if (typeof window !== 'undefined') {
       import('vis-network')
         .then(() => {
+          console.log('vis-network loaded successfully');
           setNetworkLoaded(true);
         })
         .catch((err) => {
           console.error('Failed to load vis-network:', err);
-          setError('Failed to load graph visualization library');
+          setError('Failed to load graph visualization library. Please refresh the page.');
         });
     }
   }, []);
@@ -62,15 +63,35 @@ export default function Graph() {
   const fetchGraphData = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await fetch('/api/graph');
       
       if (!response.ok) {
-        throw new Error('Failed to fetch graph data');
+        // Try to get detailed error information
+        let errorMessage = 'Failed to fetch graph data';
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+          
+          // Show configuration help for 503 errors
+          if (response.status === 503) {
+            errorMessage += '\n\nPlease check your .env.local file and ensure Neo4j credentials are configured.';
+          }
+        } catch {
+          // Fall back to status text if JSON parsing fails
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
       setGraphData(data);
     } catch (err) {
+      console.error('Graph fetch error:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
@@ -85,24 +106,28 @@ export default function Graph() {
       const { Network, DataSet } = await import('vis-network');
 
       // Transform data for vis-network
-      const nodes = new DataSet(graphData.nodes.map(node => ({
+      const nodesData = graphData.nodes.map(node => ({
         id: node.id,
         label: node.label,
         group: node.group,
         title: `${node.group}: ${node.label}`, // Tooltip
         color: getNodeColor(node.group),
         font: { color: '#ffffff', size: 12 },
-      })));
+      }));
 
-      const edges = new DataSet(graphData.edges.map(edge => ({
+      const edgesData = graphData.edges.map((edge, index) => ({
+        id: `edge-${index}`,
         from: edge.source,
         to: edge.target,
         label: edge.type,
         arrows: 'to',
         color: { color: '#6366f1', opacity: 0.6 },
         font: { color: '#9ca3af', size: 10 },
-      })));
+      }));
 
+      const nodes = new DataSet(nodesData);
+      const edges = new DataSet(edgesData);
+      
       const data = { nodes, edges };
 
       const options = {
@@ -120,6 +145,7 @@ export default function Graph() {
           width: 2,
           shadow: true,
           smooth: {
+            enabled: true,
             type: 'continuous',
             roundness: 0.2,
           },
@@ -227,15 +253,58 @@ export default function Graph() {
   if (error) {
     return (
       <Layout title="Graph Visualization - UAE Legal GraphRAG">
-        <div className="text-center py-12">
+        <div className="text-center py-12 max-w-2xl mx-auto">
           <div className="text-red-400 mb-4">❌ Error loading graph</div>
-          <p className="text-gray-400 mb-4">{error}</p>
-          <button
-            onClick={fetchGraphData}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            Retry
-          </button>
+          <div className="text-gray-400 mb-6 whitespace-pre-line">{error}</div>
+          
+          {error.includes('Neo4j') && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6 text-left">
+              <h3 className="text-yellow-400 font-semibold mb-2">⚠️ Configuration Required</h3>
+              <p className="text-gray-300 text-sm mb-3">
+                The graph visualization requires Neo4j database connection. 
+                Please create a <code className="bg-gray-700 px-1 rounded">.env.local</code> file with:
+              </p>
+              <pre className="bg-gray-900 p-3 rounded text-xs text-gray-300 overflow-x-auto">
+{`NEO4J_URI=bolt+s://your-host:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your-password`}
+              </pre>
+              <div className="mt-3 text-xs text-gray-400">
+                💡 Diagnostics:{' '}
+                <a 
+                  href="/api/diagnostics/debug" 
+                  target="_blank" 
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Environment
+                </a>
+                {' | '}
+                <a 
+                  href="/api/diagnostics/neo4j" 
+                  target="_blank" 
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Neo4j Config
+                </a>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex gap-3">
+            <button
+              onClick={fetchGraphData}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Retry
+            </button>
+            <a
+              href="/api/graph"
+              target="_blank"
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Test API
+            </a>
+          </div>
         </div>
       </Layout>
     );

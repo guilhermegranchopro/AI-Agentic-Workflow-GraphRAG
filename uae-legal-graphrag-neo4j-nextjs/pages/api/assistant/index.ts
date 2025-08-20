@@ -49,18 +49,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     console.error('Assistant API error:', error);
     
-    // Check if it's a configuration error
-    const isConfigError = error instanceof Error && 
-      error.message.includes('Missing environment variables');
+    // Check if it's an Azure OpenAI configuration error
+    const isAzureConfigError = error instanceof Error && 
+      error.message.includes('Missing Azure OpenAI env');
     
     if (!res.headersSent) {
       res.setHeader('Content-Type', 'application/json');
       
-      if (isConfigError) {
+      if (isAzureConfigError) {
         res.status(503).json({ 
-          error: 'Service configuration incomplete',
+          error: 'Azure OpenAI service configuration incomplete',
           message: 'Azure OpenAI environment variables not configured. Please check your .env.local file.',
-          details: error.message
+          details: error.message,
+          present: (error as any).present ?? {}
         });
       } else {
         res.status(500).json({ 
@@ -69,8 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
     } else {
-      const errorMessage = isConfigError 
-        ? 'Service configuration incomplete' 
+      const errorMessage = isAzureConfigError 
+        ? 'Azure OpenAI service configuration incomplete' 
         : 'Internal server error';
       res.write(`event: error\ndata: ${JSON.stringify({ error: errorMessage })}\n\n`);
       res.end();

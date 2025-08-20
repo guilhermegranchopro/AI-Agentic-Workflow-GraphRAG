@@ -26,12 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     console.error('Graph API error:', error);
     
-    // Check if it's a configuration error
-    if (error instanceof Error && error.message.includes('Missing environment variables')) {
+    // Check if it's a Neo4j configuration error
+    if (error instanceof Error && error.message.includes('Missing Neo4j env')) {
       return res.status(503).json({ 
-        error: 'Service configuration incomplete',
+        error: 'Neo4j service configuration incomplete',
         message: 'Neo4j environment variables not configured. Please check your .env.local file.',
-        details: error.message
+        details: error.message,
+        present: (error as any).present ?? {}
       });
     }
     
