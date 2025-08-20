@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
+import Container from '@/components/ui/Container';
 
 interface GraphNode {
   id: string;
@@ -354,19 +355,20 @@ NEO4J_PASSWORD=your-password`}
 
   return (
     <Layout title="Graph Visualization - UAE Legal GraphRAG">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            🔗 Knowledge Graph
-          </h1>
-          <p className="text-gray-300">
-            Interactive exploration of the legal knowledge graph
-          </p>
-          {graphData && (
-            <div className="flex justify-center space-x-6 mt-4 text-sm text-gray-400">
-              <span>📊 {graphData.stats.nodeCount} nodes</span>
-              <span>🔗 {graphData.stats.edgeCount} edges</span>
+      <Container>
+        <div className="space-y-4 md:space-y-6">
+          {/* Header */}
+          <div className="text-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              🔗 Knowledge Graph
+            </h1>
+            <p className="text-base md:text-lg text-gray-300">
+              Interactive exploration of the legal knowledge graph
+            </p>
+            {graphData && (
+              <div className="flex justify-center space-x-4 md:space-x-6 mt-3 md:mt-4 text-xs md:text-sm text-gray-400">
+                <span>📊 {graphData.stats.nodeCount} nodes</span>
+                <span>🔗 {graphData.stats.edgeCount} edges</span>
               <span>� {Object.keys(graphData.stats.nodeTypes).length} node types</span>
             </div>
           )}
@@ -557,7 +559,8 @@ NEO4J_PASSWORD=your-password`}
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </Container>
     </Layout>
   );
 }

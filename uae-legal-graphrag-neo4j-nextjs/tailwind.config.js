@@ -7,6 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      /* Slightly smaller default radius if used by utilities */
+      borderRadius: { 
+        lg: "0.5rem", 
+        xl: "0.75rem", 
+        "2xl": "1rem" 
+      },
+      screens: { 
+        "3xl": "1600px" // for large desktops without over-scaling
+      },
       colors: {
         primary: {
           50: '#eff6ff',

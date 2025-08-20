@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from '@/components/Layout';
+import Container from '@/components/ui/Container';
 import { Search, AlertTriangle, CheckCircle, XCircle, Clock, FileText, Download, Copy, Eye } from 'lucide-react';
 import { AnalysisRequest, AnalysisResult, Contradiction, Harmonisation, Severity, AnalysisProgressEvent } from '@/lib/ai/analysis/types';
 import { generateId } from '@/utils/helpers';
@@ -238,15 +239,16 @@ const AIAnalysisPage: React.FC = () => {
 
   return (
     <Layout title="AI Analysis - Legal Contradiction Finder">
-      <div className="flex h-full overflow-hidden">
-        {/* Main Content */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${showSidePanel ? 'mr-96' : ''}`}>
-          {/* Header */}
-          <div className="flex-shrink-0 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <AlertTriangle className="h-8 w-8 text-orange-400" />
-                <h1 className="text-3xl font-bold text-white">AI Analysis</h1>
+      <Container>
+        <div className="flex h-full overflow-hidden">
+          {/* Main Content */}
+          <div className={`flex-1 flex flex-col transition-all duration-300 ${showSidePanel ? 'mr-96' : ''}`}>
+            {/* Header */}
+            <div className="flex-shrink-0 mb-4 md:mb-6">
+              <div className="flex items-center justify-between mb-3 md:mb-4">
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-orange-400" />
+                  <h1 className="text-2xl md:text-3xl font-bold text-white">AI Analysis</h1>
               </div>
               {analysisState.result && (
                 <button
@@ -258,13 +260,13 @@ const AIAnalysisPage: React.FC = () => {
                 </button>
               )}
             </div>
-            <p className="text-lg text-gray-300 mb-6">
+            <p className="text-base md:text-lg text-gray-300 mb-4 md:mb-6">
               Automated legal analysis to find contradictions and suggest harmonising amendments
             </p>
 
             {/* Analysis Form */}
-            <form onSubmit={handleSubmit} className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 p-6 backdrop-blur-sm">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            <form onSubmit={handleSubmit} className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 p-4 md:p-6 backdrop-blur-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-3 md:mb-4">
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Analysis Query
@@ -274,7 +276,7 @@ const AIAnalysisPage: React.FC = () => {
                     value={formData.query}
                     onChange={(e) => setFormData(prev => ({ ...prev, query: e.target.value }))}
                     placeholder="e.g., contract formation requirements, penalty provisions, liability rules"
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-3 md:px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm md:text-base"
                     disabled={analysisState.isRunning}
                   />
                 </div>
@@ -536,7 +538,8 @@ const AIAnalysisPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      </Container>
     </Layout>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from '@/components/Layout';
+import Container from '@/components/ui/Container';
 import { MessageSquare, Send, Bot, User, Loader2, Brain, Zap } from 'lucide-react';
 import { API_ENDPOINTS } from '@/utils/constants';
 import { generateId } from '@/utils/helpers';
@@ -270,23 +271,24 @@ const LegalAssistantPage: React.FC = () => {
 
   return (
     <Layout title="AI Assistant - UAE Legal GraphRAG">
-      <div className="flex flex-col overflow-hidden">
-        {/* Fixed Header */}
-        <div className="flex-shrink-0 mb-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <MessageSquare className="h-8 w-8 text-cyan-400" />
-            <h1 className="text-3xl font-bold text-white">AI Assistant</h1>
-          </div>
-          <p className="text-lg text-gray-300">
-            Multi-agent system for complex legal queries with autonomous reasoning
-          </p>
-          <div className="mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-lg p-4 backdrop-blur-sm">
-            <div className="flex items-start space-x-2">
-              <Brain className="h-5 w-5 text-cyan-400 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-cyan-100 mb-1">AI Agents Workflow</h3>
-                <p className="text-gray-300 text-sm">
-                  Powered by advanced multi-agent reasoning with Local RAG, Global RAG, and DRIFT strategies. 
+      <Container>
+        <div className="flex flex-col overflow-hidden">
+          {/* Fixed Header */}
+          <div className="flex-shrink-0 mb-4 md:mb-6">
+            <div className="flex items-center space-x-2 md:space-x-3 mb-3 md:mb-4">
+              <MessageSquare className="h-6 w-6 md:h-8 md:w-8 text-cyan-400" />
+              <h1 className="text-2xl md:text-3xl font-bold text-white">AI Assistant</h1>
+            </div>
+            <p className="text-base md:text-lg text-gray-300">
+              Multi-agent system for complex legal queries with autonomous reasoning
+            </p>
+            <div className="mt-3 md:mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-lg p-3 md:p-4 backdrop-blur-sm">
+              <div className="flex items-start space-x-2">
+                <Brain className="h-4 w-4 md:h-5 md:w-5 text-cyan-400 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-cyan-100 mb-1 text-sm md:text-base">AI Agents Workflow</h3>
+                  <p className="text-gray-300 text-xs md:text-sm">
+                    Powered by advanced multi-agent reasoning with Local RAG, Global RAG, and DRIFT strategies. 
                   Each query is intelligently routed to the most appropriate agent for optimal results.
                 </p>
               </div>
@@ -540,7 +542,8 @@ const LegalAssistantPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </Container>
     </Layout>
   );
 };

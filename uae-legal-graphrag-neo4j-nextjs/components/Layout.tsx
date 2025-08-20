@@ -26,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({
       <Navigation />
       
       {/* Page Content */}
-      <div className="gradient-bg flex-1 py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300">
+      <div className="gradient-bg flex-1 py-4 md:py-6 lg:py-8 transition-all duration-300">
         <div className="max-w-7xl mx-auto animate-fade-in">
           {children}
         </div>

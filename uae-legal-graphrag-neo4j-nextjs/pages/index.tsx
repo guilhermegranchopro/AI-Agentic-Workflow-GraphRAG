@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
+import Container from '@/components/ui/Container';
 import { DatabaseStats, HealthCheck } from '@/types';
 import { Database, Activity, Users, FileText, Network, Zap } from 'lucide-react';
 
@@ -46,7 +47,7 @@ const HomePage: React.FC = () => {
     icon: any; 
     href: string; 
   }) => (
-    <div className="group relative glass-card hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer transform hover:-translate-y-4 hover:scale-105"
+    <div className="group relative glass-card hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-102"
          onClick={() => window.location.href = href}>
       {/* Epic Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-blue-600/5 to-cyan-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -112,24 +113,25 @@ const HomePage: React.FC = () => {
 
   return (
     <Layout title="UAE Legal GraphRAG - Home">
-      <div className="animate-fade-in space-y-8">
-        {/* Epic Hero Section */}
-        <div className="text-center mb-16">
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl"></div>
-            <h1 className="relative text-6xl lg:text-7xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text mb-6 animate-pulse">
-              ⚖️ UAE Legal GraphRAG
-            </h1>
-          </div>
-          <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8 font-light">
-            🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
-          </p>
-          <div className="flex justify-center">
-            <div className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 backdrop-blur-sm">
-              <span className="text-purple-300 font-medium">✨ The Future of Legal Tech ✨</span>
+      <Container>
+        <div className="animate-fade-in space-y-4 md:space-y-6 lg:space-y-8">
+          {/* Epic Hero Section */}
+          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl"></div>
+              <h1 className="relative text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text mb-4 md:mb-6 animate-pulse">
+                ⚖️ UAE Legal GraphRAG
+              </h1>
+            </div>
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-6 md:mb-8 font-light">
+              🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
+            </p>
+            <div className="flex justify-center">
+              <div className="px-4 md:px-6 py-2 md:py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 backdrop-blur-sm">
+                <span className="text-purple-300 font-medium text-sm md:text-base">✨ The Future of Legal Tech ✨</span>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Health Status */}
         <div className="glass-card">
@@ -143,7 +145,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
               <Database className={`h-6 w-6 ${
                 healthStatus?.database ? 'text-green-500' : 'text-red-500'
@@ -168,7 +170,7 @@ const HomePage: React.FC = () => {
         {/* Database Statistics */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Database Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <StatCard
               title="Documents"
               value={dbStats?.total_documents?.toLocaleString() || '---'}
@@ -198,8 +200,8 @@ const HomePage: React.FC = () => {
 
         {/* GraphRAG Methods Overview */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">GraphRAG Retrieval Methods</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">GraphRAG Retrieval Methods</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <OverviewCard
               title="🎯 Local RAG"
               description="Entity-centric traversal with temporal filtering for precise legal research"
@@ -223,8 +225,8 @@ const HomePage: React.FC = () => {
 
         {/* Additional Features */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Additional Features</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">Additional Features</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <OverviewCard
               title="📊 Graph Visualization"
               description="Interactive exploration of legal knowledge graphs with advanced filtering"
@@ -245,7 +247,8 @@ const HomePage: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+        </div>
+      </Container>
     </Layout>
   );
 };

@@ -8,6 +8,25 @@
 /* Root scroll fix: eliminate trackpad overscroll white gaps */
 :root { 
   --app-bg: #0b0b0b; 
+  
+  /* Global scale knobs */
+  --ui-scale: 0.92;            /* shrink app ~8% */
+  --radius: 0.5rem;            /* slightly smaller corners */
+
+  /* Fluid base size (shrinks a bit on small screens) */
+  --font-base: clamp(14px, 0.9vw + 10px, 16px);
+
+  /* Fluid spacing tokens (used where possible) */
+  --space-1: clamp(4px, 0.4vw, 6px);
+  --space-2: clamp(6px, 0.6vw, 10px);
+  --space-3: clamp(10px, 1vw, 14px);
+  --space-4: clamp(12px, 1.2vw, 18px);
+  --space-6: clamp(16px, 1.6vw, 24px);
+  --space-8: clamp(20px, 2vw, 32px);
+}
+
+@media (max-width: 640px) {
+  :root { --ui-scale: 0.90; }  /* a touch more compact on very small screens */
 }
 
 html, body { 
@@ -16,6 +35,9 @@ html, body {
   padding: 0; 
   background: var(--app-bg); 
 }
+
+/* Drive rem-based scale app-wide */
+html { font-size: var(--font-base); }
 
 *, *::before, *::after { 
   box-sizing: border-box; 
@@ -102,7 +124,7 @@ footer {
 @layer components {
   /* Ultimate Premium Glass Cards - Dark Mode Only */
   .glass-card {
-    @apply bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl transition-all duration-500;
+    @apply bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-4 md:p-6 lg:p-8 shadow-2xl transition-all duration-500;
     background: linear-gradient(145deg, rgba(31, 41, 55, 0.6) 0%, rgba(17, 24, 39, 0.8) 100%);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.3),
@@ -160,7 +182,7 @@ footer {
   
   /* Epic Premium Buttons */
   .btn-primary {
-    @apply text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 shadow-xl transform hover:-translate-y-1;
+    @apply text-white font-semibold py-3 md:py-4 px-4 md:px-6 lg:px-8 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 shadow-xl transform hover:-translate-y-1;
     background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
     box-shadow: 
       0 8px 25px rgba(139, 92, 246, 0.3),
@@ -177,7 +199,7 @@ footer {
   }
   
   .btn-secondary {
-    @apply text-gray-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-500/50 shadow-lg transform hover:-translate-y-1;
+    @apply text-gray-300 font-semibold py-3 md:py-4 px-4 md:px-6 lg:px-8 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-500/50 shadow-lg transform hover:-translate-y-1;
     background: linear-gradient(145deg, rgba(55, 65, 81, 0.8) 0%, rgba(31, 41, 55, 0.9) 100%);
     border: 1px solid rgba(156, 163, 175, 0.2);
     box-shadow: 
@@ -543,3 +565,16 @@ footer {
 .chat-scroll {
   scroll-behavior: smooth;
 }
+
+/* Compact, fluid headings (fall back if components use semantic tags) */
+@layer base {
+  h1 { font-size: clamp(1.25rem, 1.1rem + 1.2vw, 1.75rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.125rem, 1rem + 0.9vw, 1.5rem); line-height: 1.2; }
+  h3 { font-size: clamp(1rem, 0.9rem + 0.6vw, 1.25rem); line-height: 1.25; }
+  p, li { line-height: 1.5; }
+}
+
+/* Utility to apply fluid paddings via CSS vars when needed */
+.compact-section { padding: var(--space-4); }
+@media (min-width: 768px) { .compact-section { padding: var(--space-6); } }
+@media (min-width: 1024px) { .compact-section { padding: var(--space-8); } }
