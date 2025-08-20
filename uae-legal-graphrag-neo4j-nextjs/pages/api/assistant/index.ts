@@ -31,17 +31,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       for await (const chunk of stream) {
         if (typeof chunk === 'string') {
-          // Send token chunk
+          // Send text token chunk
           res.write(`event: token\ndata: ${JSON.stringify({ token: chunk })}\n\n`);
+        } else if (chunk && typeof chunk === 'object' && chunk.type === 'progress') {
+          // Send progress event
+          res.write(`event: progress\ndata: ${JSON.stringify(chunk)}\n\n`);
         } else {
-          // Send final result
+          // This is the final OrchestratorResponse object
           res.write(`event: complete\ndata: ${JSON.stringify(chunk)}\n\n`);
           break;
         }
       }
     } catch (streamError) {
       console.error('Streaming error:', streamError);
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Streaming failed' })}\n\n`);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Streaming failed', details: streamError instanceof Error ? streamError.message : 'Unknown error' })}\n\n`);
     }
 
     res.end();

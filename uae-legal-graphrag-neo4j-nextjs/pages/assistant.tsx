@@ -9,7 +9,7 @@ import rehypeRaw from 'rehype-raw';
 
 interface Message {
   id: string;
-  type: 'user' | 'assistant' | 'system';
+  type: 'user' | 'assistant' | 'system' | 'progress';
   content: string;
   timestamp: Date;
   metadata?: {
@@ -23,6 +23,17 @@ interface Message {
       type: string;
       relevanceScore: number;
     }>;
+  };
+  progressData?: {
+    step: string;
+    message: string;
+    agentResults?: Array<{
+      agent: string;
+      score: number;
+      citations: number;
+    }>;
+    timestamp?: number;
+    duration?: number;
   };
 }
 
@@ -101,6 +112,9 @@ const LegalAssistantPage: React.FC = () => {
       // Add initial message
       setMessages(prev => [...prev, assistantMessage]);
 
+      // Track progress message ID for updates
+      let currentProgressMessageId: string | null = null;
+
       const decoder = new TextDecoder();
       let buffer = '';
 
@@ -120,22 +134,80 @@ const LegalAssistantPage: React.FC = () => {
             try {
               const parsed = JSON.parse(data);
               
-              if (parsed.token) {
+              // Handle progress events
+              if (parsed.type === 'progress') {
+                const progressData = parsed.data;
+                
+                if (currentProgressMessageId) {
+                  // Update existing progress message
+                  setMessages(prev => prev.map(msg => 
+                    msg.id === currentProgressMessageId 
+                      ? { 
+                          ...msg, 
+                          content: progressData.message,
+                          progressData 
+                        }
+                      : msg
+                  ));
+                } else {
+                  // Create new progress message
+                  const progressMessage: Message = {
+                    id: generateId(),
+                    type: 'progress',
+                    content: progressData.message,
+                    timestamp: new Date(),
+                    progressData
+                  };
+                  currentProgressMessageId = progressMessage.id;
+                  setMessages(prev => [...prev, progressMessage]);
+                }
+              } 
+              // Handle streaming response tokens
+              else if (parsed.token) {
                 assistantContent += parsed.token;
                 setMessages(prev => prev.map(msg => 
                   msg.id === assistantMessage.id 
                     ? { ...msg, content: assistantContent }
                     : msg
                 ));
-              } else if (parsed.error) {
+              } 
+              // Handle final response (OrchestratorResponse)
+              else if (parsed.text && parsed.citations && parsed.agents) {
+                assistantContent = parsed.text;
+                setMessages(prev => prev.map(msg => 
+                  msg.id === assistantMessage.id 
+                    ? { 
+                        ...msg, 
+                        content: assistantContent,
+                        metadata: {
+                          ...msg.metadata,
+                          sources: parsed.citations?.map((c: any) => ({
+                            id: c.nodeId,
+                            title: c.snippet.substring(0, 50) + '...',
+                            content: c.snippet,
+                            type: 'knowledge_graph',
+                            relevanceScore: c.score
+                          })) || []
+                        }
+                      }
+                    : msg
+                ));
+                
+                // Remove progress message once complete
+                if (currentProgressMessageId) {
+                  setMessages(prev => prev.filter(msg => msg.id !== currentProgressMessageId));
+                }
+              }
+              else if (parsed.error) {
                 throw new Error(parsed.error);
               }
             } catch (e) {
               // Ignore parsing errors for malformed lines
+              console.warn('Failed to parse SSE data:', data, e);
             }
           } else if (line.startsWith('event: complete')) {
-            // Handle completion event - could extract final metadata here
-            break;
+            // Final event - the actual data should be in the next 'data:' line
+            continue;
           } else if (line.startsWith('event: error')) {
             throw new Error('Stream error');
           }
@@ -343,6 +415,45 @@ const LegalAssistantPage: React.FC = () => {
                   <div className="flex justify-center">
                     <div className="max-w-2xl bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg px-4 py-3 text-center backdrop-blur-sm">
                       <p className="text-yellow-200 text-sm">{message.content}</p>
+                    </div>
+                  </div>
+                )}
+
+                {message.type === 'progress' && (
+                  <div className="flex justify-center">
+                    <div className="max-w-3xl bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-lg px-4 py-3 backdrop-blur-sm">
+                      <div className="flex items-center space-x-3">
+                        <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-blue-300">
+                              {message.progressData?.step?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Processing'}
+                            </span>
+                            {message.progressData?.timestamp && (
+                              <span className="text-xs text-gray-400">
+                                {new Date(message.progressData.timestamp).toLocaleTimeString()}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-blue-200 text-sm">{message.content}</p>
+                          
+                          {message.progressData?.agentResults && message.progressData.agentResults.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {message.progressData.agentResults.map((result, index) => (
+                                <div key={index} className="text-xs bg-purple-800/50 text-purple-200 px-2 py-1 rounded border border-purple-500/30">
+                                  {getStrategyIcon(result.agent)} {result.agent}: {result.score?.toFixed(2)} ({result.citations} citations)
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {message.progressData?.duration && (
+                            <div className="mt-1 text-xs text-gray-400">
+                              Duration: {message.progressData.duration}ms
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
