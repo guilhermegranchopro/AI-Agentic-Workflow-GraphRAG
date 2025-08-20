@@ -13,12 +13,14 @@
     "clean": "rimraf .next",
     "clean:all": "rimraf .next node_modules package-lock.json && npm install",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\""
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "test": "echo 'Tests require Jest setup'",
+    "health": "node -e \"fetch('http://localhost:3000/api/health').then(r=>r.json()).then(console.log).catch(console.error)\""
   },
   "dependencies": {
     "@headlessui/react": "^2.1.0",
     "@heroicons/react": "^2.1.0",
-    "@types/node": "^20.14.0",
+    "@types/node": "^20.19.11",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@types/react-syntax-highlighter": "^15.5.0",
@@ -27,6 +29,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.400.0",
+    "neo4j-driver": "^5.28.1",
     "next": "^14.2.0",
     "postcss": "^8.4.0",
     "react": "^18.3.0",

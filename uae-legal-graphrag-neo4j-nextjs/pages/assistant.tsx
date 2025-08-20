@@ -60,37 +60,91 @@ const LegalAssistantPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(API_ENDPOINTS.AGENTS_QUERY, {
+      // Prepare messages for the orchestrator
+      const chatMessages = [
+        ...messages.slice(-5).map(m => ({
+          role: m.type === 'user' ? 'user' as const : 'assistant' as const,
+          content: m.content
+        })),
+        { role: 'user' as const, content: userMessage.content }
+      ];
+
+      const response = await fetch('/api/assistant', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: userMessage.content,
-          session_id: `session_${Date.now()}`,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatMessages }),
       });
 
-      const data = await response.json();
+      if (!response.ok) throw new Error('Failed to get response');
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to get response');
-      }
+      // Handle SSE streaming
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No response reader available');
 
+      let assistantContent = '';
       const assistantMessage: Message = {
         id: generateId(),
         type: 'assistant',
-        content: data.response,
+        content: '',
         timestamp: new Date(),
         metadata: {
-          agent_used: data.agent_used,
-          strategy_used: data.strategy_used,
-          confidence: data.confidence,
-          sources: data.sources,
-        },
+          agent_used: 'orchestrator',
+          strategy_used: 'multi-agent',
+          confidence: 0.8,
+          sources: []
+        }
       };
 
+      // Add initial message
       setMessages(prev => [...prev, assistantMessage]);
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            if (data === '[DONE]') continue;
+
+            try {
+              const parsed = JSON.parse(data);
+              
+              if (parsed.token) {
+                assistantContent += parsed.token;
+                setMessages(prev => prev.map(msg => 
+                  msg.id === assistantMessage.id 
+                    ? { ...msg, content: assistantContent }
+                    : msg
+                ));
+              } else if (parsed.error) {
+                throw new Error(parsed.error);
+              }
+            } catch (e) {
+              // Ignore parsing errors for malformed lines
+            }
+          } else if (line.startsWith('event: complete')) {
+            // Handle completion event - could extract final metadata here
+            break;
+          } else if (line.startsWith('event: error')) {
+            throw new Error('Stream error');
+          }
+        }
+      }
+
+      // Final message update
+      setMessages(prev => prev.map(msg => 
+        msg.id === assistantMessage.id 
+          ? { ...msg, content: assistantContent || 'I apologize, but I couldn\'t generate a response.' }
+          : msg
+      ));
 
     } catch (error) {
       const errorMessage: Message = {

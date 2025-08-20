@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Network } from 'vis-network/standalone';
 import Layout from '../components/Layout';
 
 interface GraphNode {
@@ -31,33 +32,18 @@ export default function Graph() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [networkLoaded, setNetworkLoaded] = useState(false);
   const networkRef = useRef<HTMLDivElement>(null);
-  const networkInstance = useRef<any>(null);
+  const networkInstance = useRef<Network | null>(null);
 
   useEffect(() => {
     fetchGraphData();
   }, []);
 
   useEffect(() => {
-    if (graphData && networkRef.current && !networkInstance.current && typeof window !== 'undefined') {
+    if (graphData && networkRef.current && !networkInstance.current) {
       initializeNetwork();
     }
-  }, [graphData, networkLoaded]);
-
-  // Load vis-network dynamically on client side only
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('vis-network')
-        .then(() => {
-          setNetworkLoaded(true);
-        })
-        .catch((err) => {
-          console.error('Failed to load vis-network:', err);
-          setError('Failed to load graph visualization library');
-        });
-    }
-  }, []);
+  }, [graphData]);
 
   const fetchGraphData = async () => {
     try {
@@ -77,102 +63,89 @@ export default function Graph() {
     }
   };
 
-  const initializeNetwork = async () => {
-    if (!graphData || !networkRef.current || !networkLoaded) return;
+  const initializeNetwork = () => {
+    if (!graphData || !networkRef.current) return;
 
-    try {
-      // Import vis-network components
-      const { Network, DataSet } = await import('vis-network');
+    // Transform data for vis-network
+    const nodes = graphData.nodes.map(node => ({
+      id: node.id,
+      label: node.label,
+      group: node.group,
+      title: `${node.group}: ${node.label}`, // Tooltip
+      color: getNodeColor(node.group),
+      font: { color: '#ffffff', size: 12 },
+    }));
 
-      // Transform data for vis-network
-      const nodes = new DataSet(graphData.nodes.map(node => ({
-        id: node.id,
-        label: node.label,
-        group: node.group,
-        title: `${node.group}: ${node.label}`, // Tooltip
-        color: getNodeColor(node.group),
-        font: { color: '#ffffff', size: 12 },
-      })));
+    const edges = graphData.edges.map(edge => ({
+      from: edge.source,
+      to: edge.target,
+      label: edge.type,
+      arrows: 'to',
+      color: { color: '#6366f1', opacity: 0.6 },
+      font: { color: '#9ca3af', size: 10 },
+    }));
 
-      const edges = new DataSet(graphData.edges.map(edge => ({
-        from: edge.source,
-        to: edge.target,
-        label: edge.type,
-        arrows: 'to',
-        color: { color: '#6366f1', opacity: 0.6 },
-        font: { color: '#9ca3af', size: 10 },
-      })));
+    const data = { nodes, edges };
 
-      const data = { nodes, edges };
-
-      const options = {
-        nodes: {
-          shape: 'dot',
-          size: 20,
-          font: {
-            size: 12,
-            color: '#ffffff'
-          },
-          borderWidth: 2,
-          shadow: true,
+    const options = {
+      nodes: {
+        shape: 'dot',
+        size: 20,
+        font: {
+          size: 12,
+          color: '#ffffff'
         },
-        edges: {
-          width: 2,
-          shadow: true,
-          smooth: {
-            type: 'continuous',
-            roundness: 0.2,
-          },
+        borderWidth: 2,
+        shadow: true,
+      },
+      edges: {
+        width: 2,
+        shadow: true,
+        smooth: {
+          type: 'continuous',
+          roundness: 0.2,
         },
-        physics: {
-          enabled: true,
-          stabilization: { iterations: 100 },
-          barnesHut: {
-            gravitationalConstant: -2000,
-            centralGravity: 0.3,
-            springLength: 95,
-            springConstant: 0.04,
-            damping: 0.09,
-          },
+      },
+      physics: {
+        enabled: true,
+        stabilization: { iterations: 100 },
+        barnesHut: {
+          gravitationalConstant: -2000,
+          centralGravity: 0.3,
+          springLength: 95,
+          springConstant: 0.04,
+          damping: 0.09,
         },
-        interaction: {
-          hover: true,
-          selectConnectedEdges: false,
-        },
-        layout: {
-          improvedLayout: false,
-        },
-      };
+      },
+      interaction: {
+        hover: true,
+        selectConnectedEdges: false,
+      },
+      layout: {
+        improvedLayout: false,
+      },
+    };
 
-      networkInstance.current = new Network(networkRef.current, data, options);
+    networkInstance.current = new Network(networkRef.current, data, options);
 
-      // Add event listeners
-      networkInstance.current.on('click', (params: any) => {
-        if (params.nodes.length > 0) {
-          const nodeId = params.nodes[0];
-          const node = graphData.nodes.find(n => n.id === nodeId);
-          setSelectedNode(node || null);
-        } else {
-          setSelectedNode(null);
-        }
-      });
+    // Add event listeners
+    networkInstance.current.on('click', (params) => {
+      if (params.nodes.length > 0) {
+        const nodeId = params.nodes[0];
+        const node = graphData.nodes.find(n => n.id === nodeId);
+        setSelectedNode(node || null);
+      } else {
+        setSelectedNode(null);
+      }
+    });
 
-      networkInstance.current.on('hoverNode', () => {
-        if (networkRef.current) {
-          networkRef.current.style.cursor = 'pointer';
-        }
-      });
+    networkInstance.current.on('hoverNode', () => {
+      networkRef.current!.style.cursor = 'pointer';
+    });
 
-      networkInstance.current.on('blurNode', () => {
-        if (networkRef.current) {
-          networkRef.current.style.cursor = 'default';
-        }
-      });
-
-    } catch (err) {
-      console.error('Error initializing network:', err);
-      setError('Failed to initialize graph visualization');
-    }
+    networkInstance.current.on('blurNode', () => {
+      networkRef.current!.style.cursor = 'default';
+    });
   };
 
   const getNodeColor = (group: string): string => {
@@ -211,14 +184,12 @@ export default function Graph() {
     setSelectedNode(null);
   };
 
-  if (loading || !networkLoaded) {
+  if (loading) {
     return (
       <Layout title="Graph Visualization - UAE Legal GraphRAG">
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-          <span className="ml-4 text-gray-300">
-            {loading ? 'Loading knowledge graph...' : 'Loading visualization library...'}
-          </span>
+          <span className="ml-4 text-gray-300">Loading knowledge graph...</span>
         </div>
       </Layout>
     );
