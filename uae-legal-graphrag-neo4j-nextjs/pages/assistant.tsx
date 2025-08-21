@@ -274,12 +274,12 @@ const LegalAssistantPage: React.FC = () => {
       <Container>
         <div className="flex flex-col overflow-hidden">
           {/* Fixed Header */}
-          <div className="flex-shrink-0 mb-4 md:mb-6">
-            <div className="flex items-center space-x-2 md:space-x-3 mb-3 md:mb-4">
-              <MessageSquare className="h-6 w-6 md:h-8 md:w-8 text-cyan-400" />
-              <h1 className="text-2xl md:text-3xl font-bold text-white">AI Assistant</h1>
+          <div className="flex-shrink-0 mb-3 md:mb-4 lg:mb-6">
+            <div className="flex items-center space-x-2 md:space-x-3 mb-2 md:mb-3 lg:mb-4">
+              <MessageSquare className="h-5 w-5 md:h-6 md:w-6 lg:h-8 lg:w-8 text-cyan-400" />
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">AI Assistant</h1>
             </div>
-            <p className="text-base md:text-lg text-gray-300">
+            <p className="text-sm md:text-base lg:text-lg text-gray-300">
               Multi-agent system for complex legal queries with autonomous reasoning
             </p>
             <div className="mt-3 md:mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-lg p-3 md:p-4 backdrop-blur-sm">

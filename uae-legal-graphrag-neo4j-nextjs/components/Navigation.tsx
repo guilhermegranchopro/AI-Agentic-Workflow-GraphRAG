@@ -30,20 +30,20 @@ const Navigation: React.FC = () => {
       {/* Epic Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-blue-900/10 to-indigo-900/10"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/5 via-transparent to-transparent"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex justify-between h-18">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
+        <div className="flex justify-between h-14 md:h-16">
           {/* Epic Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-4 group">
+            <Link href="/" className="flex items-center space-x-2 md:space-x-3 group">
               <div className="relative">
-                <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-20 group-hover:opacity-40 blur transition-opacity duration-300"></div>
-                <Scale className="h-10 w-10 text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                <div className="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-20 group-hover:opacity-40 blur transition-opacity duration-300"></div>
+                <Scale className="h-7 w-7 md:h-8 md:w-8 text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text relative z-10 group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300">
                   UAE Legal GraphRAG
                 </h1>
-                <p className="text-sm text-purple-300/70 group-hover:text-purple-300 transition-colors duration-300 hidden sm:block">
+                <p className="text-xs md:text-sm text-purple-300/70 group-hover:text-purple-300 transition-colors duration-300 hidden sm:block">
                   ⚡ Neo4j + Next.js + Azure AI ⚡
                 </p>
               </div>
@@ -58,7 +58,7 @@ const Navigation: React.FC = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group relative flex items-center px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  className={`group relative flex items-center px-4 md:px-6 py-2 md:py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 ${
                     isActive 
                       ? 'text-white bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 shadow-lg shadow-purple-500/20' 
                       : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/30 border border-transparent'
@@ -128,7 +128,7 @@ const Navigation: React.FC = () => {
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`group relative flex items-center px-4 py-4 rounded-xl text-base font-semibold transition-all duration-300 ${
+                    className={`group relative flex items-center px-3 md:px-4 py-3 md:py-4 rounded-xl text-sm md:text-base font-semibold transition-all duration-300 ${
                       isActive 
                         ? 'text-white bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 shadow-lg shadow-purple-500/20' 
                         : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/30 border border-transparent'
@@ -147,21 +147,21 @@ const Navigation: React.FC = () => {
               {/* Epic Mobile Status Indicators */}
               <div className="border-t border-purple-500/20 pt-6 mt-6">
                 <h3 className="text-purple-300 font-semibold mb-4 text-sm uppercase tracking-wider">System Status</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
-                    <Database className="h-5 w-5 text-green-400 mr-3" />
-                    <span className="text-sm text-green-300 font-medium">Neo4j Connected</span>
-                    <div className="ml-auto w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="space-y-2 md:space-y-3">
+                  <div className="flex items-center px-3 md:px-4 py-2 md:py-3 rounded-xl bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
+                    <Database className="h-4 w-4 md:h-5 md:w-5 text-green-400 mr-2 md:mr-3" />
+                    <span className="text-xs md:text-sm text-green-300 font-medium">Neo4j Connected</span>
+                    <div className="ml-auto w-1.5 h-1.5 md:w-2 md:h-2 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
-                    <Cpu className="h-5 w-5 text-blue-400 mr-3" />
-                    <span className="text-sm text-blue-300 font-medium">AI Service Active</span>
-                    <div className="ml-auto w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                  <div className="flex items-center px-3 md:px-4 py-2 md:py-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
+                    <Cpu className="h-4 w-4 md:h-5 md:w-5 text-blue-400 mr-2 md:mr-3" />
+                    <span className="text-xs md:text-sm text-blue-300 font-medium">AI Service Active</span>
+                    <div className="ml-auto w-1.5 h-1.5 md:w-2 md:h-2 bg-blue-400 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
-                    <Activity className="h-5 w-5 text-purple-400 mr-3" />
-                    <span className="text-sm text-purple-300 font-medium">System Healthy</span>
-                    <div className="ml-auto w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                  <div className="flex items-center px-3 md:px-4 py-2 md:py-3 rounded-xl bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
+                    <Activity className="h-4 w-4 md:h-5 md:w-5 text-purple-400 mr-2 md:mr-3" />
+                    <span className="text-xs md:text-sm text-purple-300 font-medium">System Healthy</span>
+                    <div className="ml-auto w-1.5 h-1.5 md:w-2 md:h-2 bg-purple-400 rounded-full animate-pulse"></div>
                   </div>
                 </div>
               </div>

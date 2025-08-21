@@ -356,13 +356,13 @@ NEO4J_PASSWORD=your-password`}
   return (
     <Layout title="Graph Visualization - UAE Legal GraphRAG">
       <Container>
-        <div className="space-y-4 md:space-y-6">
+        <div className="space-y-3 md:space-y-4 lg:space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
               🔗 Knowledge Graph
             </h1>
-            <p className="text-base md:text-lg text-gray-300">
+            <p className="text-sm md:text-base lg:text-lg text-gray-300">
               Interactive exploration of the legal knowledge graph
             </p>
             {graphData && (

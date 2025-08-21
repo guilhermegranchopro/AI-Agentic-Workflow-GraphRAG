@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    serverComponentsExternalPackages: ['neo4j-driver'],
-  },
+  serverExternalPackages: ['neo4j-driver'],
   env: {
     NEO4J_URI: process.env.NEO4J_URI,
     NEO4J_USERNAME: process.env.NEO4J_USERNAME,

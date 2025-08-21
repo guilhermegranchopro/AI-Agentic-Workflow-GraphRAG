@@ -61,9 +61,9 @@ const HomePage: React.FC = () => {
           </div>
         </div>
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text mb-3 transition-all duration-300">{title}</h3>
-          <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 leading-relaxed text-base">{description}</p>
-          <div className="mt-6 flex items-center text-sm text-purple-400 group-hover:text-purple-300 font-semibold">
+          <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text mb-2 md:mb-3 transition-all duration-300">{title}</h3>
+          <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 leading-relaxed text-sm md:text-base">{description}</p>
+          <div className="mt-4 md:mt-6 flex items-center text-xs md:text-sm text-purple-400 group-hover:text-purple-300 font-semibold">
             <span>Launch Experience</span>
             <svg className="ml-3 w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -103,7 +103,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="ml-6 flex-1">
             <p className="text-sm font-semibold text-gray-400 group-hover:text-gray-300 transition-colors duration-300 mb-1">{title}</p>
-            <p className="text-3xl font-black text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">{value}</p>
+            <p className="text-lg md:text-xl lg:text-2xl font-black text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">{value}</p>
           </div>
           <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
@@ -114,16 +114,16 @@ const HomePage: React.FC = () => {
   return (
     <Layout title="UAE Legal GraphRAG - Home">
       <Container>
-        <div className="animate-fade-in space-y-4 md:space-y-6 lg:space-y-8">
+        <div className="animate-fade-in space-y-3 md:space-y-4 lg:space-y-6">
           {/* Epic Hero Section */}
-          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+          <div className="text-center mb-6 md:mb-8 lg:mb-12">
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl"></div>
-              <h1 className="relative text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text mb-4 md:mb-6 animate-pulse">
+              <h1 className="relative text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text mb-3 md:mb-4 animate-pulse">
                 ⚖️ UAE Legal GraphRAG
               </h1>
             </div>
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-6 md:mb-8 font-light">
+            <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-4 md:mb-6 font-light">
               🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
             </p>
             <div className="flex justify-center">
@@ -135,8 +135,8 @@ const HomePage: React.FC = () => {
 
         {/* Health Status */}
         <div className="glass-card">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">System Health</h2>
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">System Health</h2>
             <div className={`status-indicator ${
               healthStatus?.status === 'healthy' ? 'status-healthy' : 'status-error'
             }`}>
@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
 
         {/* Database Statistics */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Database Statistics</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">Database Statistics</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <StatCard
               title="Documents"
@@ -200,7 +200,7 @@ const HomePage: React.FC = () => {
 
         {/* GraphRAG Methods Overview */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">GraphRAG Retrieval Methods</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">GraphRAG Retrieval Methods</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <OverviewCard
               title="🎯 Local RAG"
@@ -225,7 +225,7 @@ const HomePage: React.FC = () => {
 
         {/* Additional Features */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">Additional Features</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">Additional Features</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <OverviewCard
               title="📊 Graph Visualization"
