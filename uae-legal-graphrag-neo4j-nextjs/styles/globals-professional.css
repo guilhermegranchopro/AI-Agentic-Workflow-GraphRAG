@@ -4,29 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Dark Theme Color Palette */
+/* Professional Color Palette */
 :root {
   /* Layout */
   --page-pad: clamp(16px, 4vw, 32px);
   --max-page: 1440px;
   
-  /* Professional Dark Colors */
-  --color-primary: #3b82f6;
-  --color-primary-light: #60a5fa;
-  --color-primary-dark: #2563eb;
-  --color-secondary: #94a3b8;
-  --color-accent: #10b981;
-  --color-surface: #0f172a;
-  --color-surface-secondary: #1e293b;
-  --color-surface-tertiary: #334155;
-  --color-border: #334155;
-  --color-border-light: #475569;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
-  --color-error: #ef4444;
-  --color-warning: #f59e0b;
-  --color-success: #10b981;
+  /* Professional Colors */
+  --color-primary: #1e40af;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1e3a8a;
+  --color-secondary: #64748b;
+  --color-accent: #059669;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f8fafc;
+  --color-surface-tertiary: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-error: #dc2626;
+  --color-warning: #d97706;
+  --color-success: #059669;
   
   /* Typography */
   --font-base: 16px;
@@ -81,33 +81,33 @@
 }
 
 @layer components {
-  /* Professional Dark Card */
+  /* Professional Card */
   .prof-card {
-    @apply bg-slate-800 rounded-lg border border-slate-700 shadow-sm;
+    @apply bg-white rounded-lg border border-slate-200 shadow-sm;
     transition: all 0.2s ease-in-out;
   }
   
   .prof-card:hover {
-    @apply shadow-md border-slate-600 bg-slate-700;
+    @apply shadow-md border-slate-300;
   }
   
   /* Professional Button Primary */
   .prof-btn-primary {
     @apply bg-blue-600 text-white px-4 py-2 rounded-md font-medium;
-    @apply hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800;
+    @apply hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
     @apply transition-colors duration-200 ease-in-out;
   }
   
   /* Professional Button Secondary */
   .prof-btn-secondary {
-    @apply bg-slate-700 text-slate-200 px-4 py-2 rounded-md font-medium border border-slate-600;
-    @apply hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800;
+    @apply bg-white text-slate-700 px-4 py-2 rounded-md font-medium border border-slate-300;
+    @apply hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
     @apply transition-colors duration-200 ease-in-out;
   }
   
   /* Professional Input */
   .prof-input {
-    @apply w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm bg-slate-700 text-slate-200;
+    @apply w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm;
     @apply focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
     @apply transition-colors duration-200 ease-in-out;
   }
@@ -115,57 +115,57 @@
   /* Professional Status Indicators */
   .prof-status-success {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    @apply bg-green-900/50 text-green-300 border border-green-800;
+    @apply bg-green-100 text-green-800;
   }
   
   .prof-status-warning {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    @apply bg-yellow-900/50 text-yellow-300 border border-yellow-800;
+    @apply bg-yellow-100 text-yellow-800;
   }
   
   .prof-status-error {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    @apply bg-red-900/50 text-red-300 border border-red-800;
+    @apply bg-red-100 text-red-800;
   }
   
   /* Professional Navigation */
   .prof-nav {
-    @apply bg-slate-900 border-b border-slate-700 shadow-sm;
+    @apply bg-white border-b border-slate-200 shadow-sm;
   }
   
   .prof-nav-item {
-    @apply px-3 py-2 text-sm font-medium text-slate-300 rounded-md;
-    @apply hover:text-slate-100 hover:bg-slate-700;
+    @apply px-3 py-2 text-sm font-medium text-slate-600 rounded-md;
+    @apply hover:text-slate-900 hover:bg-slate-100;
     @apply transition-colors duration-200 ease-in-out;
   }
   
   .prof-nav-item.active {
-    @apply text-blue-400 bg-blue-900/50;
+    @apply text-blue-600 bg-blue-50;
   }
   
   /* Professional Typography */
   .prof-heading-1 {
-    @apply text-3xl font-bold text-slate-100 tracking-tight;
+    @apply text-3xl font-bold text-slate-900 tracking-tight;
   }
   
   .prof-heading-2 {
-    @apply text-2xl font-semibold text-slate-100 tracking-tight;
+    @apply text-2xl font-semibold text-slate-900 tracking-tight;
   }
   
   .prof-heading-3 {
-    @apply text-xl font-semibold text-slate-100;
+    @apply text-xl font-semibold text-slate-900;
   }
   
   .prof-heading-4 {
-    @apply text-lg font-semibold text-slate-100;
+    @apply text-lg font-semibold text-slate-900;
   }
   
   .prof-body {
-    @apply text-slate-300 leading-relaxed;
+    @apply text-slate-700 leading-relaxed;
   }
   
   .prof-body-sm {
-    @apply text-sm text-slate-400 leading-relaxed;
+    @apply text-sm text-slate-600 leading-relaxed;
   }
   
   /* Professional Container */
@@ -209,7 +209,7 @@
   }
 }
 
-/* Professional dark scrollbar */
+/* Professional scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -225,7 +225,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-light);
+  background: var(--color-secondary);
 }
 
 /* Professional utility classes */

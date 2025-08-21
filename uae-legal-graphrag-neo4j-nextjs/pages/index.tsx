@@ -47,28 +47,24 @@ const HomePage: React.FC = () => {
     icon: any; 
     href: string; 
   }) => (
-    <div className="group relative glass-card hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-[1.02]"
-         onClick={() => window.location.href = href}>
-      {/* Epic Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-blue-600/5 to-cyan-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500"></div>
-      
-      <div className="relative z-10 flex items-start space-x-4 md:space-x-6">
+    <div 
+      className="prof-card p-6 cursor-pointer transition-all duration-200 hover:shadow-lg"
+      onClick={() => window.location.href = href}
+    >
+      <div className="flex items-start space-x-4">
         <div className="flex-shrink-0">
-          <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-purple-500/30">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <Icon className="h-6 w-6 md:h-8 md:w-8 text-purple-400 group-hover:text-purple-300 relative z-10 transition-colors duration-300" />
+          <div className="w-12 h-12 rounded-lg bg-blue-900/50 flex items-center justify-center">
+            <Icon className="h-6 w-6 text-blue-400" />
           </div>
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-base md:text-lg lg:text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text mb-2 md:mb-3 transition-all duration-300">{title}</h3>
-          <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 leading-relaxed text-sm md:text-base">{description}</p>
-          <div className="mt-3 md:mt-4 lg:mt-6 flex items-center text-xs md:text-sm text-purple-400 group-hover:text-purple-300 font-semibold">
+          <h3 className="prof-heading-4 mb-2">{title}</h3>
+          <p className="prof-body-sm mb-4">{description}</p>
+          <div className="flex items-center text-sm text-blue-400 font-medium">
             <span>Launch Experience</span>
-            <svg className="ml-2 md:ml-3 w-4 h-4 md:w-5 md:h-5 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-            <div className="ml-2 w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
           </div>
         </div>
       </div>
@@ -87,25 +83,24 @@ const HomePage: React.FC = () => {
     color?: 'primary' | 'green' | 'blue' | 'purple'; 
   }) => {
     const colorClasses = {
-      primary: 'from-purple-600/20 to-blue-600/20 border-purple-500/30 text-purple-400',
-      green: 'from-green-600/20 to-emerald-600/20 border-green-500/30 text-green-400',
-      blue: 'from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400',
-      purple: 'from-purple-600/20 to-violet-600/20 border-purple-500/30 text-violet-400'
+      primary: 'text-blue-400 bg-blue-900/50',
+      green: 'text-green-400 bg-green-900/50',
+      blue: 'text-blue-400 bg-blue-900/50',
+      purple: 'text-purple-400 bg-purple-900/50'
     };
 
     return (
-      <div className="group glass-card hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-500 transform hover:-translate-y-2">
+      <div className="prof-card p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colorClasses[color]} border flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-              <Icon className={`h-7 w-7 ${colorClasses[color].split(' ').pop()}`} />
+            <div className={`w-12 h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center`}>
+              <Icon className={`h-6 w-6 ${colorClasses[color].split(' ')[0]}`} />
             </div>
           </div>
-          <div className="ml-6 flex-1">
-            <p className="text-sm font-semibold text-gray-400 group-hover:text-gray-300 transition-colors duration-300 mb-1">{title}</p>
-            <p className="text-lg md:text-xl lg:text-2xl font-black text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">{value}</p>
+          <div className="ml-4 flex-1">
+            <p className="text-sm font-medium text-slate-400 mb-1">{title}</p>
+            <p className="text-2xl font-bold text-slate-100">{value}</p>
           </div>
-          <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
       </div>
     );
@@ -114,141 +109,134 @@ const HomePage: React.FC = () => {
   return (
     <Layout title="UAE Legal GraphRAG - Home">
       <Container>
-        <div className="animate-fade-in space-y-3 md:space-y-4 lg:space-y-6">
-          {/* Epic Hero Section */}
-          <div className="text-center mb-8 md:mb-12 lg:mb-16 relative z-10">
-            <div className="relative mb-6 md:mb-8">
-              <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl"></div>
-              <h1 className="relative text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text animate-pulse leading-tight">
-                ⚖️ UAE Legal GraphRAG
-              </h1>
+        <div className="space-y-12">
+          {/* Professional Hero Section */}
+          <div className="text-center py-12">
+            <h1 className="prof-heading-1 mb-4">
+              UAE Legal GraphRAG
+            </h1>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
+              Advanced legal research platform powered by GraphRAG technology and AI agents for comprehensive UAE legal analysis
+            </p>
+            <div className="inline-flex items-center px-4 py-2 bg-blue-900/50 text-blue-300 rounded-lg text-sm font-medium border border-blue-800">
+              <span>Neo4j • Next.js • Azure AI</span>
             </div>
-            <div className="space-y-4 md:space-y-6">
-              <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light">
-                🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
-              </p>
-              <div className="flex justify-center">
-                <div className="px-6 md:px-8 py-3 md:py-4 rounded-full bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 backdrop-blur-sm">
-                  <span className="text-purple-300 font-medium text-base md:text-lg">✨ The Future of Legal Tech ✨</span>
-                </div>
+          </div>
+
+          {/* System Health */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="prof-heading-2">System Health</h2>
+              <div className={`prof-status-${
+                healthStatus?.status === 'healthy' ? 'success' : 'error'
+              }`}>
+                <Activity className="h-4 w-4 mr-1" />
+                {healthStatus?.status || 'Checking...'}
               </div>
             </div>
-          </div>
-
-        {/* Health Status */}
-        <div className="glass-card">
-          <div className="flex items-center justify-between mb-4 md:mb-6">
-            <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">System Health</h2>
-            <div className={`status-indicator ${
-              healthStatus?.status === 'healthy' ? 'status-healthy' : 'status-error'
-            }`}>
-              <Activity className="h-4 w-4 mr-1" />
-              {healthStatus?.status || 'Checking...'}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="prof-card p-4 flex items-center space-x-3">
+                <Database className={`h-6 w-6 ${
+                  healthStatus?.database ? 'text-green-400' : 'text-red-400'
+                }`} />
+                <span className="font-medium text-slate-300">Database Connection</span>
+              </div>
+              <div className="prof-card p-4 flex items-center space-x-3">
+                <Zap className={`h-6 w-6 ${
+                  healthStatus?.embeddings ? 'text-green-400' : 'text-red-400'
+                }`} />
+                <span className="font-medium text-slate-300">Embeddings Service</span>
+              </div>
+              <div className="prof-card p-4 flex items-center space-x-3">
+                <Activity className={`h-6 w-6 ${
+                  healthStatus?.ai_service ? 'text-green-400' : 'text-red-400'
+                }`} />
+                <span className="font-medium text-slate-300">AI Service</span>
+              </div>
             </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <Database className={`h-6 w-6 ${
-                healthStatus?.database ? 'text-green-500' : 'text-red-500'
-              }`} />
-              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">Database Connection</span>
-            </div>
-            <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <Zap className={`h-6 w-6 ${
-                healthStatus?.embeddings ? 'text-green-500' : 'text-red-500'
-              }`} />
-              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">Embeddings Service</span>
-            </div>
-            <div className="flex items-center space-x-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <Activity className={`h-6 w-6 ${
-                healthStatus?.ai_service ? 'text-green-500' : 'text-red-500'
-              }`} />
-              <span className="text-sm font-medium text-gray-800 dark:text-gray-300">AI Service</span>
-            </div>
-          </div>
-        </div>
+          </section>
 
-        {/* Database Statistics */}
-        <div>
-          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">Database Statistics</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-            <StatCard
-              title="Documents"
-              value={dbStats?.total_documents?.toLocaleString() || '---'}
-              icon={FileText}
-              color="blue"
-            />
-            <StatCard
-              title="Entities"
-              value={dbStats?.total_entities?.toLocaleString() || '---'}
-              icon={Users}
-              color="green"
-            />
-            <StatCard
-              title="Relationships"
-              value={dbStats?.total_relationships?.toLocaleString() || '---'}
-              icon={Network}
-              color="purple"
-            />
-            <StatCard
-              title="Communities"
-              value={dbStats?.communities?.toLocaleString() || '---'}
-              icon={Database}
-              color="primary"
-            />
-          </div>
-        </div>
+          {/* Database Statistics */}
+          <section>
+            <h2 className="prof-heading-2 mb-6">Database Statistics</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard
+                title="Documents"
+                value={dbStats?.total_documents?.toLocaleString() || '---'}
+                icon={FileText}
+                color="blue"
+              />
+              <StatCard
+                title="Entities"
+                value={dbStats?.total_entities?.toLocaleString() || '---'}
+                icon={Users}
+                color="green"
+              />
+              <StatCard
+                title="Relationships"
+                value={dbStats?.total_relationships?.toLocaleString() || '---'}
+                icon={Network}
+                color="purple"
+              />
+              <StatCard
+                title="Communities"
+                value={dbStats?.communities?.toLocaleString() || '---'}
+                icon={Database}
+                color="primary"
+              />
+            </div>
+          </section>
 
-        {/* GraphRAG Methods Overview */}
-        <div>
-          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">GraphRAG Retrieval Methods</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            <OverviewCard
-              title="🎯 Local RAG"
-              description="Entity-centric traversal with temporal filtering for precise legal research"
-              icon={Database}
-              href="/assistant"
-            />
-            <OverviewCard
-              title="🌐 Global RAG"
-              description="Community-based analysis using Graph Data Science for comprehensive insights"
-              icon={Network}
-              href="/assistant"
-            />
-            <OverviewCard
-              title="🎪 DRIFT RAG"
-              description="Dynamic temporal analysis for tracking legal evolution over time"
-              icon={Zap}
-              href="/assistant"
-            />
-          </div>
-        </div>
+          {/* GraphRAG Methods */}
+          <section>
+            <h2 className="prof-heading-2 mb-6">GraphRAG Retrieval Methods</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <OverviewCard
+                title="Local RAG"
+                description="Entity-centric traversal with temporal filtering for precise legal research"
+                icon={Database}
+                href="/assistant"
+              />
+              <OverviewCard
+                title="Global RAG"
+                description="Community-based analysis using Graph Data Science for comprehensive insights"
+                icon={Network}
+                href="/assistant"
+              />
+              <OverviewCard
+                title="DRIFT RAG"
+                description="Dynamic temporal analysis for tracking legal evolution over time"
+                icon={Zap}
+                href="/assistant"
+              />
+            </div>
+          </section>
 
-        {/* Additional Features */}
-        <div>
-          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">Additional Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            <OverviewCard
-              title="📊 Graph Visualization"
-              description="Interactive exploration of legal knowledge graphs with advanced filtering"
-              icon={Network}
-              href="/graph"
-            />
-            <OverviewCard
-              title="🤖 AI Assistant"
-              description="Multi-agent system for complex legal queries with autonomous reasoning"
-              icon={Activity}
-              href="/assistant"
-            />
-            <OverviewCard
-              title="⚖️ AI Analysis"
-              description="Automated contradiction finder with harmonisation recommendations"
-              icon={Activity}
-              href="/ai-analysis"
-            />
-          </div>
-        </div>
+          {/* Additional Features */}
+          <section>
+            <h2 className="prof-heading-2 mb-6">Additional Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <OverviewCard
+                title="Graph Visualization"
+                description="Interactive exploration of legal knowledge graphs with advanced filtering"
+                icon={Network}
+                href="/graph"
+              />
+              <OverviewCard
+                title="AI Assistant"
+                description="Multi-agent system for complex legal queries with autonomous reasoning"
+                icon={Activity}
+                href="/assistant"
+              />
+              <OverviewCard
+                title="AI Analysis"
+                description="Automated contradiction finder with harmonisation recommendations"
+                icon={Activity}
+                href="/ai-analysis"
+              />
+            </div>
+          </section>
         </div>
       </Container>
     </Layout>

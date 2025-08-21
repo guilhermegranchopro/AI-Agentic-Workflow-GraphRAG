@@ -26,24 +26,23 @@ const Layout: React.FC<LayoutProps> = ({
       <Navigation />
       
       {/* Page Content */}
-      <div className="gradient-bg flex-1 py-2 md:py-4 lg:py-6 transition-all duration-300">
-        <div className="max-w-6xl mx-auto animate-fade-in">
+      <main className="bg-professional min-h-screen">
+        <div className="prof-container py-8">
           {children}
         </div>
-      </div>
+      </main>
 
-      {/* Footer - Will be positioned by page shell */}
-      <footer className="bg-gray-900/90 backdrop-blur-md border-t border-purple-500/20 py-2 md:py-3 transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-gray-400">
-            <div className="flex items-center space-x-2 mb-1 sm:mb-0">
-              <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
-              <span className="font-medium">UAE Legal GraphRAG v1.0</span>
+      {/* Footer */}
+      <footer className="bg-slate-900 border-t border-slate-700 py-6">
+        <div className="prof-container">
+          <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-slate-400">
+            <div className="flex items-center space-x-2 mb-2 sm:mb-0">
+              <span className="font-medium text-slate-200">UAE Legal GraphRAG v1.0</span>
               <span className="hidden sm:inline">•</span>
               <span className="hidden sm:inline">Next.js + Neo4j + Azure AI</span>
             </div>
             <div className="text-center sm:text-right">
-              <span className="text-xs">Advanced legal research with GraphRAG and AI agents</span>
+              <span>Advanced legal research with GraphRAG and AI agents</span>
             </div>
           </div>
         </div>
