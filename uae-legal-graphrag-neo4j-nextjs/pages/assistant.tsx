@@ -272,7 +272,7 @@ const LegalAssistantPage: React.FC = () => {
   return (
     <Layout title="AI Assistant - UAE Legal GraphRAG">
       <Container>
-        <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-col">
           {/* Fixed Header */}
           <div className="flex-shrink-0 mb-3 md:mb-4 lg:mb-6">
             <div className="flex items-center space-x-2 md:space-x-3 mb-2 md:mb-3 lg:mb-4">

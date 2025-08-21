@@ -240,7 +240,7 @@ const AIAnalysisPage: React.FC = () => {
   return (
     <Layout title="AI Analysis - Legal Contradiction Finder">
       <Container>
-        <div className="flex h-full overflow-hidden">
+        <div className="flex min-h-full">
           {/* Main Content */}
           <div className={`flex-1 flex flex-col transition-all duration-300 ${showSidePanel ? 'mr-96' : ''}`}>
             {/* Header */}

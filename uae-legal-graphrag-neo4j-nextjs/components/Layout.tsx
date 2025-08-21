@@ -22,31 +22,33 @@ const Layout: React.FC<LayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
-      {/* Navigation */}
-      <Navigation />
-      
-      {/* Page Content */}
-      <main className="bg-professional min-h-screen">
-        <div className="prof-container py-8">
-          {children}
-        </div>
-      </main>
+      <div className="min-h-full bg-professional">
+        {/* Navigation */}
+        <Navigation />
+        
+        {/* Page Content */}
+        <main>
+          <div className="prof-container py-8">
+            {children}
+          </div>
+        </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-700 py-6">
-        <div className="prof-container">
-          <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-slate-400">
-            <div className="flex items-center space-x-2 mb-2 sm:mb-0">
-              <span className="font-medium text-slate-200">UAE Legal GraphRAG v1.0</span>
-              <span className="hidden sm:inline">•</span>
-              <span className="hidden sm:inline">Next.js + Neo4j + Azure AI</span>
-            </div>
-            <div className="text-center sm:text-right">
-              <span>Advanced legal research with GraphRAG and AI agents</span>
+        {/* Footer */}
+        <footer className="bg-slate-900 border-t border-slate-700 py-6">
+          <div className="prof-container">
+            <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-slate-400">
+              <div className="flex items-center space-x-2 mb-2 sm:mb-0">
+                <span className="font-medium text-slate-200">UAE Legal GraphRAG v1.0</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="hidden sm:inline">Next.js + Neo4j + Azure AI</span>
+              </div>
+              <div className="text-center sm:text-right">
+                <span>Advanced legal research with GraphRAG and AI agents</span>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </>
   );
 };

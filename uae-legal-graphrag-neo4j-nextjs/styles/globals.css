@@ -59,20 +59,55 @@
 }
 
 @layer base {
-  html {
+  html, body { 
+    height: 100%; 
+    margin: 0; 
     font-family: 'Inter', system-ui, sans-serif;
     font-size: var(--font-base);
     line-height: var(--line-height-base);
+  }
+  
+  html {
     scroll-behavior: smooth;
   }
   
   body {
     background-color: var(--color-surface);
     color: var(--color-text-primary);
-    margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* The dedicated scroll area must have height and scroll enabled */
+  #app-scroll {
+    height: 100vh;
+    overflow: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Support for newer viewport units when available */
+  @supports (height: 100svh) {
+    #app-scroll {
+      height: 100svh;
+    }
+  }
+  
+  @supports (height: 100dvh) {
+    #app-scroll {
+      height: 100dvh;
+    }
+  }
+
+  /* Header height support for sticky headers */
+  :root { 
+    --header-h: 64px; 
+  }
+  
+  [id] { 
+    scroll-margin-top: var(--header-h); 
   }
 
   * {
