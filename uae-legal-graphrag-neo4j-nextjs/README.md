@@ -1,215 +1,275 @@
-# UAE Legal GraphRAG - Next.js Application
+# UAE Legal GraphRAG
 
-A sophisticated legal research platform powered by GraphRAG (Graph Retrieval-Augmented Generation) with multi-agent orchestration, built on Next.js, Neo4j, and Azure OpenAI.
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.0-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4.0-blue)](https://www.typescriptlang.org/)
+[![Neo4j](https://img.shields.io/badge/Neo4j-5.x-green)](https://neo4j.com/)
+[![Azure OpenAI](https://img.shields.io/badge/Azure-OpenAI-orange)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🌟 Features
+Advanced legal research platform powered by GraphRAG (Graph Retrieval-Augmented Generation) technology, specifically designed for UAE legal corpus analysis. This system combines knowledge graphs with AI agents to provide sophisticated legal research, contradiction analysis, and harmonisation capabilities.
 
-- **Multi-Agent AI System**: Orchestrated AI agents using Local, Global, and DRIFT strategies
-- **GraphRAG Implementation**: Advanced retrieval from Neo4j knowledge graphs
-- **Interactive Graph Visualization**: Real-time exploration of legal knowledge networks
-- **Streaming AI Responses**: Server-sent events for real-time AI conversations
-- **Markdown Rendering**: Beautiful formatting of AI responses with syntax highlighting
-- **Dark Theme UI**: Modern, professional interface with purple accents
+## Overview
 
-## 🏗️ Architecture
+UAE Legal GraphRAG is a comprehensive legal research platform that leverages:
 
-### Core Components
+- **Graph-based Knowledge Representation**: Legal documents stored in Neo4j for complex relationship modeling
+- **Multi-Agent AI System**: Specialized agents for different types of legal analysis
+- **Professional Government-Ready UI**: Clean, accessible interface suitable for official presentations
+- **Real-time Analysis**: Live contradiction mining and legal harmonisation
 
-1. **AI Orchestrator** (`lib/ai/orchestrator.ts`)
-   - Coordinates multiple retrieval strategies
-   - Implements Reciprocal Rank Fusion (RRF) for result merging
-   - Streams responses via Server-Sent Events
+## Architecture
 
-2. **GraphRAG Agents** (`lib/ai/agents/`)
-   - **Local Agent**: Context-specific retrieval
-   - **Global Agent**: Community-based search
-   - **DRIFT Agent**: Temporal relationship analysis
+### Frontend (Next.js + Tailwind CSS)
 
-3. **Neo4j Integration** (`lib/graph/`)
-   - Singleton driver pattern
-   - Optimized Cypher queries
-   - Health monitoring
+- **Framework**: Next.js 15.5 with Pages Router
+- **Styling**: Tailwind CSS with professional dark theme
+- **Layout Pattern**: `#app-scroll` container prevents white gaps and ensures proper scrolling
+- **Components**: Responsive grid system with `Container` component for consistent width
+- **Accessibility**: Professional contrast ratios and keyboard navigation
 
-4. **Azure OpenAI** (`lib/ai/llm/azure.ts`)
-   - GPT-4o integration
-   - Streaming completions
-   - Environment-based configuration
+### API Routes (Pages API)
 
-## 📁 Project Structure
+#### `/api/graph`
+Returns nodes and edges from Neo4j for the Graph visualization page.
+- **Dependencies**: Neo4j only
+- **Authentication**: Environment-based
+- **Response**: JSON graph data structure
 
-```
-├── components/
-│   ├── Layout.tsx          # Main layout wrapper
-│   └── Navigation.tsx      # Site navigation
-├── lib/
-│   ├── ai/
-│   │   ├── agents/         # Local, Global, DRIFT agents
-│   │   ├── llm/           # Azure OpenAI client
-│   │   ├── orchestrator.ts # Multi-agent coordinator
-│   │   ├── merge.ts       # RRF result merging
-│   │   └── types.ts       # Type definitions
-│   ├── graph/
-│   │   ├── neo4j.ts       # Neo4j singleton driver
-│   │   └── graphRag.ts    # GraphRAG implementations
-│   └── config.ts          # Environment configuration
-├── pages/
-│   ├── api/
-│   │   ├── assistant/     # AI assistant endpoints
-│   │   ├── diagnostics/   # Health & debug endpoints
-│   │   ├── graph/         # Graph data endpoints
-│   │   ├── graph-data.ts  # Graph visualization data
-│   │   ├── health.ts      # System health check
-│   │   └── stats-new.ts   # Database statistics
-│   ├── assistant.tsx      # AI chat interface
-│   ├── graph.tsx          # Graph visualization
-│   └── index.tsx          # Dashboard
-├── styles/
-│   └── globals.css        # Global styles
-└── types/
-    └── index.ts           # Shared type definitions
-```
+#### `/api/assistant`
+Orchestrator + agents (Local/Global/Drift GraphRAG) using Azure OpenAI.
+- **Dependencies**: Azure OpenAI + Neo4j
+- **Agents**: LocalGraphRagAgent, GlobalGraphRagAgent, DriftGraphRagAgent
+- **Protocol**: Agent-to-Agent (A2A) envelope system
 
-## 🚀 Getting Started
+#### `/api/analysis`
+Contradiction mining + harmonisation using the same retrieval patterns.
+- **Dependencies**: Azure OpenAI + Neo4j
+- **Agents**: ContradictionMiner, Harmoniser
+- **Features**: Real-time progress updates, severity classification
+
+#### `/api/health`
+System diagnostics and health checks.
+- **Checks**: Neo4j connectivity, Azure OpenAI availability
+- **Response**: Comprehensive system status
+
+### AI Agents
+
+- **Orchestrator**: A2A envelope system for agent coordination
+- **LocalGraphRagAgent**: Entity-focused retrieval and reasoning
+- **GlobalGraphRagAgent**: Community-based analysis across legal domains
+- **DriftGraphRagAgent**: Temporal analysis of legal evolution
+- **ContradictionMiner**: Identifies conflicting legal provisions
+- **Harmoniser**: Suggests resolution strategies for legal conflicts
+
+### Data Layer
+
+- **Neo4j Driver**: Singleton connection with connection pooling
+- **GraphRAG Patterns**: Implemented in `lib/graph/graphRag.ts`
+- **Retrieval Functions**: 
+  - `retrieve()`: Basic concept retrieval
+  - `searchByConcept()`: Enhanced semantic search
+  - `findPotentialConflicts()`: Contradiction detection
+
+### Environment Management
+
+Grouped configuration getters prevent environment variable leakage:
+
+- **`getNeo4jConfig()`**: Only NEO4J_* variables
+- **`getAzureOpenAIConfig()`**: Only Azure OpenAI variables
+- **Validation**: Strict validation with helpful error messages
+- **Diagnostics**: Environment debugging endpoints
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- Neo4j database with legal knowledge graph
-- Azure OpenAI API access
+- **Node.js**: 18.0 or higher
+- **npm**: 8.0 or higher  
+- **Neo4j**: 5.x database instance
+- **Azure OpenAI**: API access with deployment
 
 ### Installation
 
-1. **Clone and install dependencies:**
+1. **Clone the repository**
    ```bash
    git clone <repository-url>
    cd uae-legal-graphrag-neo4j-nextjs
+   ```
+
+2. **Install dependencies**
+   ```bash
    npm install
    ```
 
-2. **Configure environment:**
+3. **Environment setup**
    ```bash
-   cp .env.example .env
+   cp .env.example .env.local
    ```
-
-3. **Set environment variables in `.env`:**
-   ```env
-   # Neo4j Configuration
-   NEO4J_URI=bolt://localhost:7687
+   
+   Fill in your actual values in `.env.local`:
+   ```bash
+   NEO4J_URI=bolt+s://your-neo4j-instance:7687
    NEO4J_USERNAME=neo4j
-   NEO4J_PASSWORD=your_password
-
-   # Azure OpenAI Configuration
-   AZURE_OPENAI_API_KEY=your_api_key
-   AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-   AZURE_OPENAI_DEPLOYMENT=gpt-4o
+   NEO4J_PASSWORD=your-password
+   
+   AZURE_OPENAI_API_KEY=your-api-key
+   AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
+   AZURE_OPENAI_DEPLOYMENT=your-deployment-name
    AZURE_OPENAI_API_VERSION=2024-02-15-preview
    ```
 
-4. **Start development server:**
+4. **Start development server**
    ```bash
    npm run dev
    ```
 
-5. **Access the application:**
-   - Dashboard: http://localhost:3000
-   - AI Assistant: http://localhost:3000/assistant
-   - Graph Visualization: http://localhost:3000/graph
+5. **Open in browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🔧 API Endpoints
+## Scripts
 
-### Core Endpoints
+- **`npm run dev`**: Start development server with Turbopack
+- **`npm run build`**: Build production application
+- **`npm run start`**: Start production server
+- **`npm run lint`**: Run ESLint checks
+- **`npm run lint:fix`**: Fix ESLint issues automatically
+- **`npm run format`**: Format code with Prettier
+- **`npm run format:check`**: Check code formatting
+- **`npm run typecheck`**: Run TypeScript type checking
+- **`npm run unused`**: Find unused exports with ts-prune
+- **`npm run clean`**: Clean Next.js build cache
+- **`npm run health`**: Quick health check endpoint test
 
-- `POST /api/assistant` - Multi-agent AI chat with streaming
-- `GET /api/graph-data` - Graph visualization data
-- `GET /api/health` - System health check
-- `GET /api/stats-new` - Database statistics
+## Pages & Endpoints
 
-### Diagnostic Endpoints
+### Frontend Pages
 
-- `GET /api/diagnostics/debug` - Configuration validation
-- `GET /api/diagnostics/env` - Environment status
-- `GET /api/diagnostics/neo4j` - Neo4j connectivity
+- **`/`**: Overview dashboard with system statistics and health status
+- **`/graph`**: Interactive graph visualization of legal relationships
+- **`/assistant`**: AI-powered legal research assistant
+- **`/ai-analysis`**: Legal contradiction analysis and harmonisation
 
-## 🎯 Usage
+### API Endpoints
 
-### AI Assistant
+- **`GET /api/health`**: System health and diagnostics
+- **`GET /api/graph-data`**: Graph visualization data
+- **`POST /api/assistant`**: AI assistant chat interface
+- **`POST /api/analysis`**: Legal analysis processing
+- **`GET /api/diagnostics/*`**: Various diagnostic endpoints
 
-The AI Assistant provides intelligent legal research through:
+## Development Notes
 
-1. **Natural Language Queries**: Ask complex legal questions
-2. **Multi-Strategy Retrieval**: Automatically selects optimal retrieval approach
-3. **Structured Responses**: Markdown-formatted answers with citations
-4. **Real-time Streaming**: Progressive response generation
+### Scroll Container Pattern
 
-Example queries:
-- "What are the liability rules for companies in UAE?"
-- "Explain contract law with examples"
-- "Business establishment requirements in Dubai"
+The application uses a robust scroll container pattern:
 
-### Graph Visualization
-
-Interactive exploration of the legal knowledge graph:
-
-- **Node Types**: Legal instruments, provisions, courts, entities
-- **Relationship Types**: APPLIES_TO, REFERENCES, GOVERNS
-- **Interactive Features**: Zoom, pan, node selection
-- **Real-time Data**: Live updates from Neo4j
-
-## 🛠️ Configuration
-
-### Environment Groups
-
-The system uses grouped environment validation:
-
-1. **Neo4j Group**: Database connectivity
-2. **Azure OpenAI Group**: AI model access
-
-### Health Monitoring
-
-Built-in health checks for:
-- Neo4j connectivity
-- Azure OpenAI API status
-- Environment configuration
-- System dependencies
-
-## 📊 Performance
-
-- **Streaming Responses**: Real-time AI output
-- **Connection Pooling**: Optimized Neo4j connections
-- **Result Caching**: Efficient query processing
-- **Error Handling**: Graceful failure recovery
-
-## 🔒 Security
-
-- Environment variable validation
-- API rate limiting
-- Input sanitization
-- Secure Neo4j connections
-
-## 🚧 Development
-
-### Scripts
-
-```bash
-npm run dev          # Development server
-npm run build        # Production build
-npm run start        # Production server
-npm run lint         # Code linting
-npm run type-check   # TypeScript validation
-npm run clean        # Clean build files
+```tsx
+// _app.tsx
+<div id="app-scroll" className="h-screen overflow-auto overscroll-contain">
+  <Component {...pageProps} />
+</div>
 ```
 
-### Code Quality
+- **Prevents white gaps**: `overscroll-contain` prevents bouncing
+- **Consistent scrolling**: Single scroll container for entire app
+- **Mobile optimized**: Works with touch devices
 
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for formatting
-- Modular architecture
+### Layout Guidelines
 
-## 📝 License
+- **Never use `100vw`**: Use `w-full` for full-width containers
+- **Sticky headers**: Use `top-0` with proper `scroll-margin-top`
+- **No `overflow-hidden`**: On page-level containers (only for true clipping)
+- **Container component**: Use `<Container>` for consistent max-width
 
-This project is proprietary software developed for UAE legal research applications.
+### Common Pitfalls
 
-## 🤝 Contributing
+1. **Missing environment variables**: Check `.env.local` against `.env.example`
+2. **Neo4j connectivity**: Ensure database is accessible and credentials are correct
+3. **Scrolling issues**: Don't add `overflow-hidden` to page containers
+4. **White gaps**: Verify `#app-scroll` container is properly configured
 
-This is an internal project. For questions or support, contact the development team.
+## Troubleshooting
+
+### "Missing AZURE_OPENAI_DEPLOYMENT"
+```bash
+# Ensure deployment name is set in .env.local
+AZURE_OPENAI_DEPLOYMENT=gpt-4
+```
+
+### "Neo4j not reachable"
+1. Check Neo4j instance is running
+2. Verify URI format: `bolt+s://host:7687` or `neo4j+s://host:7687`
+3. Confirm credentials and network access
+
+### "No scrolling"
+1. Check `#app-scroll` container exists in `_app.tsx`
+2. Remove `overflow-hidden` from page-level containers
+3. Ensure no `height: 100vh` constraints on content
+
+### "White gaps on mobile"
+1. Verify `overscroll-contain` is applied to `#app-scroll`
+2. Check for `100vw` usage (replace with `w-full`)
+3. Ensure proper viewport meta tag in `_document.tsx`
+
+## Project Structure
+
+```
+├── components/
+│   ├── Layout.tsx           # Main layout wrapper
+│   ├── Navigation.tsx       # Navigation header
+│   ├── Sidebar.tsx         # Sidebar component
+│   └── ui/
+│       └── Container.tsx    # Width-constrained container
+├── lib/
+│   ├── config.ts           # Environment configuration
+│   ├── ThemeContext.tsx    # Theme provider
+│   ├── ai/
+│   │   ├── agents/         # AI agent implementations
+│   │   ├── analysis/       # Analysis type definitions
+│   │   ├── llm/           # Azure OpenAI client
+│   │   ├── orchestrator.ts # Agent coordination
+│   │   └── types.ts       # AI type definitions
+│   └── graph/
+│       ├── neo4j.ts       # Neo4j driver
+│       └── graphRag.ts    # GraphRAG retrieval
+├── pages/
+│   ├── api/               # API routes
+│   │   ├── analysis/      # Legal analysis endpoints
+│   │   ├── assistant/     # AI assistant endpoints
+│   │   ├── diagnostics/   # Debug endpoints
+│   │   ├── graph/         # Graph data endpoints
+│   │   ├── graph-data.ts  # Legacy graph endpoint
+│   │   ├── health.ts      # Health check
+│   │   └── stats-new.ts   # Statistics
+│   ├── ai-analysis.tsx    # Analysis interface
+│   ├── assistant.tsx      # AI assistant interface
+│   ├── graph.tsx         # Graph visualization
+│   ├── index.tsx         # Homepage
+│   ├── _app.tsx          # App wrapper with scroll container
+│   └── _document.tsx     # Document structure
+├── styles/
+│   ├── globals.css       # Global styles with scroll support
+│   ├── globals-backup.css # Backup styles
+│   └── globals-professional.css # Professional theme
+├── types/
+│   └── index.ts          # Shared type definitions
+└── utils/
+    ├── constants.ts      # Application constants
+    └── helpers.ts        # Utility functions
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Support
+
+For questions and support, please refer to the project documentation or open an issue in the repository.
