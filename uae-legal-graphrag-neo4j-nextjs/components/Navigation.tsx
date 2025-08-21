@@ -30,20 +30,20 @@ const Navigation: React.FC = () => {
       {/* Epic Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-blue-900/10 to-indigo-900/10"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-500/5 via-transparent to-transparent"></div>
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
-        <div className="flex justify-between h-14 md:h-16">
+      <div className="mx-auto w-full px-[var(--page-pad)] max-w-[min(var(--max-page),100vw)] relative z-10">
+        <div className="flex justify-between items-center h-14 md:h-16 flex-wrap gap-2">
           {/* Epic Logo and Brand */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2 md:space-x-3 group">
-              <div className="relative">
+          <div className="flex items-center flex-shrink-0 min-w-0">
+            <Link href="/" className="flex items-center space-x-2 md:space-x-3 group min-w-0">
+              <div className="relative flex-shrink-0">
                 <div className="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-20 group-hover:opacity-40 blur transition-opacity duration-300"></div>
                 <Scale className="h-7 w-7 md:h-8 md:w-8 text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text relative z-10 group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <div>
-                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text group-hover:from-purple-300 group-hover:via-blue-300 group-hover:to-cyan-300 transition-all duration-300 truncate">
                   UAE Legal GraphRAG
                 </h1>
-                <p className="text-xs md:text-sm text-purple-300/70 group-hover:text-purple-300 transition-colors duration-300 hidden sm:block">
+                <p className="text-xs md:text-sm text-purple-300/70 group-hover:text-purple-300 transition-colors duration-300 hidden sm:block truncate">
                   ⚡ Neo4j + Next.js + Azure AI ⚡
                 </p>
               </div>
@@ -51,21 +51,21 @@ const Navigation: React.FC = () => {
           </div>
 
           {/* Epic Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center flex-wrap gap-2">
             {navigationItems.map((item) => {
               const isActive = router.pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group relative flex items-center px-4 md:px-6 py-2 md:py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 ${
+                  className={`group relative flex items-center px-3 md:px-4 py-2 md:py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 ${
                     isActive 
                       ? 'text-white bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 shadow-lg shadow-purple-500/20' 
                       : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/30 border border-transparent'
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <item.icon className="mr-3 h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
+                  <item.icon className="mr-2 md:mr-3 h-4 w-4 md:h-5 md:w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
                   <span className="relative z-10">{item.name}</span>
                   {isActive && (
                     <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-20 blur transition-opacity duration-300"></div>
@@ -76,25 +76,25 @@ const Navigation: React.FC = () => {
           </div>
           
           {/* Epic Status Indicators and Controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 md:gap-4 flex-wrap">
             {/* Futuristic Status Indicators */}
-            <div className="hidden md:flex items-center space-x-3">
-              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
-                <Database className="h-4 w-4 text-green-400 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm text-green-300 hidden lg:block font-medium">Neo4j</span>
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <div className="hidden md:flex items-center gap-2 xl:gap-3 flex-wrap">
+              <div className="group flex items-center space-x-1 md:space-x-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30">
+                <Database className="h-3 w-3 md:h-4 md:w-4 text-green-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-xs md:text-sm text-green-300 hidden xl:block font-medium">Neo4j</span>
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-400 rounded-full animate-pulse"></div>
               </div>
               
-              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
-                <Cpu className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm text-blue-300 hidden lg:block font-medium">AI</span>
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <div className="group flex items-center space-x-1 md:space-x-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
+                <Cpu className="h-3 w-3 md:h-4 md:w-4 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-xs md:text-sm text-blue-300 hidden xl:block font-medium">AI</span>
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-blue-400 rounded-full animate-pulse"></div>
               </div>
               
-              <div className="group flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
-                <Activity className="h-4 w-4 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm text-purple-300 hidden lg:block font-medium">Live</span>
-                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+              <div className="group flex items-center space-x-1 md:space-x-2 px-2 md:px-3 py-1.5 md:py-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-violet-600/20 border border-purple-500/30">
+                <Activity className="h-3 w-3 md:h-4 md:w-4 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-xs md:text-sm text-purple-300 hidden xl:block font-medium">Live</span>
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-purple-400 rounded-full animate-pulse"></div>
               </div>
             </div>
 

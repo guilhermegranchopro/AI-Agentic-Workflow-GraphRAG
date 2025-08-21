@@ -13,6 +13,10 @@
   --ui-scale: 0.92;            /* shrink app ~8% */
   --radius: 0.5rem;            /* slightly smaller corners */
 
+  /* Layout spacing and width tokens */
+  --page-pad: clamp(16px, 4vw, 32px);
+  --max-page: 1440px;         /* widen from 1280 to 1440 */
+
   /* Fluid base size (shrinks a bit on small screens) */
   --font-base: clamp(14px, 0.9vw + 10px, 16px);
 
@@ -79,6 +83,14 @@ footer {
   margin-top: auto;
   flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Full-bleed utility for sections that should stretch edge-to-edge */
+.full-bleed {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: max(var(--page-pad), env(safe-area-inset-left));
+  padding-right: max(var(--page-pad), env(safe-area-inset-right));
 }
 
 @layer base {

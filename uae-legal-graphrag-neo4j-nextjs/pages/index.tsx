@@ -47,25 +47,25 @@ const HomePage: React.FC = () => {
     icon: any; 
     href: string; 
   }) => (
-    <div className="group relative glass-card hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-102"
+    <div className="group relative glass-card hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-[1.02]"
          onClick={() => window.location.href = href}>
       {/* Epic Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-blue-600/5 to-cyan-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500"></div>
       
-      <div className="relative z-10 flex items-start space-x-6">
+      <div className="relative z-10 flex items-start space-x-4 md:space-x-6">
         <div className="flex-shrink-0">
-          <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-purple-500/30">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-purple-500/30">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <Icon className="h-8 w-8 text-purple-400 group-hover:text-purple-300 relative z-10 transition-colors duration-300" />
+            <Icon className="h-6 w-6 md:h-8 md:w-8 text-purple-400 group-hover:text-purple-300 relative z-10 transition-colors duration-300" />
           </div>
         </div>
-        <div className="flex-1">
-          <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text mb-2 md:mb-3 transition-all duration-300">{title}</h3>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base md:text-lg lg:text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 group-hover:bg-clip-text mb-2 md:mb-3 transition-all duration-300">{title}</h3>
           <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 leading-relaxed text-sm md:text-base">{description}</p>
-          <div className="mt-4 md:mt-6 flex items-center text-xs md:text-sm text-purple-400 group-hover:text-purple-300 font-semibold">
+          <div className="mt-3 md:mt-4 lg:mt-6 flex items-center text-xs md:text-sm text-purple-400 group-hover:text-purple-300 font-semibold">
             <span>Launch Experience</span>
-            <svg className="ml-3 w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="ml-2 md:ml-3 w-4 h-4 md:w-5 md:h-5 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
             <div className="ml-2 w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
@@ -116,19 +116,21 @@ const HomePage: React.FC = () => {
       <Container>
         <div className="animate-fade-in space-y-3 md:space-y-4 lg:space-y-6">
           {/* Epic Hero Section */}
-          <div className="text-center mb-6 md:mb-8 lg:mb-12">
-            <div className="relative">
+          <div className="text-center mb-8 md:mb-12 lg:mb-16 relative z-10">
+            <div className="relative mb-6 md:mb-8">
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-3xl opacity-20 blur-xl"></div>
-              <h1 className="relative text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text mb-3 md:mb-4 animate-pulse">
+              <h1 className="relative text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text animate-pulse leading-tight">
                 ⚖️ UAE Legal GraphRAG
               </h1>
             </div>
-            <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-4 md:mb-6 font-light">
-              🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
-            </p>
-            <div className="flex justify-center">
-              <div className="px-4 md:px-6 py-2 md:py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 backdrop-blur-sm">
-                <span className="text-purple-300 font-medium text-sm md:text-base">✨ The Future of Legal Tech ✨</span>
+            <div className="space-y-4 md:space-y-6">
+              <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light">
+                🚀 <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold">Advanced legal research</span> with GraphRAG and AI agents 🤖
+              </p>
+              <div className="flex justify-center">
+                <div className="px-6 md:px-8 py-3 md:py-4 rounded-full bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-400/50 backdrop-blur-sm">
+                  <span className="text-purple-300 font-medium text-base md:text-lg">✨ The Future of Legal Tech ✨</span>
+                </div>
               </div>
             </div>
           </div>
@@ -170,7 +172,7 @@ const HomePage: React.FC = () => {
         {/* Database Statistics */}
         <div>
           <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">Database Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
             <StatCard
               title="Documents"
               value={dbStats?.total_documents?.toLocaleString() || '---'}
@@ -201,7 +203,7 @@ const HomePage: React.FC = () => {
         {/* GraphRAG Methods Overview */}
         <div>
           <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">GraphRAG Retrieval Methods</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             <OverviewCard
               title="🎯 Local RAG"
               description="Entity-centric traversal with temporal filtering for precise legal research"
@@ -226,7 +228,7 @@ const HomePage: React.FC = () => {
         {/* Additional Features */}
         <div>
           <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 lg:mb-6">Additional Features</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             <OverviewCard
               title="📊 Graph Visualization"
               description="Interactive exploration of legal knowledge graphs with advanced filtering"
