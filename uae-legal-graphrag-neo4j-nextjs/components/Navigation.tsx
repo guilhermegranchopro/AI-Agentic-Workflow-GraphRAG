@@ -23,7 +23,6 @@ const Navigation: React.FC = () => {
     { name: 'Overview', href: '/', icon: Home },
     { name: 'Graph', href: '/graph', icon: Network },
     { name: 'AI Assistant', href: '/assistant', icon: MessageSquare },
-    { name: 'Hybrid Assistant', href: '/hybrid-assistant', icon: Brain },
     { name: 'AI Analysis', href: '/ai-analysis', icon: AlertTriangle },
   ];
 
