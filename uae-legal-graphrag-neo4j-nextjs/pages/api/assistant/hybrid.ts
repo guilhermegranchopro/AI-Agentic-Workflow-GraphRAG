@@ -31,25 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Delegate to Python backend
       await streamFromPythonBackend(query, res);
     } else {
-      // Use existing TypeScript orchestrator
-      const { orchestrator } = await import('../../../lib/ai/orchestrator');
-      const stream = orchestrator.streamHandle(messages);
-      
-      try {
-        for await (const chunk of stream) {
-          if (typeof chunk === 'string') {
-            res.write(`event: token\ndata: ${JSON.stringify({ token: chunk })}\n\n`);
-          } else if (chunk && typeof chunk === 'object' && chunk.type === 'progress') {
-            res.write(`event: progress\ndata: ${JSON.stringify(chunk)}\n\n`);
-          } else {
-            res.write(`event: complete\ndata: ${JSON.stringify(chunk)}\n\n`);
-            break;
-          }
-        }
-      } catch (streamError) {
-        console.error('Streaming error:', streamError);
-        res.write(`event: error\ndata: ${JSON.stringify({ error: 'Streaming failed', details: streamError instanceof Error ? streamError.message : 'Unknown error' })}\n\n`);
-      }
+      // Use Python backend as fallback (TypeScript orchestrator removed)
+      await streamFromPythonBackend(query, res);
     }
 
     res.end();
