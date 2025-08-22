@@ -1,0 +1,53 @@
+# Web Framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+pydantic-settings==2.6.1
+
+# Core Dependencies (from existing)
+neo4j==5.28.2
+openai==1.100.1
+pydantic==2.11.7
+python-dotenv==1.1.1
+httpx==0.28.1
+
+# Advanced AI/ML Libraries  
+sentence-transformers==3.3.1
+transformers==4.45.0
+torch>=2.0.0
+numpy==2.3.1
+pandas==2.3.1
+scikit-learn==1.7.1
+scipy==1.16.1
+
+# Graph Processing
+networkx==3.3
+python-louvain==0.16
+
+# NLP and Text Processing
+spacy>=3.7.0
+nltk==3.8.1
+textblob==0.18.0
+
+# Legal Text Processing
+dateparser==1.2.0
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.26.1
+
+# Vector Embeddings & Search
+faiss-cpu==1.8.0
+
+# Data Processing
+tqdm==4.67.1
+joblib==1.5.1
+
+# Development & Testing
+pytest==8.4.1
+pytest-asyncio==1.1.0
+black==25.1.0
+flake8==7.3.0
+mypy==1.17.1
+
+# Utilities
+tenacity==9.1.0
+rich==13.9.6
