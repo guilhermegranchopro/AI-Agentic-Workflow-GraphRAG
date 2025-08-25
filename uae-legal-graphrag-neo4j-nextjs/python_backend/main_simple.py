@@ -112,8 +112,27 @@ async def legal_analysis(request: AnalysisRequest):
             "contradictions": [
                 {
                     "id": "contradiction_1",
+                    "title": f"Legal Framework Contradiction: {request.query}",
                     "description": f"Potential contradiction found in legal framework for: {request.query}",
                     "severity": "medium",
+                    "category": "regulatory-compliance",
+                    "rationale": f"Analysis of {request.query} reveals potential inconsistencies in regulatory framework",
+                    "left": [
+                        {
+                            "id": "doc_1",
+                            "title": f"Primary Legal Document for {request.query}",
+                            "content": f"This document establishes the primary legal framework for {request.query}...",
+                            "relevance": 0.9
+                        }
+                    ],
+                    "right": [
+                        {
+                            "id": "doc_2", 
+                            "title": f"Secondary Legal Document for {request.query}",
+                            "content": f"This document provides alternative interpretation for {request.query}...",
+                            "relevance": 0.8
+                        }
+                    ],
                     "sources": ["mock_doc_1", "mock_doc_2"]
                 }
             ],

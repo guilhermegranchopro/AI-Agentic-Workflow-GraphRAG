@@ -153,17 +153,37 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // Calculate stats from contradictions
+    const contradictions = analysisData.contradictions || [];
+    const stats = {
+      total: contradictions.length,
+      bySeverity: {
+        critical: contradictions.filter(c => c.severity === 'critical').length,
+        high: contradictions.filter(c => c.severity === 'high').length,
+        medium: contradictions.filter(c => c.severity === 'medium').length,
+        low: contradictions.filter(c => c.severity === 'low').length
+      },
+      byCategory: {}
+    };
+
+    // Calculate byCategory stats
+    contradictions.forEach(contradiction => {
+      const category = contradiction.severity;
+      stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
+    });
+
     // Combine results and send final response
     const finalResult = {
       query,
       scope,
       maxFindings,
       passages: graphragData.passages || [],
-      contradictions: analysisData.contradictions || [],
+      contradictions: contradictions,
       harmonisations: [],
       citations: analysisData.citations || [],
       legal_patterns: analysisData.legal_patterns || [],
       agent_results: graphragData.agent_results || [],
+      stats,
       metadata: {
         backend: 'python_fastapi_advanced',
         processing_time: Date.now() - startTime,
@@ -269,6 +289,25 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // Calculate stats from contradictions
+    const contradictions = mockAnalysis.contradictions;
+    const stats = {
+      total: contradictions.length,
+      bySeverity: {
+        critical: contradictions.filter(c => c.severity === 'critical').length,
+        high: contradictions.filter(c => c.severity === 'high').length,
+        medium: contradictions.filter(c => c.severity === 'medium').length,
+        low: contradictions.filter(c => c.severity === 'low').length
+      },
+      byCategory: {}
+    };
+
+    // Calculate byCategory stats
+    contradictions.forEach(contradiction => {
+      const category = contradiction.severity;
+      stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
+    });
+
     // Send final result
     const finalResult = {
       query,
@@ -281,7 +320,7 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
         relevance: result.score,
         type: result.metadata.type
       })),
-      contradictions: mockAnalysis.contradictions,
+      contradictions: contradictions,
       harmonisations: [],
       citations: mockAnalysis.citations,
       legal_patterns: mockAnalysis.legal_patterns,
@@ -293,6 +332,7 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
           reasoning: 'Used basic GraphRAG retrieval with mock analysis patterns'
         }
       ],
+      stats,
       metadata: {
         backend: 'nextjs_fallback',
         processing_time: Date.now() - startTime,
