@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { runQuery } from '../../lib/graph/neo4j';
+import { executeQuery } from '../../lib/graph/neo4j';
 import { getNeo4jConfig } from '../../lib/config';
 
 interface GraphNode {
@@ -107,8 +107,8 @@ async function fetchGraphData(maxNodes: number, includeRelationships: string[]):
         }) as edges
   `;
 
-  const result = await runQuery(query);
-  const data = result.records[0];
+  const result = await executeQuery(query);
+  const data = result[0];
   
   if (!data) {
     return {
@@ -124,8 +124,8 @@ async function fetchGraphData(maxNodes: number, includeRelationships: string[]):
   }
 
   // Process nodes - filter out nulls and deduplicate
-  const allNodes = data.get('nodes') || [];
-  const edges = data.get('edges') || [];
+  const allNodes = data.nodes || [];
+  const edges = data.edges || [];
 
   const filteredNodes = allNodes.filter((node: any) => node.id !== null);
   
