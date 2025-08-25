@@ -85,13 +85,13 @@ async def graphrag_query(request: QueryRequest):
         return {
             "query": request.query,
             "mode": request.mode,
-            "results": [
+            "passages": [
                 {
                     "id": "mock_doc_1",
                     "title": f"Legal Document for: {request.query}",
                     "content": f"This is a mock legal document related to {request.query}. In a real implementation, this would contain actual legal content from the knowledge graph.",
                     "type": "law",
-                    "relevance_score": 0.85,
+                    "relevance": 0.85,
                     "source": "UAE Legal Database"
                 }
             ],
@@ -109,20 +109,34 @@ async def legal_analysis(request: AnalysisRequest):
     try:
         return {
             "query": request.query,
-            "analysis": {
-                "summary": f"Analysis of legal aspects related to: {request.query}",
-                "key_findings": [
-                    f"Finding 1: Legal requirement A applies to {request.query}",
-                    f"Finding 2: Regulatory framework B governs {request.query}",
-                    f"Finding 3: Compliance considerations for {request.query}"
-                ],
-                "contradictions": [],
-                "recommendations": [
-                    "Consult with legal counsel for specific advice",
-                    "Review relevant regulations and guidelines",
-                    "Ensure compliance with UAE legal framework"
-                ]
-            },
+            "contradictions": [
+                {
+                    "id": "contradiction_1",
+                    "description": f"Potential contradiction found in legal framework for: {request.query}",
+                    "severity": "medium",
+                    "sources": ["mock_doc_1", "mock_doc_2"]
+                }
+            ],
+            "citations": [
+                {
+                    "id": "citation_1",
+                    "title": f"Legal Citation for: {request.query}",
+                    "content": f"This is a legal citation related to {request.query}...",
+                    "relevance": 0.8
+                }
+            ],
+            "legal_patterns": [
+                {
+                    "pattern": "regulatory_compliance",
+                    "description": f"Regulatory compliance requirements for: {request.query}",
+                    "confidence": 0.8
+                },
+                {
+                    "pattern": "legal_obligation",
+                    "description": f"Legal obligations related to: {request.query}",
+                    "confidence": 0.7
+                }
+            ],
             "confidence": 0.75,
             "processing_time": 0.2
         }

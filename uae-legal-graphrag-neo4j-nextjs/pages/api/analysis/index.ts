@@ -40,7 +40,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     } else {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Analysis failed' })}\n\n`);
+      res.write(`data: ${JSON.stringify({ 
+        type: 'error',
+        data: { error: 'Analysis failed' }
+      })}\n\n`);
       res.end();
     }
   }
@@ -66,10 +69,11 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
     }
 
     // Send progress updates
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'initialization',
+        pct: 25,
+        stage: 'initialization',
         message: 'Initializing advanced legal analysis with Python backend...',
         timestamp: Date.now()
       }
@@ -77,16 +81,18 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'graphrag_search',
+        pct: 50,
+        stage: 'graphrag_search',
         message: 'Performing advanced GraphRAG search with semantic embeddings...',
         timestamp: Date.now()
       }
     })}\n\n`);
 
     // Call Python GraphRAG endpoint
+    console.log('Calling Python GraphRAG endpoint...');
     const graphragResponse = await fetch('http://127.0.0.1:8001/api/graphrag/query', {
       method: 'POST',
       headers: {
@@ -94,44 +100,55 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
       },
       body: JSON.stringify({
         query: query,
-        search_mode: 'hybrid',
+        mode: 'hybrid',
         max_results: maxFindings
       }),
+      signal: AbortSignal.timeout(10000) // 10 second timeout
     });
 
+    console.log('GraphRAG response status:', graphragResponse.status);
     if (!graphragResponse.ok) {
       throw new Error(`GraphRAG query failed: ${graphragResponse.status}`);
     }
 
     const graphragData: any = await graphragResponse.json();
+    console.log('GraphRAG data received:', Object.keys(graphragData));
 
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'advanced_analysis',
+        pct: 75,
+        stage: 'advanced_analysis',
         message: 'Running advanced legal analysis with NLP and pattern recognition...',
         timestamp: Date.now()
       }
     })}\n\n`);
 
-    // Call Python advanced analysis endpoint
-    const analysisResponse = await fetch('http://127.0.0.1:8001/api/analysis/advanced', {
+    // Call Python legal analysis endpoint
+    console.log('Calling Python analysis endpoint...');
+    const analysisResponse = await fetch('http://127.0.0.1:8001/api/analysis/legal', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: query,
-        analysis_types: ['legal_patterns', 'citations', 'contradictions'],
-        jurisdiction: 'UAE'
+        query: query,
+        scope: scope,
+        max_findings: maxFindings,
+        include_contradictions: true
       }),
+      signal: AbortSignal.timeout(10000) // 10 second timeout
     });
 
+    console.log('Analysis response status:', analysisResponse.status);
     let analysisData: any = {};
     if (analysisResponse.ok) {
       analysisData = await analysisResponse.json();
+      console.log('Analysis data received:', Object.keys(analysisData));
+    } else {
+      console.error('Analysis response not ok:', analysisResponse.status, analysisResponse.statusText);
     }
 
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -156,16 +173,25 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
       }
     };
 
-    res.write(`event: complete\ndata: ${JSON.stringify(finalResult)}\n\n`);
+    res.write(`data: ${JSON.stringify({
+      type: 'done',
+      data: {
+        result: finalResult,
+        message: 'Analysis complete'
+      }
+    })}\n\n`);
 
   } catch (error) {
     console.error('Python backend analysis error:', error);
     
     // Send error response
-    res.write(`event: error\ndata: ${JSON.stringify({
-      error: 'Python backend analysis failed',
-      message: 'The advanced Python backend analysis is currently unavailable. Please ensure the Python FastAPI server is running on port 8001.',
-      details: error instanceof Error ? error.message : 'Unknown error'
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      data: {
+        error: 'Python backend analysis failed',
+        message: 'The advanced Python backend analysis is currently unavailable. Please ensure the Python FastAPI server is running on port 8001.',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }
     })}\n\n`);
   }
 }
@@ -173,10 +199,11 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
 async function analyzeWithFallback(query: string, scope: string, maxFindings: number, res: NextApiResponse, startTime: number) {
   try {
     // Send progress updates for fallback analysis
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'fallback_initialization',
+        pct: 25,
+        stage: 'fallback_initialization',
         message: 'Initializing fallback legal analysis...',
         timestamp: Date.now()
       }
@@ -184,10 +211,11 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'basic_search',
+        pct: 50,
+        stage: 'basic_search',
         message: 'Performing basic legal document search...',
         timestamp: Date.now()
       }
@@ -199,10 +227,11 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
 
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    res.write(`event: progress\ndata: ${JSON.stringify({
+    res.write(`data: ${JSON.stringify({
       type: 'progress',
       data: {
-        step: 'basic_analysis',
+        pct: 75,
+        stage: 'basic_analysis',
         message: 'Running basic legal analysis...',
         timestamp: Date.now()
       }
@@ -273,15 +302,24 @@ async function analyzeWithFallback(query: string, scope: string, maxFindings: nu
       }
     };
 
-    res.write(`event: complete\ndata: ${JSON.stringify(finalResult)}\n\n`);
+    res.write(`data: ${JSON.stringify({
+      type: 'done',
+      data: {
+        result: finalResult,
+        message: 'Analysis complete'
+      }
+    })}\n\n`);
 
   } catch (error) {
     console.error('Fallback analysis error:', error);
     
-    res.write(`event: error\ndata: ${JSON.stringify({
-      error: 'Fallback analysis failed',
-      message: 'Both Python backend and fallback analysis failed. Please check your configuration.',
-      details: error instanceof Error ? error.message : 'Unknown error'
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      data: {
+        error: 'Fallback analysis failed',
+        message: 'Both Python backend and fallback analysis failed. Please check your configuration.',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }
     })}\n\n`);
   }
 }
