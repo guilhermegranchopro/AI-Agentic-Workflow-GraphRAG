@@ -111,6 +111,7 @@ Grouped configuration getters prevent environment variable leakage:
    NEO4J_URI=bolt+s://your-neo4j-instance:7687
    NEO4J_USERNAME=neo4j
    NEO4J_PASSWORD=your-password
+   NEO4J_DATABASE=neo4j
    
    AZURE_OPENAI_API_KEY=your-api-key
    AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
@@ -126,6 +127,27 @@ Grouped configuration getters prevent environment variable leakage:
 5. **Open in browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+### Python Backend (Optional)
+
+The project includes an advanced Python backend with FastAPI for enhanced AI capabilities:
+
+1. **Create Python virtual environment**
+   ```bash
+   npm run py:venv
+   ```
+
+2. **Install Python dependencies**
+   ```bash
+   npm run py:install
+   ```
+
+3. **Start Python backend**
+   ```bash
+   npm run py:dev
+   ```
+
+The Python backend runs on port 8000 and provides advanced GraphRAG capabilities with sentence transformers and multi-agent systems.
+
 ## Scripts
 
 - **`npm run dev`**: Start development server with Turbopack
@@ -140,6 +162,15 @@ Grouped configuration getters prevent environment variable leakage:
 - **`npm run clean`**: Clean Next.js build cache
 - **`npm run health`**: Quick health check endpoint test
 
+### Python Backend Scripts
+
+- **`npm run py:venv`**: Create Python virtual environment
+- **`npm run py:install`**: Install Python dependencies
+- **`npm run py:dev`**: Start Python FastAPI server
+- **`npm run py:test`**: Run Python tests
+- **`npm run py:fmt`**: Format Python code with black
+- **`npm run py:lint`**: Lint Python code with flake8
+
 ## Pages & Endpoints
 
 ### Frontend Pages
@@ -152,10 +183,18 @@ Grouped configuration getters prevent environment variable leakage:
 ### API Endpoints
 
 - **`GET /api/health`**: System health and diagnostics
-- **`GET /api/graph-data`**: Graph visualization data
+- **`GET /api/graph`**: Graph visualization data
 - **`POST /api/assistant`**: AI assistant chat interface
 - **`POST /api/analysis`**: Legal analysis processing
 - **`GET /api/diagnostics/*`**: Various diagnostic endpoints
+
+### Python Backend Endpoints
+
+- **`GET /health`**: Python backend health check
+- **`GET /env/present`**: Environment variables presence check
+- **`POST /api/graphrag/query`**: Advanced GraphRAG queries
+- **`POST /api/assistant/stream`**: Streaming multi-agent assistant
+- **`POST /api/analysis/advanced`**: Advanced legal analysis
 
 ## Development Notes
 
@@ -211,6 +250,21 @@ AZURE_OPENAI_DEPLOYMENT=gpt-4
 2. Check for `100vw` usage (replace with `w-full`)
 3. Ensure proper viewport meta tag in `_document.tsx`
 
+### "Python backend not working"
+1. Ensure Python 3.8+ is installed
+2. Check virtual environment is activated
+3. Verify all dependencies are installed: `npm run py:install`
+4. Check port 8000 is available
+
+### Environment Diagnostics
+
+Use the diagnostic endpoints to troubleshoot configuration issues:
+
+- **`/api/diagnostics/env`**: Check environment variable presence
+- **`/api/diagnostics/debug`**: Detailed configuration status
+- **`/api/diagnostics/neo4j`**: Neo4j connection test
+- **`/health`**: Overall system health
+
 ## Project Structure
 
 ```
@@ -222,13 +276,8 @@ AZURE_OPENAI_DEPLOYMENT=gpt-4
 │       └── Container.tsx    # Width-constrained container
 ├── lib/
 │   ├── config.ts           # Environment configuration
-│   ├── ThemeContext.tsx    # Theme provider
 │   ├── ai/
-│   │   ├── agents/         # AI agent implementations
-│   │   ├── analysis/       # Analysis type definitions
-│   │   ├── llm/           # Azure OpenAI client
-│   │   ├── orchestrator.ts # Agent coordination
-│   │   └── types.ts       # AI type definitions
+│   │   └── orchestrator.ts # Agent coordination
 │   └── graph/
 │       ├── neo4j.ts       # Neo4j driver
 │       └── graphRag.ts    # GraphRAG retrieval
@@ -247,9 +296,15 @@ AZURE_OPENAI_DEPLOYMENT=gpt-4
 │   ├── index.tsx         # Homepage
 │   ├── _app.tsx          # App wrapper with scroll container
 │   └── _document.tsx     # Document structure
+├── python_backend/        # Python FastAPI backend
+│   ├── app/
+│   │   ├── agents/        # AI agents
+│   │   ├── services/      # Business logic
+│   │   └── config.py      # Python configuration
+│   ├── main.py           # FastAPI entry point
+│   └── requirements.txt  # Python dependencies
 ├── styles/
 │   ├── globals.css       # Global styles with scroll support
-│   ├── globals-backup.css # Backup styles
 │   └── globals-professional.css # Professional theme
 ├── types/
 │   └── index.ts          # Shared type definitions

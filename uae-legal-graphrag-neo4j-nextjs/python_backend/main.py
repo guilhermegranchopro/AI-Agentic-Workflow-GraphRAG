@@ -75,6 +75,26 @@ async def health_check():
         }
     }
 
+@app.get("/env/present")
+async def env_present():
+    """Environment variables presence check"""
+    return {
+        "neo4j": {
+            "configured": settings.validate_neo4j(),
+            "uri": bool(settings.neo4j.uri),
+            "username": bool(settings.neo4j.user),
+            "password": bool(settings.neo4j.password),
+            "database": bool(settings.neo4j.database),
+        },
+        "azure_openai": {
+            "configured": settings.validate_azure_openai(),
+            "api_key": bool(settings.azure_openai.api_key),
+            "endpoint": bool(settings.azure_openai.endpoint),
+            "deployment": bool(settings.azure_openai.deployment),
+            "api_version": bool(settings.azure_openai.api_version),
+        }
+    }
+
 # Advanced GraphRAG endpoint
 @app.post("/api/graphrag/query")
 async def advanced_graphrag_query(request: QueryRequest):

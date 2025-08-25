@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { healthCheck } from '../../lib/graph/neo4j';
-import { readNeo4jEnv, readAzureOpenAIEnv } from '../../lib/config';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { neo4jDriver } from '../../lib/graph/neo4j';
+import { hasNeo4jConfig, hasAzureOpenAIConfig } from '../../lib/config';
 
 interface HealthCheckResponse {
   status: 'healthy' | 'unhealthy';
@@ -27,17 +27,14 @@ export default async function handler(
 
   try {
     // Test configuration availability
-    const neo4jEnv = readNeo4jEnv();
-    const azureEnv = readAzureOpenAIEnv();
-    
-    const neo4jConfigOk = !!(neo4jEnv.NEO4J_URI && neo4jEnv.NEO4J_USERNAME && neo4jEnv.NEO4J_PASSWORD);
-    const azureConfigOk = !!(azureEnv.AZURE_OPENAI_API_KEY && azureEnv.AZURE_OPENAI_ENDPOINT && azureEnv.AZURE_OPENAI_DEPLOYMENT);
+    const neo4jConfigOk = hasNeo4jConfig();
+    const azureConfigOk = hasAzureOpenAIConfig();
 
     // Test Neo4j connectivity (only if config is available)
     let neo4jOk = false;
     if (neo4jConfigOk) {
       try {
-        neo4jOk = await healthCheck();
+        neo4jOk = await neo4jDriver.healthCheck();
       } catch {
         neo4jOk = false;
       }

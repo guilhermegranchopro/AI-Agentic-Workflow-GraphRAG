@@ -14,7 +14,13 @@
     "typecheck": "tsc --noEmit",
     "unused": "ts-prune",
     "clean": "rimraf .next",
-    "health": "curl http://localhost:3000/api/health"
+    "health": "curl http://localhost:3000/api/health",
+    "py:venv": "python -m venv python_backend/.venv",
+    "py:install": "pip install -r python_backend/requirements.txt",
+    "py:dev": "uvicorn python_backend.main:app --reload --host 127.0.0.1 --port 8000",
+    "py:test": "pytest python_backend/tests -q",
+    "py:fmt": "black python_backend",
+    "py:lint": "flake8 python_backend"
   },
   "dependencies": {
     "@types/node": "^20.19.11",

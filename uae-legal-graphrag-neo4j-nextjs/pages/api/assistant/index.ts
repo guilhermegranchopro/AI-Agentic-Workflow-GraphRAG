@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { orchestrator } from '../../../lib/ai/orchestrator';
+import { hasAzureOpenAIConfig } from '../../../lib/config';
 
 export const config = {
   runtime: 'nodejs',
@@ -20,6 +22,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userMessage = messages[messages.length - 1];
     const query = userMessage?.content || '';
 
+    // Check Azure OpenAI configuration
+    if (!hasAzureOpenAIConfig()) {
+      return res.status(503).json({
+        error: 'Azure OpenAI not configured',
+        message: 'Please configure Azure OpenAI environment variables',
+        details: {
+          azure_openai_configured: false,
+          required_vars: ['AZURE_OPENAI_API_KEY', 'AZURE_OPENAI_ENDPOINT', 'AZURE_OPENAI_DEPLOYMENT']
+        }
+      });
+    }
+
     // Set headers for SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -27,8 +41,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
 
-    // Always use Python backend now
-    await streamFromPythonBackend(query, res);
+    // Send initial progress
+    res.write(`data: ${JSON.stringify({
+      type: 'progress',
+      data: {
+        stage: 'processing',
+        message: 'Processing your legal query...'
+      }
+    })}\n\n`);
+
+    // Process query with orchestrator
+    const result = await orchestrator.processQuery({
+      query,
+      strategy: 'hybrid',
+      maxResults: 15
+    });
+
+    // Send final response
+    res.write(`data: ${JSON.stringify({
+      text: result.response,
+      citations: result.sources,
+      agents: result.agent_results,
+      confidence: result.confidence,
+      strategy: result.strategy_used,
+      metadata: result.metadata
+    })}\n\n`);
 
     res.end();
 
@@ -42,82 +79,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     } else {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Internal server error' })}\n\n`);
+      res.write(`data: ${JSON.stringify({
+        error: 'Processing failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      })}\n\n`);
       res.end();
     }
-  }
-}
-
-async function streamFromPythonBackend(query: string, res: NextApiResponse) {
-  try {
-    // Check if Python backend is available
-    const healthResponse = await fetch('http://127.0.0.1:8000/health');
-    if (!healthResponse.ok) {
-      throw new Error('Python backend not available');
-    }
-
-    // Send initial progress
-    res.write(`event: progress\ndata: ${JSON.stringify({ 
-      type: 'progress', 
-      data: { 
-        stage: 'python_backend', 
-        message: 'Connecting to Python backend with advanced AI capabilities...' 
-      } 
-    })}\n\n`);
-
-    // Call Python backend streaming endpoint
-    const response = await fetch('http://127.0.0.1:8000/api/assistant/stream', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        query: query,
-        mode: 'hybrid',
-        max_results: 15
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Python backend error: ${response.status}`);
-    }
-
-    // Stream the response from Python backend
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error('No response reader available');
-    }
-
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data.trim()) {
-            // Forward the data from Python backend
-            res.write(`data: ${data}\n\n`);
-          }
-        }
-      }
-    }
-
-  } catch (error) {
-    console.error('Python backend error:', error);
-    
-    // Send error response
-    res.write(`event: error\ndata: ${JSON.stringify({
-      error: 'Python backend unavailable',
-      message: 'The advanced Python backend is currently unavailable. Please ensure the Python FastAPI server is running on port 8000.',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    })}\n\n`);
   }
 }

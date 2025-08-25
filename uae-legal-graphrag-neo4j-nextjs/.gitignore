@@ -2,6 +2,7 @@
 /.next/
 /out/
 /build/
+/dist/
 
 # Dependencies
 node_modules/
@@ -55,3 +56,18 @@ tmp/
 # Build outputs
 dist/
 lib/
+
+# Coverage
+coverage/
+
+# Turbo
+.turbo/
+
+# Vercel
+.vercel/
+
+# Python specific
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
