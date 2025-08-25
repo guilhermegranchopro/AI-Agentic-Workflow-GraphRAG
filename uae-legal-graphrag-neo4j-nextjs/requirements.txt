@@ -8,22 +8,16 @@ pydantic-settings==2.1.0
 neo4j==5.15.0
 neo4j-driver==5.15.0
 
-# AI and ML
+# AI and ML (Simplified - no problematic dependencies)
 openai==1.3.7
-sentence-transformers==2.2.2
-transformers==4.36.2
-torch==2.1.2
 numpy==1.26.2
 scikit-learn==1.3.2
 
-# Text Processing
-spacy==3.7.2
+# Text Processing (Simplified)
 nltk==3.8.1
-textblob==0.17.1
 
 # Graph Processing
 networkx==3.2.1
-python-louvain==0.16
 
 # HTTP and Async
 httpx==0.25.2

@@ -51,7 +51,7 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
     // Check if Python backend is available
     let pythonBackendAvailable = false;
     try {
-      const healthResponse = await fetch('http://127.0.0.1:8000/health', { 
+      const healthResponse = await fetch('http://127.0.0.1:8001/health', { 
         signal: AbortSignal.timeout(3000) // 3 second timeout
       });
       pythonBackendAvailable = healthResponse.ok;
@@ -87,7 +87,7 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
     })}\n\n`);
 
     // Call Python GraphRAG endpoint
-    const graphragResponse = await fetch('http://127.0.0.1:8000/api/graphrag/query', {
+    const graphragResponse = await fetch('http://127.0.0.1:8001/api/graphrag/query', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
     })}\n\n`);
 
     // Call Python advanced analysis endpoint
-    const analysisResponse = await fetch('http://127.0.0.1:8000/api/analysis/advanced', {
+    const analysisResponse = await fetch('http://127.0.0.1:8001/api/analysis/advanced', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ async function analyzeWithPythonBackend(query: string, scope: string, maxFinding
     // Send error response
     res.write(`event: error\ndata: ${JSON.stringify({
       error: 'Python backend analysis failed',
-      message: 'The advanced Python backend analysis is currently unavailable. Please ensure the Python FastAPI server is running on port 8000.',
+      message: 'The advanced Python backend analysis is currently unavailable. Please ensure the Python FastAPI server is running on port 8001.',
       details: error instanceof Error ? error.message : 'Unknown error'
     })}\n\n`);
   }
