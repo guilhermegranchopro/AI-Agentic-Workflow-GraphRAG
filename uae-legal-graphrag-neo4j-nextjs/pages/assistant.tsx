@@ -279,15 +279,15 @@ const LegalAssistantPage: React.FC = () => {
               <MessageSquare className="h-5 w-5 md:h-6 md:w-6 lg:h-8 lg:w-8 text-cyan-400" />
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">AI Assistant</h1>
             </div>
-            <p className="text-sm md:text-base lg:text-lg text-gray-300">
+            <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
               Multi-agent system for complex legal queries with autonomous reasoning
             </p>
-            <div className="mt-3 md:mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-lg p-3 md:p-4 backdrop-blur-sm">
+            <div className="mt-3 md:mt-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-xl p-3 md:p-4 backdrop-blur-sm shadow-lg">
               <div className="flex items-start space-x-2">
                 <Brain className="h-4 w-4 md:h-5 md:w-5 text-cyan-400 mt-0.5" />
                 <div>
                   <h3 className="font-medium text-cyan-100 mb-1 text-sm md:text-base">AI Agents Workflow</h3>
-                  <p className="text-gray-300 text-xs md:text-sm">
+                  <p className="text-gray-300 text-xs md:text-sm leading-relaxed">
                     Powered by advanced multi-agent reasoning with Local RAG, Global RAG, and DRIFT strategies. 
                   Each query is intelligently routed to the most appropriate agent for optimal results.
                 </p>
@@ -297,7 +297,7 @@ const LegalAssistantPage: React.FC = () => {
         </div>
 
         {/* Chat Container - Fixed Height with Internal Scrolling */}
-        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-lg border border-purple-500/20 shadow-2xl backdrop-blur-sm overflow-hidden">
+        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-xl border border-purple-500/20 shadow-2xl backdrop-blur-sm overflow-hidden">
           {/* Messages - Scrollable Area */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-gray-800/20">
             {messages.map((message) => (
@@ -311,7 +311,7 @@ const LegalAssistantPage: React.FC = () => {
                         </span>
                         <User className="h-4 w-4 text-cyan-400" />
                       </div>
-                      <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg px-4 py-3 shadow-lg">
+                      <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl px-4 py-3 shadow-lg">
                         <p className="whitespace-pre-wrap">{message.content}</p>
                       </div>
                     </div>
@@ -341,7 +341,7 @@ const LegalAssistantPage: React.FC = () => {
                         </span>
                       </div>
                       
-                      <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 text-gray-100 rounded-lg px-4 py-3 border border-purple-500/20 backdrop-blur-sm shadow-lg">
+                      <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 text-gray-100 rounded-xl px-4 py-3 border border-purple-500/20 backdrop-blur-sm shadow-lg">
                         <div className="prose max-w-none prose-invert prose-purple">
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
@@ -381,7 +381,7 @@ const LegalAssistantPage: React.FC = () => {
 
                       {/* Sources */}
                       {message.metadata?.sources && message.metadata.sources.length > 0 && (
-                        <div className="mt-3 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-lg p-3 backdrop-blur-sm">
+                        <div className="mt-3 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-3 backdrop-blur-sm shadow-lg">
                           <h4 className="text-sm font-medium text-blue-300 mb-2">
                             📚 Sources ({message.metadata.sources.length})
                           </h4>
@@ -415,7 +415,7 @@ const LegalAssistantPage: React.FC = () => {
 
                 {message.type === 'system' && (
                   <div className="flex justify-center">
-                    <div className="max-w-2xl bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg px-4 py-3 text-center backdrop-blur-sm">
+                    <div className="max-w-2xl bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-xl px-4 py-3 text-center backdrop-blur-sm shadow-lg">
                       <p className="text-yellow-200 text-sm">{message.content}</p>
                     </div>
                   </div>
@@ -423,7 +423,7 @@ const LegalAssistantPage: React.FC = () => {
 
                 {message.type === 'progress' && (
                   <div className="flex justify-center">
-                    <div className="max-w-3xl bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-lg px-4 py-3 backdrop-blur-sm">
+                    <div className="max-w-3xl bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg">
                       <div className="flex items-center space-x-3">
                         <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
                         <div className="flex-1">
@@ -469,7 +469,7 @@ const LegalAssistantPage: React.FC = () => {
                     <Bot className="h-4 w-4 text-purple-400" />
                     <span className="text-sm text-gray-300">AI is thinking...</span>
                   </div>
-                  <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-lg px-4 py-3 backdrop-blur-sm">
+                  <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-xl px-4 py-3 backdrop-blur-sm">
                     <div className="flex items-center space-x-2">
                       <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
                       <span className="text-gray-300 text-sm">Processing your query...</span>
@@ -516,7 +516,7 @@ const LegalAssistantPage: React.FC = () => {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Ask a legal question (e.g., 'What are the liability rules for commercial companies and how are they interpreted by courts?')"
-                    className="w-full h-20 resize-none bg-gray-800/80 border border-purple-500/30 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 backdrop-blur-sm"
+                    className="w-full h-20 resize-none bg-gray-800/80 border border-purple-500/30 rounded-xl px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 backdrop-blur-sm transition-all duration-200"
                     disabled={isLoading}
                   />
                 </div>
@@ -524,7 +524,7 @@ const LegalAssistantPage: React.FC = () => {
                   <button
                     onClick={handleSendMessage}
                     disabled={isLoading || !inputValue.trim()}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 flex items-center space-x-2"
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 flex items-center space-x-2"
                   >
                     {isLoading ? (
                       <Loader2 className="h-5 w-5 animate-spin" />

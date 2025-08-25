@@ -301,7 +301,7 @@ export default function Graph() {
           <div className="text-gray-400 mb-6 whitespace-pre-line">{error}</div>
           
           {error.includes('Neo4j') && (
-            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6 text-left">
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 mb-6 text-left shadow-lg">
               <h3 className="text-yellow-400 font-semibold mb-2">⚠️ Configuration Required</h3>
               <p className="text-gray-300 text-sm mb-3">
                 The graph visualization requires Neo4j database connection. 
@@ -336,14 +336,14 @@ NEO4J_PASSWORD=your-password`}
           <div className="flex gap-3">
             <button
               onClick={fetchGraphData}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
             >
               Retry
             </button>
             <a
               href="/api/graph"
               target="_blank"
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-lg hover:shadow-gray-500/25"
             >
               Test API
             </a>
@@ -359,16 +359,16 @@ NEO4J_PASSWORD=your-password`}
         <div className="space-y-3 md:space-y-4 lg:space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               🔗 Knowledge Graph
             </h1>
-            <p className="text-sm md:text-base lg:text-lg text-gray-300">
+            <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
               Interactive exploration of the legal knowledge graph
             </p>
             {graphData && (
               <div className="flex justify-center space-x-4 md:space-x-6 mt-3 md:mt-4 text-xs md:text-sm text-gray-400">
-                <span>📊 {graphData.stats.nodeCount} nodes</span>
-                <span>🔗 {graphData.stats.edgeCount} edges</span>
+                <span className="bg-purple-900/30 px-2 py-1 rounded-lg border border-purple-500/30">📊 {graphData.stats.nodeCount} nodes</span>
+                <span className="bg-blue-900/30 px-2 py-1 rounded-lg border border-blue-500/30">🔗 {graphData.stats.edgeCount} edges</span>
               <span>� {Object.keys(graphData.stats.nodeTypes).length} node types</span>
             </div>
           )}
@@ -430,12 +430,12 @@ NEO4J_PASSWORD=your-password`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search nodes by ID or label..."
-                  className="flex-1 bg-gray-900/50 border border-gray-600/50 rounded-l-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                  className="flex-1 bg-gray-900/50 border border-gray-600/50 rounded-l-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
                   onKeyPress={(e) => e.key === 'Enter' && focusNode()}
                 />
                 <button
                   onClick={focusNode}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-r-lg transition-colors"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-r-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
                 >
                   🔍
                 </button>
@@ -443,13 +443,13 @@ NEO4J_PASSWORD=your-password`}
             </div>
             <button
               onClick={resetView}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-gray-500/25"
             >
               🎯 Reset View
             </button>
             <button
               onClick={fetchGraphData}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-green-500/25"
             >
               🔄 Refresh
             </button>
@@ -459,7 +459,7 @@ NEO4J_PASSWORD=your-password`}
                 setError(null);
                 initializeNetwork();
               }}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-blue-500/25"
             >
               🔧 Force Init
             </button>
