@@ -25,8 +25,7 @@ class LegalAnalysisService:
         self.legal_patterns = self._load_legal_patterns()
         self.openai_client = AsyncOpenAI(
             api_key=settings.azure_openai_api_key,
-            base_url=f"{settings.azure_openai_endpoint}/openai/deployments/{settings.azure_openai_deployment}",
-            api_version=settings.azure_openai_api_version
+            base_url=f"{settings.azure_openai_endpoint}/openai/deployments/{settings.azure_openai_deployment}"
         )
     
     def _load_legal_patterns(self) -> Dict[str, List[str]]:

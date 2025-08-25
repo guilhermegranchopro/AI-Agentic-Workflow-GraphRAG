@@ -118,12 +118,16 @@ class PythonOrchestrator:
     async def openai_health(self) -> bool:
         """Check OpenAI health"""
         try:
+            # Check if OpenAI is configured
+            if not settings.azure_openai_api_key or not settings.azure_openai_endpoint:
+                logger.info("OpenAI not configured, health check returns False")
+                return False
+                
             # Simple test call
             from openai import AsyncOpenAI
             client = AsyncOpenAI(
                 api_key=settings.azure_openai_api_key,
-                base_url=f"{settings.azure_openai_endpoint}/openai/deployments/{settings.azure_openai_deployment}",
-                api_version=settings.azure_openai_api_version
+                base_url=f"{settings.azure_openai_endpoint}/openai/deployments/{settings.azure_openai_deployment}"
             )
             
             response = await client.chat.completions.create(
