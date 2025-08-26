@@ -39,9 +39,9 @@ export default function Graph() {
   const [selectedRelationships, setSelectedRelationships] = useState([
     'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
     'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
-    'ADMINISTERS', 'RECOGNIZES', 'ESTABLISHES', 'DEFINED_BY', 'PROVIDES',
-    'REGULATED_BY', 'HAS_COURT', 'REQUIRES', 'PROTECTED_BY', 'PREVENTS',
-    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN', 'GOVERNED_BY',
+    'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
+    'REGULATED_BY', 'HAS_COURT', 'PROTECTED_BY', 'PREVENTS',
+    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN',
     'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
     'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
   ]);
@@ -51,9 +51,9 @@ export default function Graph() {
   const availableRelationships = [
     'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
     'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
-    'ADMINISTERS', 'RECOGNIZES', 'ESTABLISHES', 'DEFINED_BY', 'PROVIDES',
-    'REGULATED_BY', 'HAS_COURT', 'REQUIRES', 'PROTECTED_BY', 'PREVENTS',
-    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN', 'GOVERNED_BY',
+    'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
+    'REGULATED_BY', 'HAS_COURT', 'PROTECTED_BY', 'PREVENTS',
+    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN',
     'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
     'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
   ];
@@ -168,12 +168,18 @@ export default function Graph() {
           shadow: true,
         },
         edges: {
-          width: 2,
+          width: 3,
           shadow: true,
           smooth: {
             enabled: true,
             type: 'continuous',
             roundness: 0.2,
+          },
+          font: {
+            size: 10,
+            color: '#ffffff',
+            strokeWidth: 2,
+            strokeColor: '#000000'
           },
         },
         physics: {
@@ -400,18 +406,18 @@ NEO4J_PASSWORD=your-password`}
           {/* Header */}
           <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              🔗 Knowledge Graph
+              🧠 UAE Legal Knowledge Graph
             </h1>
             <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
-              Interactive exploration of the legal knowledge graph
+              Comprehensive interactive exploration of UAE legal framework with 29 entity types and relationships
             </p>
             {graphData && (
               <div className="flex justify-center space-x-4 md:space-x-6 mt-3 md:mt-4 text-xs md:text-sm text-gray-400">
                 <span className="bg-purple-900/30 px-2 py-1 rounded-lg border border-purple-500/30">📊 {graphData.stats.nodeCount} nodes</span>
                 <span className="bg-blue-900/30 px-2 py-1 rounded-lg border border-blue-500/30">🔗 {graphData.stats.edgeCount} edges</span>
-              <span>� {Object.keys(graphData.stats.nodeTypes).length} node types</span>
-            </div>
-          )}
+                <span className="bg-green-900/30 px-2 py-1 rounded-lg border border-green-500/30">🎨 {Object.keys(graphData.stats.nodeTypes).length} node types</span>
+              </div>
+            )}
         </div>
 
         {/* Graph Configuration Controls */}
@@ -477,7 +483,7 @@ NEO4J_PASSWORD=your-password`}
                   onClick={focusNode}
                   className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-r-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
                 >
-                  🔍
+                  🔍 Search
                 </button>
               </div>
             </div>
@@ -491,7 +497,7 @@ NEO4J_PASSWORD=your-password`}
               onClick={fetchGraphData}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-green-500/25"
             >
-              🔄 Refresh
+              🔄 Refresh Data
             </button>
             <button
               onClick={() => {
@@ -501,7 +507,7 @@ NEO4J_PASSWORD=your-password`}
               }}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-blue-500/25"
             >
-              🔧 Force Init
+              ⚙️ Reinitialize
             </button>
           </div>
         </div>
@@ -567,14 +573,42 @@ NEO4J_PASSWORD=your-password`}
         {/* Legend */}
         <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
           <h4 className="text-white font-semibold mb-3">🎨 Node Types</h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-h-64 overflow-y-auto">
             {[
-              { type: 'Instrument', desc: 'Legal instruments' },
-              { type: 'Provision', desc: 'Legal provisions' },
+              // Constitutional & Legal Framework
+              { type: 'Constitutional', desc: 'Constitutional framework' },
+              { type: 'Law', desc: 'Federal laws & regulations' },
+              { type: 'Regulation', desc: 'Specific regulations & decrees' },
+              
+              // Entities & Organizations
+              { type: 'EntityType', desc: 'Business entity types' },
+              { type: 'FreeZone', desc: 'Free zones & economic zones' },
+              { type: 'Regulator', desc: 'Regulatory bodies' },
               { type: 'Court', desc: 'Courts & judicial bodies' },
-              { type: 'Judgment', desc: 'Court decisions' },
-              { type: 'GazetteIssue', desc: 'Official publications' },
-              { type: 'Event', desc: 'Legal events' }
+              { type: 'InternationalBody', desc: 'International organizations' },
+              
+              // Legal Concepts & Types
+              { type: 'LegalConcept', desc: 'Legal principles & concepts' },
+              { type: 'ContractType', desc: 'Types of contracts' },
+              { type: 'IPType', desc: 'Intellectual property types' },
+              { type: 'EmployeeType', desc: 'Employment classifications' },
+              { type: 'TaxType', desc: 'Tax categories' },
+              { type: 'PropertyType', desc: 'Property classifications' },
+              { type: 'LegalProcedure', desc: 'Legal procedures' },
+              { type: 'CriminalOffense', desc: 'Criminal offenses' },
+              { type: 'LegalRemedy', desc: 'Legal remedies' },
+              { type: 'BusinessActivity', desc: 'Business activities' },
+              { type: 'LegalDocument', desc: 'Legal documents' },
+              { type: 'ComplianceRequirement', desc: 'Compliance requirements' },
+              { type: 'LegalProfession', desc: 'Legal professions' },
+              { type: 'LegalCase', desc: 'Legal cases & precedents' },
+              { type: 'PracticeArea', desc: 'Legal practice areas' },
+              { type: 'DisputeResolution', desc: 'Dispute resolution methods' },
+              { type: 'LiabilityType', desc: 'Types of liability' },
+              { type: 'LegalRight', desc: 'Legal rights' },
+              { type: 'LegalSanction', desc: 'Legal sanctions' },
+              { type: 'LegalProcess', desc: 'Legal processes' },
+              { type: 'EmploymentAction', desc: 'Employment actions' }
             ].map(({ type, desc }) => (
               <div key={type} className="flex items-center space-x-2">
                 <div 
@@ -591,11 +625,37 @@ NEO4J_PASSWORD=your-password`}
           
           <div className="mt-4 pt-4 border-t border-gray-700">
             <h5 className="text-gray-400 font-medium mb-2">Relationship Types:</h5>
-            <div className="text-xs text-gray-500 space-y-1">
-              <div><strong>HAS_PROVISION:</strong> Instrument contains provision</div>
-              <div><strong>CITES:</strong> One provision cites another</div>
-              <div><strong>INTERPRETED_BY:</strong> Provision interpreted by judgment</div>
-              <div><strong>AMENDED_BY:</strong> Provision amended by event</div>
+            <div className="text-xs text-gray-500 space-y-1 max-h-32 overflow-y-auto">
+              <div><strong>ESTABLISHES:</strong> Establishes legal framework</div>
+              <div><strong>DEFINES:</strong> Defines legal concepts</div>
+              <div><strong>REGULATES:</strong> Regulates activities</div>
+              <div><strong>PROTECTS:</strong> Protects rights/interests</div>
+              <div><strong>GOVERNED_BY:</strong> Governed by law</div>
+              <div><strong>REQUIRES:</strong> Requires compliance</div>
+              <div><strong>HAS_PRINCIPLE:</strong> Has legal principle</div>
+              <div><strong>ALIGNS_WITH:</strong> Aligns with standards</div>
+              <div><strong>OVERSEES:</strong> Oversees operations</div>
+              <div><strong>ENFORCES:</strong> Enforces regulations</div>
+              <div><strong>ADMINISTERS:</strong> Administers systems</div>
+              <div><strong>RECOGNIZES:</strong> Recognizes entities</div>
+              <div><strong>DEFINED_BY:</strong> Defined by law</div>
+              <div><strong>PROVIDES:</strong> Provides remedies</div>
+              <div><strong>REGULATED_BY:</strong> Regulated by authority</div>
+              <div><strong>HAS_COURT:</strong> Has court system</div>
+              <div><strong>PROTECTED_BY:</strong> Protected by law</div>
+              <div><strong>PREVENTS:</strong> Prevents violations</div>
+              <div><strong>AMENDS:</strong> Amends existing law</div>
+              <div><strong>SUPPLEMENTS:</strong> Supplements law</div>
+              <div><strong>ENFORCED_BY:</strong> Enforced by authority</div>
+              <div><strong>SPECIALIZES_IN:</strong> Specializes in area</div>
+              <div><strong>ALTERNATIVE_TO:</strong> Alternative to process</div>
+              <div><strong>PRECEDES:</strong> Precedes action</div>
+              <div><strong>SIMILAR_TO:</strong> Similar to concept</div>
+              <div><strong>INCLUDES:</strong> Includes elements</div>
+              <div><strong>IMPOSED_BY:</strong> Imposed by authority</div>
+              <div><strong>ADMINISTERED_BY:</strong> Administered by body</div>
+              <div><strong>GUARANTEED_BY:</strong> Guaranteed by constitution</div>
+              <div><strong>HEARD_BY:</strong> Heard by court</div>
             </div>
           </div>
         </div>

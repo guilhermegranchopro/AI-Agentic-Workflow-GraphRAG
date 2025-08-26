@@ -164,10 +164,22 @@ const HomePage: React.FC = () => {
 
           {/* Database Statistics */}
           <section>
-            <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center mb-6">
-              <Database className="h-6 w-6 mr-3 text-purple-400" />
-              Database Statistics
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center">
+                <Database className="h-6 w-6 mr-3 text-purple-400" />
+                Database Statistics
+              </h2>
+              <button
+                onClick={fetchDatabaseStats}
+                disabled={loading}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/25 flex items-center space-x-2"
+              >
+                <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+              </button>
+            </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard
                 title="Documents"
@@ -194,6 +206,13 @@ const HomePage: React.FC = () => {
                 color="primary"
               />
             </div>
+            {dbStats && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-400">
+                  Last updated: {new Date(dbStats.last_updated).toLocaleString()}
+                </p>
+              </div>
+            )}
           </section>
 
           {/* GraphRAG Methods */}
