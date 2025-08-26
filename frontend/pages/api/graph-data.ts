@@ -362,12 +362,12 @@ function generateComprehensiveUAEKnowledgeGraph(): GraphData {
   // 26. DISPUTE RESOLUTION MECHANISMS
   const expertDetermination = addNode("Expert Determination", "DisputeResolution", { type: "technical_dispute" });
   const negotiation = addNode("Negotiation", "DisputeResolution", { type: "direct_resolution" });
-  const conciliation = addNode("Conciliation", "DisputeResolution", { type: "assisted_resolution" });
+  const conciliationProcess = addNode("Conciliation", "DisputeResolution", { type: "assisted_resolution" });
   const adjudication = addNode("Adjudication", "DisputeResolution", { type: "binding_resolution" });
 
   addEdge(expertDetermination, arbitration, "ALTERNATIVE_TO", "ALTERNATIVE_TO");
   addEdge(negotiation, mediation, "PRECEDES", "PRECEDES");
-  addEdge(conciliation, mediation, "SIMILAR_TO", "SIMILAR_TO");
+  addEdge(conciliationProcess, mediation, "SIMILAR_TO", "SIMILAR_TO");
   addEdge(adjudication, litigation, "ALTERNATIVE_TO", "ALTERNATIVE_TO");
 
   // 27. LEGAL LIABILITIES & OBLIGATIONS

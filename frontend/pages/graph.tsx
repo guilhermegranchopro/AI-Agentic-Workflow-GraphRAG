@@ -35,19 +35,27 @@ export default function Graph() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [maxNodes, setMaxNodes] = useState(50);
-  const [selectedRelationships, setSelectedRelationships] = useState(['HAS_PROVISION', 'CITES', 'INTERPRETED_BY']);
+  const [maxNodes, setMaxNodes] = useState(149);
+  const [selectedRelationships, setSelectedRelationships] = useState([
+    'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
+    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
+    'ADMINISTERS', 'RECOGNIZES', 'ESTABLISHES', 'DEFINED_BY', 'PROVIDES',
+    'REGULATED_BY', 'HAS_COURT', 'REQUIRES', 'PROTECTED_BY', 'PREVENTS',
+    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN', 'GOVERNED_BY',
+    'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
+    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
+  ]);
   const networkRef = useRef<HTMLDivElement>(null);
   const networkInstance = useRef<any>(null);
 
   const availableRelationships = [
-    'HAS_PROVISION',
-    'CITES', 
-    'INTERPRETED_BY',
-    'AMENDED_BY',
-    'PUBLISHED_IN',
-    'AFFECTS',
-    'ISSUED'
+    'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
+    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
+    'ADMINISTERS', 'RECOGNIZES', 'ESTABLISHES', 'DEFINED_BY', 'PROVIDES',
+    'REGULATED_BY', 'HAS_COURT', 'REQUIRES', 'PROTECTED_BY', 'PREVENTS',
+    'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN', 'GOVERNED_BY',
+    'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
+    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
   ];
 
   useEffect(() => {
@@ -139,7 +147,9 @@ export default function Graph() {
           to: edge.to,
           label: edge.type,
           arrows: 'to',
-          color: { color: '#6366f1', opacity: 0.6 }
+          color: { color: '#6366f1', opacity: 0.8 },
+          width: 2,
+          font: { size: 10, color: '#ffffff', strokeWidth: 2, strokeColor: '#000000' }
         }))
       };
 
@@ -238,13 +248,43 @@ export default function Graph() {
 
   const getNodeColor = (nodeType: string): string => {
     const colors: Record<string, string> = {
-      'Instrument': '#ff6b6b',    // Red for legal instruments
-      'Provision': '#4ecdc4',     // Teal for provisions  
-      'Court': '#45b7d1',         // Blue for courts
-      'Judgment': '#f9ca24',      // Yellow for judgments
-      'GazetteIssue': '#6c5ce7',  // Purple for gazette issues
-      'Event': '#fd79a8',         // Pink for events
-      'Unknown': '#95a5a6',       // Gray for unknown
+      // Constitutional & Legal Framework
+      'Constitutional': '#ff6b6b',    // Red for constitutional
+      'Law': '#4ecdc4',              // Teal for laws
+      'Regulation': '#45b7d1',        // Blue for regulations
+      
+      // Entities & Organizations
+      'EntityType': '#f9ca24',        // Yellow for entity types
+      'FreeZone': '#6c5ce7',          // Purple for free zones
+      'Regulator': '#fd79a8',         // Pink for regulators
+      'Court': '#00b894',             // Green for courts
+      'InternationalBody': '#e17055', // Orange for international bodies
+      
+      // Legal Concepts & Types
+      'LegalConcept': '#74b9ff',      // Light blue for legal concepts
+      'ContractType': '#a29bfe',      // Light purple for contract types
+      'IPType': '#fd79a8',            // Pink for IP types
+      'EmployeeType': '#fdcb6e',      // Light orange for employee types
+      'TaxType': '#e84393',           // Dark pink for tax types
+      'PropertyType': '#00cec9',      // Cyan for property types
+      'LegalProcedure': '#fdcb6e',    // Light orange for procedures
+      'CriminalOffense': '#d63031',   // Dark red for criminal offenses
+      'LegalRemedy': '#00b894',       // Green for remedies
+      'BusinessActivity': '#6c5ce7',  // Purple for business activities
+      'LegalDocument': '#fd79a8',     // Pink for documents
+      'ComplianceRequirement': '#e17055', // Orange for compliance
+      'LegalProfession': '#74b9ff',   // Light blue for professions
+      'LegalCase': '#f9ca24',         // Yellow for legal cases
+      'PracticeArea': '#a29bfe',      // Light purple for practice areas
+      'DisputeResolution': '#00cec9', // Cyan for dispute resolution
+      'LiabilityType': '#e84393',     // Dark pink for liability types
+      'LegalRight': '#fdcb6e',        // Light orange for legal rights
+      'LegalSanction': '#d63031',     // Dark red for sanctions
+      'LegalProcess': '#6c5ce7',      // Purple for processes
+      'EmploymentAction': '#fd79a8',  // Pink for employment actions
+      
+      // Default
+      'Unknown': '#95a5a6',           // Gray for unknown
     };
     return colors[nodeType] || colors['Unknown'];
   };
@@ -385,7 +425,7 @@ NEO4J_PASSWORD=your-password`}
               <input
                 type="range"
                 min="10"
-                max="100"
+                max="149"
                 value={maxNodes}
                 onChange={(e) => setMaxNodes(parseInt(e.target.value))}
                 className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
