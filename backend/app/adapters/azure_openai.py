@@ -19,6 +19,7 @@ class AzureLLM:
         self.client = AsyncOpenAI(
             api_key=settings.azure_openai_api_key,
             azure_endpoint=settings.azure_openai_endpoint,
+            azure_deployment=settings.azure_openai_deployment,
             api_version=settings.azure_openai_api_version
         )
         self.deployment = settings.azure_openai_deployment
