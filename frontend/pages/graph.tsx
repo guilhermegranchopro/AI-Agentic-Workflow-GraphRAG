@@ -35,7 +35,7 @@ export default function Graph() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [maxNodes, setMaxNodes] = useState(149);
+  const [maxNodes, setMaxNodes] = useState(150);
   const [selectedRelationships, setSelectedRelationships] = useState([
     'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
     'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
@@ -406,7 +406,7 @@ NEO4J_PASSWORD=your-password`}
           {/* Header */}
           <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              🧠 UAE Legal Knowledge Graph
+              UAE Legal Knowledge Graph
             </h1>
             <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
               Comprehensive interactive exploration of UAE legal framework with 29 entity types and relationships
@@ -431,7 +431,7 @@ NEO4J_PASSWORD=your-password`}
               <input
                 type="range"
                 min="10"
-                max="149"
+                max="300"
                 value={maxNodes}
                 onChange={(e) => setMaxNodes(parseInt(e.target.value))}
                 className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"

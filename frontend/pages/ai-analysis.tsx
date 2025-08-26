@@ -406,9 +406,9 @@ const AIAnalysisPage: React.FC = () => {
                     <span className="truncate flex-1 mr-2">{analysisState.stage} - {analysisState.message}</span>
                     <span className="text-purple-400 font-medium">{analysisState.progress}%</span>
                   </div>
-                  <div className="w-full bg-gray-700/50 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-gray-600/60 rounded-full h-3 overflow-hidden border border-gray-500/50">
                     <div 
-                      className="bg-gradient-to-r from-purple-500 via-purple-400 to-cyan-500 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
+                      className="bg-gradient-to-r from-green-400 via-blue-400 to-cyan-400 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
                       style={{ width: `${analysisState.progress}%` }}
                     />
                   </div>
