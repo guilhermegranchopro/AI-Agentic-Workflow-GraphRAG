@@ -72,7 +72,7 @@ export default function Graph() {
         relationships: selectedRelationships.join(',')
       });
       
-      const response = await fetch(`/api/graph-data?${params}`);
+      const response = await fetch(`/api/graph?${params}`);
       
       if (!response.ok) {
         // Try to get detailed error information
