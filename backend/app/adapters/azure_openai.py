@@ -18,8 +18,7 @@ class AzureLLM:
             
         self.client = AsyncOpenAI(
             api_key=settings.azure_openai_api_key,
-            azure_endpoint=settings.azure_openai_endpoint,
-            azure_deployment=settings.azure_openai_deployment,
+            base_url=f"{settings.azure_openai_endpoint}openai/deployments/{settings.azure_openai_deployment}",
             api_version=settings.azure_openai_api_version
         )
         self.deployment = settings.azure_openai_deployment
@@ -43,7 +42,7 @@ class AzureLLM:
         try:
             response = await asyncio.wait_for(
                 self.client.chat.completions.create(
-                    model=self.deployment,
+                    model=settings.azure_openai_deployment,
                     messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens
@@ -72,7 +71,7 @@ class AzureLLM:
         try:
             response = await asyncio.wait_for(
                 self.client.embeddings.create(
-                    model=self.deployment,
+                    model=settings.azure_openai_deployment,
                     input=texts
                 ),
                 timeout=timeout

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { neo4jDriver } from '../../lib/graph/neo4j';
-import { hasNeo4jConfig, hasAzureOpenAIConfig } from '../../lib/config';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 interface HealthCheckResponse {
   status: 'healthy' | 'unhealthy';
@@ -26,28 +26,19 @@ export default async function handler(
   }
 
   try {
-    // Test configuration availability
-    const neo4jConfigOk = hasNeo4jConfig();
-    const azureConfigOk = hasAzureOpenAIConfig();
-
-    // Test Neo4j connectivity (only if config is available)
-    let neo4jOk = false;
-    if (neo4jConfigOk) {
-      try {
-        neo4jOk = await neo4jDriver.healthCheck();
-      } catch {
-        neo4jOk = false;
-      }
-    }
+    // Proxy request to backend
+    const backendResponse = await fetch(`${BACKEND_URL}/health`);
+    const backendData = await backendResponse.json();
     
-    const isHealthy = neo4jOk && azureConfigOk;
+    // Transform backend response to frontend format
+    const isHealthy = backendData.status === 'healthy';
     
     res.status(isHealthy ? 200 : 503).json({
       status: isHealthy ? 'healthy' : 'unhealthy',
-      timestamp: new Date().toISOString(),
+      timestamp: backendData.timestamp,
       services: {
-        neo4j: neo4jOk,
-        azure_openai: azureConfigOk
+        neo4j: backendData.dependencies?.neo4j === 'healthy',
+        azure_openai: backendData.dependencies?.azure_openai === 'healthy'
       }
     });
 

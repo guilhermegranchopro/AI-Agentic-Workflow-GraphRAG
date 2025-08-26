@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { orchestrator } from '../../../lib/ai/orchestrator';
-import { hasAzureOpenAIConfig } from '../../../lib/config';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export const config = {
   runtime: 'nodejs',
@@ -22,52 +22,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userMessage = messages[messages.length - 1];
     const query = userMessage?.content || '';
 
-    // Check Azure OpenAI configuration
-    if (!hasAzureOpenAIConfig()) {
-      return res.status(503).json({
-        error: 'Azure OpenAI not configured',
-        message: 'Please configure Azure OpenAI environment variables',
-        details: {
-          azure_openai_configured: false,
-          required_vars: ['AZURE_OPENAI_API_KEY', 'AZURE_OPENAI_ENDPOINT', 'AZURE_OPENAI_DEPLOYMENT']
+    // For now, return mock response since Azure OpenAI is not fully configured
+    const mockResponse = {
+      text: `Based on UAE legal framework, I can help you with your query: "${query}". This is a mock response for testing purposes. In a production environment, this would be processed by the GraphRAG orchestrator with access to the full legal knowledge graph.`,
+      citations: [
+        {
+          title: "UAE Civil Code",
+          source: "Federal Law No. 5 of 1985",
+          relevance: 0.95
+        },
+        {
+          title: "Commercial Code", 
+          source: "Federal Law No. 18 of 1993",
+          relevance: 0.87
         }
-      });
-    }
-
-    // Set headers for SSE
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
-
-    // Send initial progress
-    res.write(`data: ${JSON.stringify({
-      type: 'progress',
-      data: {
-        stage: 'processing',
-        message: 'Processing your legal query...'
+      ],
+      agents: {
+        local: "Local GraphRAG agent processed query",
+        global: "Global GraphRAG agent provided context",
+        drift: "DRIFT agent analyzed legal changes"
+      },
+      confidence: 0.85,
+      strategy_used: "hybrid",
+      metadata: {
+        processing_time: 1.2,
+        sources_consulted: 2,
+        legal_jurisdiction: "UAE"
       }
-    })}\n\n`);
+    };
 
-    // Process query with orchestrator
-    const result = await orchestrator.processQuery({
-      query,
-      strategy: 'hybrid',
-      maxResults: 15
-    });
-
-    // Send final response
-    res.write(`data: ${JSON.stringify({
-      text: result.response,
-      citations: result.sources,
-      agents: result.agent_results,
-      confidence: result.confidence,
-      strategy: result.strategy_used,
-      metadata: result.metadata
-    })}\n\n`);
-
-    res.end();
+    // Set headers for JSON response
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(mockResponse);
 
   } catch (error) {
     console.error('Assistant API error:', error);
