@@ -92,135 +92,30 @@ const LegalAssistantPage: React.FC = () => {
 
       if (!response.ok) throw new Error('Failed to get response');
 
-      // Handle SSE streaming
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No response reader available');
-
-      let assistantContent = '';
+      // Handle regular JSON response
+      const responseData = await response.json();
+      
       const assistantMessage: Message = {
         id: generateId(),
         type: 'assistant',
-        content: '',
+        content: responseData.text || 'I apologize, but I couldn\'t generate a response.',
         timestamp: new Date(),
         metadata: {
-          agent_used: 'orchestrator',
-          strategy_used: 'multi-agent',
-          confidence: 0.8,
-          sources: []
+          agent_used: responseData.agents?.local || 'orchestrator',
+          strategy_used: responseData.strategy_used || 'multi-agent',
+          confidence: responseData.confidence || 0.8,
+          sources: responseData.citations?.map((c: any) => ({
+            id: c.title || 'unknown',
+            title: c.title || 'Unknown Source',
+            content: c.source || '',
+            type: 'knowledge_graph',
+            relevanceScore: c.relevance || 0.8
+          })) || []
         }
       };
 
-      // Add initial message
+      // Add assistant message
       setMessages(prev => [...prev, assistantMessage]);
-
-      // Track progress message ID for updates
-      let currentProgressMessageId: string | null = null;
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(data);
-              
-              // Handle progress events
-              if (parsed.type === 'progress') {
-                const progressData = parsed.data;
-                
-                if (currentProgressMessageId) {
-                  // Update existing progress message
-                  setMessages(prev => prev.map(msg => 
-                    msg.id === currentProgressMessageId 
-                      ? { 
-                          ...msg, 
-                          content: progressData.message,
-                          progressData 
-                        }
-                      : msg
-                  ));
-                } else {
-                  // Create new progress message
-                  const progressMessage: Message = {
-                    id: generateId(),
-                    type: 'progress',
-                    content: progressData.message,
-                    timestamp: new Date(),
-                    progressData
-                  };
-                  currentProgressMessageId = progressMessage.id;
-                  setMessages(prev => [...prev, progressMessage]);
-                }
-              } 
-              // Handle streaming response tokens
-              else if (parsed.token) {
-                assistantContent += parsed.token;
-                setMessages(prev => prev.map(msg => 
-                  msg.id === assistantMessage.id 
-                    ? { ...msg, content: assistantContent }
-                    : msg
-                ));
-              } 
-              // Handle final response (OrchestratorResponse)
-              else if (parsed.text && parsed.citations && parsed.agents) {
-                assistantContent = parsed.text;
-                setMessages(prev => prev.map(msg => 
-                  msg.id === assistantMessage.id 
-                    ? { 
-                        ...msg, 
-                        content: assistantContent,
-                        metadata: {
-                          ...msg.metadata,
-                          sources: parsed.citations?.map((c: any) => ({
-                            id: c.nodeId,
-                            title: c.snippet.substring(0, 50) + '...',
-                            content: c.snippet,
-                            type: 'knowledge_graph',
-                            relevanceScore: c.score
-                          })) || []
-                        }
-                      }
-                    : msg
-                ));
-                
-                // Remove progress message once complete
-                if (currentProgressMessageId) {
-                  setMessages(prev => prev.filter(msg => msg.id !== currentProgressMessageId));
-                }
-              }
-              else if (parsed.error) {
-                throw new Error(parsed.error);
-              }
-            } catch (e) {
-              // Ignore parsing errors for malformed lines
-              console.warn('Failed to parse SSE data:', data, e);
-            }
-          } else if (line.startsWith('event: complete')) {
-            // Final event - the actual data should be in the next 'data:' line
-            continue;
-          } else if (line.startsWith('event: error')) {
-            throw new Error('Stream error');
-          }
-        }
-      }
-
-      // Final message update
-      setMessages(prev => prev.map(msg => 
-        msg.id === assistantMessage.id 
-          ? { ...msg, content: assistantContent || 'I apologize, but I couldn\'t generate a response.' }
-          : msg
-      ));
 
     } catch (error) {
       const errorMessage: Message = {
