@@ -18,7 +18,7 @@ class A2AEvent(SQLModel, table=True):
     timestamp: datetime = Field(default_factory=datetime.utcnow, index=True)
     ttl: int = Field(default=60)
     payload: str = Field()  # JSON string
-    metadata: str = Field(default="{}")  # JSON string
+    event_metadata: str = Field(default="{}")  # JSON string
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
@@ -58,7 +58,7 @@ class EventStore:
             timestamp=envelope.timestamp,
             ttl=envelope.ttl,
             payload=json.dumps(envelope.payload),
-            metadata=json.dumps(envelope.metadata)
+            event_metadata=json.dumps(envelope.metadata)
         )
         
     def _event_to_envelope(self, event: A2AEvent) -> A2AEnvelope:
@@ -74,7 +74,7 @@ class EventStore:
             timestamp=event.timestamp,
             ttl=event.ttl,
             payload=json.loads(event.payload),
-            metadata=json.loads(event.metadata)
+            metadata=json.loads(event.event_metadata)
         )
         
     async def store_envelope(self, envelope: A2AEnvelope) -> bool:
