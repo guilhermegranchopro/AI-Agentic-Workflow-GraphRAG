@@ -257,7 +257,9 @@ const AIAnalysisPage: React.FC = () => {
       timestamp: new Date().toISOString(),
       findings: analysisState.findings,
       suggestions: analysisState.suggestions,
-      stats: analysisState.result.stats
+      stats: analysisState.result.stats,
+      summary: analysisState.result.summary,
+      confidence: analysisState.result.confidence
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -304,6 +306,38 @@ const AIAnalysisPage: React.FC = () => {
             <p className="text-sm md:text-base lg:text-lg text-gray-300 mb-3 md:mb-4 lg:mb-6 leading-relaxed">
               Automated legal analysis to find contradictions and suggest harmonising amendments
             </p>
+
+            {/* Suggested Queries */}
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-300 mb-3">Suggested Analysis Queries:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {[
+                  'VAT rates and tax regulations',
+                  'Employment notice periods',
+                  'Free zone tech licenses',
+                  'Copyright protection',
+                  'Board size requirements',
+                  'Data retention periods',
+                  'Corporate governance compliance',
+                  'Intellectual property rights',
+                  'Labor law termination',
+                  'Free zone office requirements',
+                  'Tax compliance obligations',
+                  'Data protection regulations'
+                ].map((query, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setFormData(prev => ({ ...prev, query }))}
+                    className="text-left px-3 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 hover:border-purple-500/50 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-200 group"
+                    disabled={analysisState.isRunning}
+                  >
+                    <span className="group-hover:text-purple-400 transition-colors duration-200">
+                      {query}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Analysis Form */}
             <form onSubmit={handleSubmit} className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-xl border border-purple-500/20 p-4 md:p-6 backdrop-blur-sm shadow-xl">
@@ -387,20 +421,20 @@ const AIAnalysisPage: React.FC = () => {
           {analysisState.result && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
               <div className="bg-gradient-to-r from-purple-900/30 to-purple-800/30 border border-purple-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-purple-300">{analysisState.result.stats.total}</div>
+                <div className="text-lg md:text-xl lg:text-2xl font-bold text-purple-300">{analysisState.result.stats?.total_contradictions || 0}</div>
                 <div className="text-xs md:text-sm text-gray-300">Total Contradictions</div>
               </div>
               <div className="bg-gradient-to-r from-red-900/30 to-red-800/30 border border-red-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-red-300">{analysisState.result.stats.bySeverity.critical || 0}</div>
-                <div className="text-xs md:text-sm text-gray-300">Critical Issues</div>
-              </div>
-              <div className="bg-gradient-to-r from-orange-900/30 to-orange-800/30 border border-orange-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-orange-300">{analysisState.result.stats.bySeverity.high || 0}</div>
+                <div className="text-lg md:text-xl lg:text-2xl font-bold text-red-300">{analysisState.result.stats?.high_priority || 0}</div>
                 <div className="text-xs md:text-sm text-gray-300">High Priority</div>
               </div>
+              <div className="bg-gradient-to-r from-orange-900/30 to-orange-800/30 border border-orange-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
+                <div className="text-lg md:text-xl lg:text-2xl font-bold text-orange-300">{analysisState.result.stats?.medium_priority || 0}</div>
+                <div className="text-xs md:text-sm text-gray-300">Medium Priority</div>
+              </div>
               <div className="bg-gradient-to-r from-green-900/30 to-green-800/30 border border-green-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-green-300">{analysisState.suggestions.length}</div>
-                <div className="text-xs md:text-sm text-gray-300">Harmonisation Suggestions</div>
+                <div className="text-lg md:text-xl lg:text-2xl font-bold text-green-300">{analysisState.result.stats?.low_priority || 0}</div>
+                <div className="text-xs md:text-sm text-gray-300">Low Priority</div>
               </div>
             </div>
           )}
@@ -506,6 +540,73 @@ const AIAnalysisPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Summary and Recommendations Section */}
+          {analysisState.result && (
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Analysis Summary */}
+              <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-xl border border-purple-500/20 shadow-2xl backdrop-blur-sm overflow-hidden">
+                <div className="p-4 border-b border-gray-700/50">
+                  <h2 className="text-lg md:text-xl font-semibold text-white flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-2 text-green-400" />
+                    Analysis Summary
+                  </h2>
+                </div>
+                <div className="p-4">
+                  <p className="text-sm text-gray-300 mb-3">{analysisState.result.summary}</p>
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <span>Confidence: {(analysisState.result.confidence * 100).toFixed(0)}%</span>
+                    <span>Query: "{analysisState.result.query}"</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recommendations */}
+              <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-xl border border-purple-500/20 shadow-2xl backdrop-blur-sm overflow-hidden flex flex-col">
+                <div className="p-4 border-b border-gray-700/50">
+                  <h2 className="text-lg md:text-xl font-semibold text-white flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-2 text-green-400" />
+                    Recommendations ({analysisState.suggestions.length})
+                  </h2>
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                  {analysisState.suggestions.length > 0 ? (
+                    <div className="divide-y divide-gray-700">
+                      {analysisState.suggestions.map((recommendation) => (
+                        <div key={recommendation.id} className="p-4">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className={`text-xs px-2 py-1 rounded border ${
+                              recommendation.priority === 'high' ? 'text-red-400 bg-red-900/30 border-red-500/30' :
+                              recommendation.priority === 'medium' ? 'text-yellow-400 bg-yellow-900/30 border-yellow-500/30' :
+                              'text-blue-400 bg-blue-900/30 border-blue-500/30'
+                            }`}>
+                              {recommendation.priority.toUpperCase()}
+                            </span>
+                            <span className="text-xs text-gray-400">{recommendation.timeline}</span>
+                          </div>
+                          <h3 className="font-medium text-white mb-1">{recommendation.title}</h3>
+                          <p className="text-sm text-gray-300 mb-2">{recommendation.description}</p>
+                          <div className="text-xs text-gray-400">
+                            Action: {recommendation.action}
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            Cost Impact: {recommendation.cost_impact}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400 p-8">
+                      <div className="text-center">
+                        <CheckCircle className="h-12 w-12 mx-auto mb-4 text-gray-500" />
+                        <p className="text-sm text-gray-400">No recommendations available</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Side Panel */}
