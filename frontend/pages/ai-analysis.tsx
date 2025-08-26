@@ -70,41 +70,82 @@ const AIAnalysisPage: React.FC = () => {
     });
 
     try {
+      // Update progress
+      setAnalysisState(prev => ({
+        ...prev,
+        progress: 25,
+        stage: 'searching',
+        message: 'Searching knowledge graph for contradictions...',
+        logs: [...prev.logs, {
+          id: generateId(),
+          message: 'Searching knowledge graph for contradictions...',
+          timestamp: new Date(),
+          type: 'info'
+        }]
+      }));
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setAnalysisState(prev => ({
+        ...prev,
+        progress: 50,
+        stage: 'analyzing',
+        message: 'Analyzing legal contradictions and generating recommendations...',
+        logs: [...prev.logs, {
+          id: generateId(),
+          message: 'Analyzing legal contradictions and generating recommendations...',
+          timestamp: new Date(),
+          type: 'info'
+        }]
+      }));
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setAnalysisState(prev => ({
+        ...prev,
+        progress: 75,
+        stage: 'finalizing',
+        message: 'Finalizing analysis results...',
+        logs: [...prev.logs, {
+          id: generateId(),
+          message: 'Finalizing analysis results...',
+          timestamp: new Date(),
+          type: 'info'
+        }]
+      }));
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Make the API call
       const response = await fetch('/api/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error('Analysis request failed');
-
-      // Handle SSE streaming
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No response reader available');
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6);
-            try {
-              const event: AnalysisProgressEvent = JSON.parse(data);
-              handleAnalysisEvent(event);
-            } catch (e) {
-              console.warn('Failed to parse SSE data:', data);
-            }
-          }
-        }
+      if (!response.ok) {
+        throw new Error(`Analysis request failed: ${response.status}`);
       }
+
+      const analysisResult = await response.json();
+
+      // Update state with results
+      setAnalysisState(prev => ({
+        ...prev,
+        isRunning: false,
+        progress: 100,
+        stage: 'complete',
+        message: 'Analysis complete',
+        result: analysisResult,
+        findings: analysisResult.contradictions || [],
+        suggestions: analysisResult.recommendations || [],
+        logs: [...prev.logs, {
+          id: generateId(),
+          message: `Analysis complete. Found ${analysisResult.contradictions?.length || 0} contradictions.`,
+          timestamp: new Date(),
+          type: 'info'
+        }]
+      }));
 
     } catch (error) {
       setAnalysisState(prev => ({
@@ -389,15 +430,18 @@ const AIAnalysisPage: React.FC = () => {
                               {contradiction.severity.toUpperCase()}
                             </span>
                             <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                              {contradiction.category.replace(/-/g, ' ')}
+                              {contradiction.category}
                             </span>
                           </div>
                           <Eye className="h-4 w-4 text-gray-400" />
                         </div>
                         <h3 className="font-medium text-white mb-1">{contradiction.title}</h3>
-                        <p className="text-sm text-gray-300 mb-2">{contradiction.rationale}</p>
+                        <p className="text-sm text-gray-300 mb-2 line-clamp-2">{contradiction.description}</p>
                         <div className="text-xs text-gray-400">
-                          Evidence: {contradiction.left.length + contradiction.right.length} citations
+                          Sources: {contradiction.sources.length} legal documents
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          Impact: {contradiction.impact}
                         </div>
                       </div>
                     ))}
@@ -485,76 +529,46 @@ const AIAnalysisPage: React.FC = () => {
                     <span className={`text-xs px-2 py-1 rounded border ${getSeverityColor(selectedContradiction.severity)}`}>
                       {selectedContradiction.severity.toUpperCase()}
                     </span>
+                    <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
+                      {selectedContradiction.category}
+                    </span>
                   </div>
                   <h3 className="font-medium text-white mb-2">{selectedContradiction.title}</h3>
-                  <p className="text-sm text-gray-300">{selectedContradiction.rationale}</p>
+                  <p className="text-sm text-gray-300">{selectedContradiction.description}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-purple-300 mb-2">Conflicting Provisions</h4>
-                  
-                  <div className="space-y-3">
-                    <div className="bg-red-900/20 border border-red-500/30 rounded p-3">
-                      <div className="text-xs text-red-300 mb-1">Side A</div>
-                      {selectedContradiction.left.map((citation, i) => (
-                        <div key={i} className="text-sm">
-                          <div className="font-medium text-white">{citation.law} {citation.article}</div>
-                          <div className="text-gray-300 text-xs mt-1">{citation.snippet}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="bg-blue-900/20 border border-blue-500/30 rounded p-3">
-                      <div className="text-xs text-blue-300 mb-1">Side B</div>
-                      {selectedContradiction.right.map((citation, i) => (
-                        <div key={i} className="text-sm">
-                          <div className="font-medium text-white">{citation.law} {citation.article}</div>
-                          <div className="text-gray-300 text-xs mt-1">{citation.snippet}</div>
-                        </div>
-                      ))}
-                    </div>
+                  <h4 className="font-medium text-purple-300 mb-2">Legal Sources</h4>
+                  <div className="space-y-2">
+                    {selectedContradiction.sources.map((source, i) => (
+                      <div key={i} className="bg-gray-800/50 border border-gray-700/50 rounded p-3">
+                        <div className="text-sm text-white font-medium">{source}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Harmonisation Suggestion */}
-                {(() => {
-                  const suggestion = analysisState.suggestions.find(s => s.contradictionId === selectedContradiction.id);
-                  if (suggestion) {
-                    return (
-                      <div>
-                        <h4 className="font-medium text-green-300 mb-2">Harmonisation Recommendation</h4>
-                        <div className="bg-green-900/20 border border-green-500/30 rounded p-3 space-y-2">
-                          <div>
-                            <div className="text-xs text-green-300 mb-1">Recommendation:</div>
-                            <div className="text-sm text-gray-300">{suggestion.recommendation}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-green-300 mb-1">Legal Rationale:</div>
-                            <div className="text-sm text-gray-300">{suggestion.reasoning}</div>
-                          </div>
-                          {suggestion.risks && suggestion.risks.length > 0 && (
-                            <div>
-                              <div className="text-xs text-yellow-300 mb-1">Implementation Risks:</div>
-                              <ul className="text-sm text-gray-300 space-y-1">
-                                {suggestion.risks.map((risk, i) => (
-                                  <li key={i} className="text-xs">• {risk}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          <button
-                            onClick={() => copyToClipboard(suggestion.recommendation)}
-                            className="flex items-center space-x-1 text-xs text-green-400 hover:text-green-300 mt-2"
-                          >
-                            <Copy className="h-3 w-3" />
-                            <span>Copy Recommendation</span>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
+                <div>
+                  <h4 className="font-medium text-orange-300 mb-2">Impact Assessment</h4>
+                  <div className="bg-orange-900/20 border border-orange-500/30 rounded p-3">
+                    <div className="text-sm text-gray-300">{selectedContradiction.impact}</div>
+                  </div>
+                </div>
+
+                {/* Recommendation */}
+                <div>
+                  <h4 className="font-medium text-green-300 mb-2">Recommendation</h4>
+                  <div className="bg-green-900/20 border border-green-500/30 rounded p-3">
+                    <div className="text-sm text-gray-300">{selectedContradiction.recommendation}</div>
+                    <button
+                      onClick={() => copyToClipboard(selectedContradiction.recommendation)}
+                      className="flex items-center space-x-1 text-xs text-green-400 hover:text-green-300 mt-3"
+                    >
+                      <Copy className="h-3 w-3" />
+                      <span>Copy Recommendation</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

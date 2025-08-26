@@ -414,6 +414,87 @@ function generateComprehensiveUAEKnowledgeGraph(): GraphData {
   addEdge(disputeProcess, arbitration, "INCLUDES", "INCLUDES");
   addEdge(complianceProcess, audit, "INCLUDES", "INCLUDES");
 
+  // Add contradictory data for AI Analysis demonstration
+  const contradictoryNodes = [
+    // Contradictory Tax Regulations
+    { id: 'vat_old', label: 'VAT Rate 5% (2018-2023)', type: 'TaxType', properties: { rate: 5, effective_date: '2018-01-01', end_date: '2023-01-01', source: 'Federal Tax Authority 2018' }},
+    { id: 'vat_new', label: 'VAT Rate 7% (2023-Present)', type: 'TaxType', properties: { rate: 7, effective_date: '2023-01-01', source: 'Federal Tax Authority 2023' }},
+    { id: 'vat_amendment', label: 'VAT Rate 6% (Proposed)', type: 'TaxType', properties: { rate: 6, effective_date: '2024-01-01', source: 'Cabinet Resolution 2024', status: 'proposed' }},
+    
+    // Contradictory Employment Laws
+    { id: 'notice_old', label: '30 Days Notice (Pre-2020)', type: 'LegalConcept', properties: { notice_period: 30, effective_date: '2015-01-01', end_date: '2020-01-01', source: 'Labor Law 2015' }},
+    { id: 'notice_new', label: '60 Days Notice (Post-2020)', type: 'LegalConcept', properties: { notice_period: 60, effective_date: '2020-01-01', source: 'Labor Law Amendment 2020' }},
+    { id: 'notice_court', label: '45 Days Notice (Court Interpretation)', type: 'LegalConcept', properties: { notice_period: 45, effective_date: '2021-06-15', source: 'Federal Court Decision 2021', interpretation: 'reasonable period' }},
+    
+    // Contradictory Free Zone Regulations
+    { id: 'dubai_tech_license', label: 'Dubai Tech License (No Office Required)', type: 'LegalDocument', properties: { office_requirement: false, source: 'Dubai Free Zone 2022', jurisdiction: 'Dubai' }},
+    { id: 'abu_dhabi_tech_license', label: 'Abu Dhabi Tech License (Office Required)', type: 'LegalDocument', properties: { office_requirement: true, source: 'Abu Dhabi Free Zone 2022', jurisdiction: 'Abu Dhabi' }},
+    { id: 'federal_tech_regulation', label: 'Federal Tech Regulation (Mixed Requirements)', type: 'Regulation', properties: { office_requirement: 'conditional', source: 'Federal Cabinet 2022', applies_to: 'all_emirates' }},
+    
+    // Contradictory IP Laws
+    { id: 'copyright_old', label: 'Copyright 50 Years (Pre-2021)', type: 'IPType', properties: { duration: 50, effective_date: '1992-01-01', end_date: '2021-01-01', source: 'IP Law 1992' }},
+    { id: 'copyright_new', label: 'Copyright 70 Years (Post-2021)', type: 'IPType', properties: { duration: 70, effective_date: '2021-01-01', source: 'IP Law Amendment 2021' }},
+    { id: 'copyright_wto', label: 'Copyright 75 Years (WTO Standard)', type: 'IPType', properties: { duration: 75, source: 'WTO TRIPS Agreement', international: true }},
+    
+    // Contradictory Corporate Governance
+    { id: 'board_size_old', label: 'Minimum 3 Directors (Pre-2022)', type: 'ComplianceRequirement', properties: { min_directors: 3, effective_date: '2015-01-01', end_date: '2022-01-01', source: 'Companies Law 2015' }},
+    { id: 'board_size_new', label: 'Minimum 5 Directors (Post-2022)', type: 'ComplianceRequirement', properties: { min_directors: 5, effective_date: '2022-01-01', source: 'Companies Law Amendment 2022' }},
+    { id: 'board_size_exception', label: 'Minimum 2 Directors (Small Companies)', type: 'ComplianceRequirement', properties: { min_directors: 2, effective_date: '2022-01-01', source: 'Companies Law Amendment 2022', exception: 'small_companies' }},
+    
+    // Contradictory Data Protection
+    { id: 'data_retention_old', label: 'Data Retention 3 Years (Pre-2023)', type: 'ComplianceRequirement', properties: { retention_period: 3, effective_date: '2020-01-01', end_date: '2023-01-01', source: 'Data Protection Law 2020' }},
+    { id: 'data_retention_new', label: 'Data Retention 7 Years (Post-2023)', type: 'ComplianceRequirement', properties: { retention_period: 7, effective_date: '2023-01-01', source: 'Data Protection Law Amendment 2023' }},
+    { id: 'data_retention_gdpr', label: 'Data Retention 5 Years (GDPR Alignment)', type: 'ComplianceRequirement', properties: { retention_period: 5, source: 'GDPR Compliance Guidelines', international: true }}
+  ];
+
+  const contradictoryEdges = [
+    // Tax contradictions
+    { from: 'vat_old', to: 'vat_new', type: 'CONTRADICTS' },
+    { from: 'vat_new', to: 'vat_amendment', type: 'CONTRADICTS' },
+    { from: 'vat_old', to: 'federal_tax_authority', type: 'ADMINISTERED_BY' },
+    { from: 'vat_new', to: 'federal_tax_authority', type: 'ADMINISTERED_BY' },
+    { from: 'vat_amendment', to: 'federal_tax_authority', type: 'PROPOSED_BY' },
+    
+    // Employment contradictions
+    { from: 'notice_old', to: 'notice_new', type: 'CONTRADICTS' },
+    { from: 'notice_new', to: 'notice_court', type: 'CONTRADICTS' },
+    { from: 'notice_old', to: 'labor_law', type: 'DEFINED_BY' },
+    { from: 'notice_new', to: 'labor_law', type: 'AMENDS' },
+    { from: 'notice_court', to: 'federal_court', type: 'INTERPRETED_BY' },
+    
+    // Free zone contradictions
+    { from: 'dubai_tech_license', to: 'abu_dhabi_tech_license', type: 'CONTRADICTS' },
+    { from: 'abu_dhabi_tech_license', to: 'federal_tech_regulation', type: 'CONTRADICTS' },
+    { from: 'dubai_tech_license', to: 'dubai_free_zone', type: 'ISSUED_BY' },
+    { from: 'abu_dhabi_tech_license', to: 'abu_dhabi_free_zone', type: 'ISSUED_BY' },
+    { from: 'federal_tech_regulation', to: 'federal_law_1', type: 'DEFINED_BY' },
+    
+    // IP contradictions
+    { from: 'copyright_old', to: 'copyright_new', type: 'CONTRADICTS' },
+    { from: 'copyright_new', to: 'copyright_wto', type: 'CONTRADICTS' },
+    { from: 'copyright_old', to: 'intellectual_property', type: 'PROTECTED_BY' },
+    { from: 'copyright_new', to: 'intellectual_property', type: 'AMENDS' },
+    { from: 'copyright_wto', to: 'wto', type: 'ALIGNS_WITH' },
+    
+    // Corporate governance contradictions
+    { from: 'board_size_old', to: 'board_size_new', type: 'CONTRADICTS' },
+    { from: 'board_size_new', to: 'board_size_exception', type: 'CONTRADICTS' },
+    { from: 'board_size_old', to: 'corporate_governance', type: 'REQUIRES' },
+    { from: 'board_size_new', to: 'corporate_governance', type: 'AMENDS' },
+    { from: 'board_size_exception', to: 'corporate_governance', type: 'EXCEPTION_TO' },
+    
+    // Data protection contradictions
+    { from: 'data_retention_old', to: 'data_retention_new', type: 'CONTRADICTS' },
+    { from: 'data_retention_new', to: 'data_retention_gdpr', type: 'CONTRADICTS' },
+    { from: 'data_retention_old', to: 'data_protection', type: 'REQUIRES' },
+    { from: 'data_retention_new', to: 'data_protection', type: 'AMENDS' },
+    { from: 'data_retention_gdpr', to: 'un', type: 'ALIGNS_WITH' }
+  ];
+
+  // Add contradictory nodes and edges to the main arrays
+  nodes.push(...contradictoryNodes);
+  edges.push(...contradictoryEdges);
+
   // Calculate statistics
   const nodeTypes: Record<string, number> = {};
   const edgeTypes: Record<string, number> = {};
