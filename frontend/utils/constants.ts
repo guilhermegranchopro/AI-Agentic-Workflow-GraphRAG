@@ -3,15 +3,16 @@ export const APP_CONFIG = {
   name: 'UAE Legal GraphRAG',
   version: '1.0.0',
   description: 'Advanced legal research with GraphRAG and AI agents',
-  author: 'Legal AI Team',
+  author: 'Guilherme Grancho - EY Portugal',
 } as const;
 
 // API Endpoints
 export const API_ENDPOINTS = {
   HEALTH: '/api/health',
-  GRAPH_DATA: '/api/graph-data',
+  GRAPH: '/api/graph',
   STATS: '/api/stats-new',
-  AGENTS_QUERY: '/api/agents/query',
+  ASSISTANT: '/api/assistant',
+  ANALYSIS: '/api/analysis',
 } as const;
 
 // UI Constants
@@ -23,8 +24,8 @@ export const UI_CONFIG = {
 
 // Graph Visualization
 export const GRAPH_CONFIG = {
-  DEFAULT_NODE_LIMIT: 50,
-  MAX_NODE_LIMIT: 200,
+  DEFAULT_NODE_LIMIT: 150,
+  MAX_NODE_LIMIT: 300,
   DEFAULT_PHYSICS_ENABLED: true,
 };
 

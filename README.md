@@ -1,341 +1,299 @@
-# UAE Legal GraphRAG
+# UAE Legal GraphRAG - AI-Powered Legal System
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.5.0-black)](https://nextjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104.0-green)](https://fastapi.tiangolo.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4.0-blue)](https://www.typescriptlang.org/)
-[![Neo4j](https://img.shields.io/badge/Neo4j-5.x-green)](https://neo4j.com/)
-[![Azure OpenAI](https://img.shields.io/badge/Azure-OpenAI-orange)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> **EY Portugal Summer Internship Project**  
+> **Developer:** Guilherme Grancho  
+> **Client:** Government of the United Arab Emirates  
+> **Objective:** First AI-powered legal system implementation worldwide
 
-Advanced legal research platform powered by GraphRAG (Graph Retrieval-Augmented Generation) technology, specifically designed for UAE legal corpus analysis. This system combines knowledge graphs with AI agents to provide sophisticated legal research, contradiction detection, and harmonization suggestions.
+## 🎯 Project Overview
+
+This project represents a groundbreaking initiative by the Government of the United Arab Emirates to become the first country in the world to implement AI in their legal system. Developed as part of an EY Portugal summer internship, this GraphRAG (Graph Retrieval-Augmented Generation) system provides intelligent legal analysis, contradiction detection, and harmonization recommendations.
+
+### 🌟 Key Features
+
+- **AI Assistant**: Intelligent legal query processing with context-aware responses
+- **AI Analysis**: Automated contradiction detection and harmonization suggestions
+- **Knowledge Graph Visualization**: Interactive exploration of UAE legal framework
+- **Multi-Agent Workflow**: Local, Global, and DRIFT agents for comprehensive analysis
+- **Real-time Processing**: Server-sent events for live analysis updates
 
 ## 🏗️ Architecture
 
-### Frontend (Next.js)
-- **Framework**: Next.js 15.5.0 with TypeScript
-- **Styling**: Tailwind CSS with professional design system
-- **Graph Visualization**: Interactive knowledge graphs
-- **State Management**: React hooks with context patterns
-- **API Integration**: RESTful APIs with real-time updates
-
-### Backend (Python FastAPI)
-- **Framework**: FastAPI with async/await support
-- **Graph Database**: Neo4j with advanced Cypher queries
-- **AI Integration**: Azure OpenAI with multi-agent orchestration
-- **Embeddings**: Sentence Transformers for semantic search
-- **Analysis**: Advanced legal pattern recognition and contradiction detection
-
-### Key Features
-- **Multi-Agent System**: Local, Global, and DRIFT GraphRAG agents
-- **Real-time Analysis**: Live contradiction detection and harmonization
-- **Interactive Graphs**: Dynamic knowledge graph visualization
-- **Advanced Search**: Semantic and concept-based legal document retrieval
-- **Professional UI**: Modern, responsive interface optimized for legal professionals
-
-## 📁 Project Structure
-
 ```
-uae-legal-graphrag/
-├── backend/                    # Python FastAPI backend
-│   ├── app/                   # Main application code
-│   │   ├── api/              # API routes and endpoints
-│   │   ├── rag/              # RAG service implementation
-│   │   ├── services/         # External service integrations
-│   │   ├── schemas/          # Pydantic data models
-│   │   ├── utils/            # Utility functions
-│   │   └── main.py          # FastAPI application entry point
-│   ├── tests/                # Comprehensive test suite
-│   ├── scripts/              # Utility scripts
-│   ├── requirements.txt      # Python dependencies
-│   ├── requirements-test.txt # Test dependencies
-│   ├── pytest.ini          # Test configuration
-│   ├── Dockerfile           # Docker configuration
-│   └── README.md           # Backend documentation
-├── frontend/                  # Next.js frontend
-│   ├── components/           # React components
-│   ├── pages/               # Next.js pages
-│   ├── styles/              # CSS styles
-│   ├── utils/               # Frontend utilities
-│   ├── types/               # TypeScript types
-│   ├── lib/                 # Library code
-│   ├── package.json         # Frontend dependencies
-│   ├── tsconfig.json        # TypeScript config
-│   ├── next.config.js       # Next.js config
-│   ├── tailwind.config.js   # Tailwind config
-│   └── README.md            # Frontend documentation
-├── docker-compose.yml        # Docker orchestration
-├── .gitignore               # Git ignore rules
-└── README.md                # This file
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   Knowledge     │
+│   (Next.js)     │◄──►│   (FastAPI)     │◄──►│   Graph (Neo4j) │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │              ┌─────────────────┐              │
+         └──────────────►│  Azure OpenAI   │◄─────────────┘
+                        └─────────────────┘
 ```
+
+### Technology Stack
+
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, Vis.js
+- **Backend**: FastAPI, Python, Pydantic, SQLModel
+- **Database**: Neo4j (Knowledge Graph), SQLite (Event Store)
+- **AI Services**: Azure OpenAI (GPT-4, Embeddings)
+- **Deployment**: Docker, Docker Compose
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: 18.0.0 or higher
-- **Python**: 3.9 or higher
-- **Neo4j**: 5.x database instance
-- **Azure OpenAI**: API access and deployment
 
-### Development Setup
+- Node.js 18+ and npm
+- Python 3.11+
+- Docker and Docker Compose
+- Azure OpenAI API access
+
+### Environment Setup
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd uae-legal-graphrag
+   cd internship_GraphRAG
    ```
 
-2. **Set up the Backend**
+2. **Configure environment variables**
    ```bash
+   cp .env.example .env
+   ```
+   
+   Update `.env` with your configuration:
+   ```env
+   # Neo4j Configuration
+   NEO4J_URI=bolt+s://<host>:7687
+   NEO4J_USERNAME=neo4j
+   NEO4J_PASSWORD=your_password
+   
+   # Azure OpenAI Configuration
+   AZURE_OPENAI_API_KEY=your_api_key
+   AZURE_OPENAI_ENDPOINT=https://<resource>.openai.azure.com
+   AZURE_OPENAI_DEPLOYMENT=your_deployment_name
+   AZURE_OPENAI_API_VERSION=2024-02-15-preview
+   ```
+
+3. **Start with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Or start manually**
+   ```bash
+   # Backend
    cd backend
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate  # or `venv\Scripts\activate` on Windows
    pip install -r requirements.txt
-   pip install -r requirements-test.txt
+   uvicorn app.main_simple:app --reload --port 8001
    
-   # Set up environment variables
-   cp .env.example .env
-   # Edit .env with your configuration
-   
-   # Run the backend
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-3. **Set up the Frontend**
-   ```bash
-   cd ../frontend
+   # Frontend (in new terminal)
+   cd frontend
    npm install
-   
-   # Set up environment variables
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   
-   # Run the frontend
    npm run dev
    ```
 
-4. **Access the Application**
+5. **Access the application**
    - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/docs
+   - Backend API: http://localhost:8001
+   - API Documentation: http://localhost:8001/docs
 
-### Docker Setup
+## 📊 Features Overview
 
-For a complete setup with Docker:
+### 1. AI Assistant
+- **Intelligent Query Processing**: Context-aware responses based on UAE legal framework
+- **Multi-Source Citations**: References to relevant laws, regulations, and precedents
+- **Confidence Scoring**: Transparent confidence levels for all responses
+- **Strategy Tracking**: Shows which AI agents contributed to the response
 
+### 2. AI Analysis
+- **Contradiction Detection**: Automated identification of legal conflicts
+- **Harmonization Suggestions**: AI-powered recommendations for legal alignment
+- **Priority Classification**: High, medium, and low priority issues
+- **Impact Assessment**: Detailed analysis of legal implications
+
+### 3. Knowledge Graph
+- **Interactive Visualization**: Explore 300+ legal entities and relationships
+- **Dynamic Filtering**: Filter by node types and relationship categories
+- **Real-time Statistics**: Live updates of graph metrics
+- **Comprehensive Coverage**: UAE Constitution, Federal Laws, Regulations, and more
+
+### 4. Overview Dashboard
+- **System Statistics**: Real-time metrics and performance indicators
+- **Database Health**: Connection status and data integrity checks
+- **Recent Activity**: Latest queries and analysis results
+
+## 🔧 Development
+
+### Project Structure
+
+```
+internship_GraphRAG/
+├── frontend/                 # Next.js application
+│   ├── pages/               # React pages and API routes
+│   ├── components/          # Reusable React components
+│   ├── lib/                 # Utility libraries
+│   ├── types/               # TypeScript type definitions
+│   └── styles/              # CSS and styling
+├── backend/                 # FastAPI application
+│   ├── app/                 # Main application code
+│   │   ├── api/            # API endpoints
+│   │   ├── adapters/       # External service adapters
+│   │   ├── rag/            # GraphRAG implementation
+│   │   ├── schemas/        # Pydantic models
+│   │   └── utils/          # Utility functions
+│   ├── tests/              # Test suite
+│   └── scripts/            # Utility scripts
+├── docker-compose.yml       # Container orchestration
+└── README.md               # This file
+```
+
+### Available Scripts
+
+**Frontend:**
 ```bash
-# Run the entire stack
-docker-compose up
-
-# Or run individual services
-docker-compose up backend
-docker-compose up frontend
-docker-compose up neo4j
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run typecheck    # TypeScript type checking
 ```
 
-## ⚙️ Configuration
+**Backend:**
+```bash
+# Development
+uvicorn app.main_simple:app --reload --port 8001
 
-### Environment Variables
+# Testing
+pytest
 
-#### Backend (.env)
-```env
-# Application
-APP_ENV=development
-LOG_LEVEL=INFO
-DEBUG=true
-
-# Azure OpenAI
-AZURE_OPENAI_API_KEY=your-api-key
-AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_API_VERSION=2024-02-15-preview
-AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
-
-# Neo4j
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your-password
-
-# Rate Limiting
-RATE_LIMIT_MAX_REQUESTS=100
-RATE_LIMIT_TIME_WINDOW=60
-```
-
-#### Frontend (.env.local)
-```env
-# API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_API_VERSION=v1
-
-# Feature Flags
-NEXT_PUBLIC_ENABLE_GRAPH_VISUALIZATION=true
-NEXT_PUBLIC_ENABLE_ANALYTICS=false
-```
-
-## 🔍 API Endpoints
-
-### Core Endpoints
-- `GET /` - Health check and API information
-- `GET /health` - Detailed health status
-- `GET /config` - Configuration information
-- `GET /rate-limit-info` - Rate limiting status
-
-### Chat Endpoints
-- `POST /api/chat` - Main chat endpoint for legal queries
-- `POST /api/analysis` - Legal document analysis
-- `GET /api/debug/stats` - Debug statistics
-
-### Request Examples
-
-**Chat Request:**
-```json
-{
-  "message": "What are the requirements for business registration in UAE?",
-  "strategy": "hybrid",
-  "max_results": 10
-}
-```
-
-**Analysis Request:**
-```json
-{
-  "query": "Analyze the UAE Civil Code",
-  "analysis_type": "comprehensive",
-  "include_graph": true,
-  "max_depth": 3
-}
+# Formatting
+ruff check --fix
+black backend
 ```
 
 ## 🧪 Testing
 
-### Backend Testing
-```bash
-cd backend
-pytest                    # Run all tests
-pytest --cov=app         # Run with coverage
-pytest -m unit           # Unit tests only
-pytest -m integration    # Integration tests only
-```
-
 ### Frontend Testing
 ```bash
 cd frontend
-npm test                 # Run all tests
-npm run test:watch       # Run tests in watch mode
-npm run test:coverage    # Run tests with coverage
+npm run test
 ```
 
-## 📊 Available Scripts
-
-### Backend Scripts
+### Backend Testing
 ```bash
 cd backend
-# Development
-uvicorn app.main:app --reload    # Start development server
-pytest                           # Run tests
-black app/ tests/                # Format code
-flake8 app/ tests/               # Lint code
-
-# Scripts
-python scripts/build_faiss.py    # Build vector index
-python scripts/seed_graph.py     # Seed Neo4j database
+pytest
 ```
 
-### Frontend Scripts
+### API Testing
 ```bash
-cd frontend
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
+# Test AI Assistant
+curl -X POST http://localhost:3000/api/assistant \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"What are the requirements for starting a business in UAE?"}]}'
 
-# Code Quality
-npm run lint         # Run ESLint
-npm run type-check   # Run TypeScript type checking
-npm run format       # Format code with Prettier
+# Test AI Analysis
+curl -X POST http://localhost:3000/api/analysis \
+  -H "Content-Type: application/json" \
+  -d '{"query":"VAT rates and tax regulations"}'
 
-# Testing
-npm test             # Run tests
-npm run test:watch   # Run tests in watch mode
+# Test Graph API
+curl http://localhost:3000/api/graph?max_nodes=50
 ```
 
-## 🐛 Troubleshooting
+## 📈 Performance
 
-### Common Issues
+- **Response Time**: < 2 seconds for AI queries
+- **Graph Rendering**: Supports up to 300 nodes with smooth interactions
+- **Concurrent Users**: Designed for multiple simultaneous users
+- **Scalability**: Microservices architecture for horizontal scaling
 
-1. **Backend Connection Issues**
+## 🔒 Security
+
+- **Environment Variables**: Secure configuration management
+- **API Rate Limiting**: Token-bucket algorithm per IP
+- **Input Validation**: Comprehensive request validation
+- **CORS Configuration**: Proper cross-origin resource sharing
+- **Error Handling**: Graceful error responses without data leakage
+
+## 🌍 Deployment
+
+### Production Deployment
+
+1. **Build Docker images**
    ```bash
-   # Check if backend is running
-   curl http://localhost:8000/health
-   
-   # Check Neo4j connection
-   curl http://localhost:8000/config
+   docker-compose build
    ```
 
-2. **Frontend Build Issues**
+2. **Deploy with Docker Compose**
    ```bash
-   # Clear Next.js cache
-   rm -rf .next
-   npm install
-   npm run dev
+   docker-compose -f docker-compose.prod.yml up -d
    ```
 
-3. **Environment Variables**
-   - Ensure all required environment variables are set
-   - Check file permissions for .env files
-   - Verify API endpoints are accessible
+3. **Environment-specific configuration**
+   - Production: `docker-compose.prod.yml`
+   - Development: `docker-compose.yml`
+   - Testing: `docker-compose.test.yml`
 
-### Performance Optimization
+### Cloud Deployment
 
-1. **Backend Optimization**
-   - Enable connection pooling for Neo4j
-   - Implement response caching
-   - Optimize database queries
+The system is designed for deployment on:
+- **Azure**: Native integration with Azure OpenAI
+- **AWS**: Compatible with AWS services
+- **Google Cloud**: Supports GCP infrastructure
 
-2. **Frontend Optimization**
-   - Enable Next.js optimizations
-   - Use dynamic imports for large components
-   - Implement proper error boundaries
+## 📚 API Documentation
+
+### Core Endpoints
+
+- `GET /api/graph` - Retrieve knowledge graph data
+- `POST /api/assistant` - AI legal assistant queries
+- `POST /api/analysis` - Legal contradiction analysis
+- `GET /api/health` - System health check
+- `GET /api/stats-new` - System statistics
+
+### Response Formats
+
+All API responses follow consistent JSON schemas with:
+- Success/error status indicators
+- Structured data payloads
+- Metadata and pagination information
+- Error codes and messages
 
 ## 🤝 Contributing
 
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Make your changes**
-4. **Run tests**
-   ```bash
-   # Backend tests
-   cd backend && pytest
-   
-   # Frontend tests
-   cd frontend && npm test
-   ```
-5. **Commit your changes**
-   ```bash
-   git commit -m 'Add amazing feature'
-   ```
-6. **Push to the branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-7. **Open a Pull Request**
+This project was developed as part of an EY Portugal internship. For contributions:
+
+1. Follow the existing code style and patterns
+2. Add comprehensive tests for new features
+3. Update documentation for API changes
+4. Use conventional commit messages
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is proprietary software developed for the Government of the United Arab Emirates through EY Portugal.
 
-## 🆘 Support
+## 👨‍💻 Author
 
-For questions and support:
-- Check the [Backend Documentation](backend/README.md)
-- Check the [Frontend Documentation](frontend/README.md)
-- Open an issue in the repository
+**Guilherme Grancho**  
+*EY Portugal Summer Intern*  
+*AI Legal Systems Specialist*
 
-## 🔄 Version History
+## 🙏 Acknowledgments
 
-- **v1.0.0** - Initial release with core GraphRAG functionality
-- **v1.1.0** - Added multi-agent orchestration
-- **v1.2.0** - Enhanced contradiction detection
-- **v1.3.0** - Improved UI/UX and performance optimizations
-- **v1.4.0** - Reorganized project structure for better maintainability
+- **EY Portugal**: Internship opportunity and mentorship
+- **UAE Government**: Vision and requirements for AI-powered legal systems
+- **Azure OpenAI**: Advanced AI capabilities and support
+- **Neo4j**: Knowledge graph technology and expertise
+
+## 📞 Contact
+
+For questions about this project:
+- **EY Portugal**: [Contact Information]
+- **UAE Government**: [Official Channels]
+
+---
+
+*This project represents a significant milestone in the integration of artificial intelligence with legal systems, positioning the UAE as a global leader in legal technology innovation.*
