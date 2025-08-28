@@ -24,6 +24,9 @@ neo4j_conn = None
 a2a_adapter = None
 faiss_db = None
 
+# Import routes module to update its global variables
+from .api import routes
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +42,12 @@ async def lifespan(app: FastAPI):
         neo4j_conn = Neo4jConnection()
         a2a_adapter = A2AAdapter()
         faiss_db = FAISSVectorDB()
+        
+        # Set global variables in routes module
+        routes.azure_llm = azure_llm
+        routes.neo4j_conn = neo4j_conn
+        routes.a2a_adapter = a2a_adapter
+        routes.faiss_db = faiss_db
         
         # Load FAISS index if exists
         if faiss_db.load():

@@ -25,7 +25,7 @@ class A2AEvent(SQLModel, table=True):
 class EventStore:
     """Event store for A2A message persistence."""
     
-    def __init__(self, db_url: str = "sqlite:///./data/a2a_events.db"):
+    def __init__(self, db_url: str = "sqlite:///backend/data/a2a_events.db"):
         """Initialize event store."""
         self.db_url = db_url
         self.engine = None

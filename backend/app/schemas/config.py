@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     rate_limit_window: int = Field(default=3600, description="Rate limit window in seconds")
     
     class Config:
-        env_file = "../.env"
+        env_file = ".env"
         case_sensitive = False
         extra = "ignore"
 

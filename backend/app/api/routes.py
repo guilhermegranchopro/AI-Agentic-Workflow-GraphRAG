@@ -240,6 +240,75 @@ async def config_endpoint():
     }
 
 
+@api_router.get("/graph")
+async def graph_endpoint(
+    req: Request,
+    services: Dict[str, Any] = Depends(get_services)
+):
+    """Graph data endpoint for Neo4j knowledge graph."""
+    try:
+        # Get services
+        neo4j_conn = services["neo4j_conn"]
+        
+        if not neo4j_conn:
+            raise HTTPException(status_code=503, detail="Neo4j service not available")
+        
+        # Get all nodes from Neo4j
+        nodes_query = "MATCH (n:LegalNode) RETURN n"
+        nodes_result = await neo4j_conn.run_cypher(nodes_query)
+        
+        # Get all relationships from Neo4j
+        edges_query = "MATCH (a:LegalNode)-[r:RELATES_TO]->(b:LegalNode) RETURN a, r, b"
+        edges_result = await neo4j_conn.run_cypher(edges_query)
+        
+        # Transform nodes
+        nodes = []
+        for record in nodes_result:
+            if "n" in record and record["n"]:
+                node_data = record["n"]
+                nodes.append({
+                    "id": node_data.get("id", ""),
+                    "title": node_data.get("title", ""),
+                    "content": node_data.get("content", ""),
+                    "type": node_data.get("type", "unknown"),
+                    "metadata": node_data.get("metadata", {}),
+                    "score": node_data.get("score", 1.0)
+                })
+        
+        # Transform edges
+        edges = []
+        for record in edges_result:
+            if "r" in record and record["r"] and "a" in record and record["a"] and "b" in record and record["b"]:
+                # Handle relationship tuple format: (start_node, relationship_type, end_node)
+                if isinstance(record["r"], tuple) and len(record["r"]) >= 3:
+                    start_node = record["r"][0]
+                    rel_type = record["r"][1]
+                    end_node = record["r"][2]
+                    
+                    edges.append({
+                        "source": start_node.get("id", "") if isinstance(start_node, dict) else str(start_node),
+                        "target": end_node.get("id", "") if isinstance(end_node, dict) else str(end_node),
+                        "type": rel_type,
+                        "weight": 1.0,
+                        "metadata": {}
+                    })
+        
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "stats": {
+                "nodeCount": len(nodes),
+                "edgeCount": len(edges),
+                "nodeTypes": {},
+                "edgeTypes": {}
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Graph endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Helper functions
 async def perform_rag_retrieval(
     query: str,

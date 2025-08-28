@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8012';
 
 export const config = {
   runtime: 'nodejs',
@@ -340,28 +340,55 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userMessage = messages[messages.length - 1];
     const query = userMessage?.content || '';
 
-    // Intelligent mock response system
-    const mockResponse = generateIntelligentResponse(query);
+    console.log(`Calling complex backend at: ${BACKEND_URL}/api/chat`);
+    
+    // Call the complex backend
+    const backendResponse = await fetch(`${BACKEND_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: query,
+        strategy: 'hybrid',
+        max_results: 10,
+        conversation_id: `conv_${Date.now()}`
+      }),
+      signal: AbortSignal.timeout(30000) // 30 second timeout
+    });
 
-    // Set headers for JSON response
+    if (!backendResponse.ok) {
+      console.error(`Backend responded with status: ${backendResponse.status}`);
+      // Fallback to mock response if backend fails
+      const mockResponse = generateIntelligentResponse(query);
+      return res.status(200).json(mockResponse);
+    }
+
+    const backendData = await backendResponse.json();
+    console.log('Backend response received:', backendData);
+
+    // Transform backend response to frontend format
+    const response = {
+      text: backendData.response || 'I apologize, but I couldn\'t generate a response.',
+      citations: backendData.citations || [],
+      agents: {
+        local: 'graph_rag',
+        global: 'orchestrator'
+      },
+      confidence: backendData.metadata?.confidence || 0.8,
+      strategy_used: backendData.metadata?.strategy || 'hybrid',
+      metadata: backendData.metadata || {}
+    };
+
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(mockResponse);
+    res.status(200).json(response);
 
   } catch (error) {
     console.error('Assistant API error:', error);
-    
-    if (!res.headersSent) {
-      res.setHeader('Content-Type', 'application/json');
-      res.status(500).json({ 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } else {
-      res.write(`data: ${JSON.stringify({
-        error: 'Processing failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      })}\n\n`);
-      res.end();
-    }
+    // Fallback to mock response on error
+    const userMessage = req.body.messages?.[req.body.messages.length - 1];
+    const query = userMessage?.content || '';
+    const mockResponse = generateIntelligentResponse(query);
+    res.status(200).json(mockResponse);
   }
 }
