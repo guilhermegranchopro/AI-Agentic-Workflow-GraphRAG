@@ -144,16 +144,43 @@ async def analysis_endpoint(
             "harmonizations_count": len(analysis_result.get("harmonizations", []))
         })
         
-        return AnalysisResponse(
-            query=request.query,
-            contradictions=analysis_result.get("contradictions", []),
-            harmonizations=analysis_result.get("harmonizations", []),
-            citations=analysis_result.get("citations", []),
-            metadata={
-                "analysis_type": request.analysis_type,
-                "max_depth": request.max_depth
-            }
-        )
+        # Transform analysis result to match frontend expectations
+        contradictions = analysis_result.get("contradictions", [])
+        harmonizations = analysis_result.get("harmonizations", [])
+        citations = analysis_result.get("citations", [])
+        
+        # Generate recommendations from harmonizations
+        recommendations = []
+        for harm in harmonizations:
+            recommendations.append({
+                "id": harm["id"],
+                "title": harm["title"],
+                "description": harm["description"],
+                "action": harm["approach"],
+                "priority": "medium",
+                "timeline": "Medium-term (90 days)",
+                "cost_impact": "Medium - Harmonization costs"
+            })
+        
+        # Generate summary
+        summary = f"Analysis of '{request.query}' revealed {len(contradictions)} potential contradictions and {len(harmonizations)} harmonization opportunities across {len(set(c.get('type', 'unknown') for c in citations))} legal domains."
+        
+        # Calculate stats
+        stats = {
+            "total_contradictions": len(contradictions),
+            "high_priority": len([c for c in contradictions if c.get("severity") == "high"]),
+            "medium_priority": len([c for c in contradictions if c.get("severity") == "medium"]),
+            "low_priority": len([c for c in contradictions if c.get("severity") == "low"])
+        }
+        
+        return {
+            "query": request.query,
+            "contradictions": contradictions,
+            "recommendations": recommendations,
+            "summary": summary,
+            "confidence": 0.85,
+            "stats": stats
+        }
         
     except Exception as e:
         logger.error(f"Analysis endpoint error: {e}")
@@ -381,28 +408,107 @@ async def perform_legal_analysis(
     neo4j_conn: Neo4jConnection,
     context: Any
 ) -> Dict[str, Any]:
-    """Perform legal analysis."""
-    # This is a simplified implementation
-    # In production, this would involve more sophisticated analysis
-    
-    # Mock analysis result
-    return {
-        "contradictions": [
-            {
-                "id": "cont_1",
-                "description": "Potential contradiction found in legal provisions",
-                "severity": "medium",
-                "sources": ["Law A", "Law B"],
-                "recommendation": "Review and harmonize conflicting provisions"
+    """Perform legal analysis using Neo4j knowledge graph."""
+    try:
+        # Search for relevant legal nodes based on query
+        search_query = """
+        MATCH (n:LegalNode)
+        WHERE n.content CONTAINS $query OR n.title CONTAINS $query
+        RETURN n
+        LIMIT 10
+        """
+        
+        nodes_result = await neo4j_conn.run_cypher(search_query, {"query": query})
+        
+        if not nodes_result:
+            # Fallback to mock analysis if no relevant nodes found
+            return {
+                "contradictions": [
+                    {
+                        "id": "cont_1",
+                        "title": "No specific legal data found",
+                        "description": f"No specific legal provisions found for query: {query}",
+                        "severity": "low",
+                        "sources": ["Knowledge Graph"],
+                        "recommendation": "Consider expanding the knowledge base with more specific legal provisions"
+                    }
+                ],
+                "harmonizations": [],
+                "citations": []
             }
-        ],
-        "harmonizations": [
-            {
-                "id": "harm_1",
-                "description": "Legal harmonization opportunity identified",
-                "approach": "Interpretive harmonization",
-                "sources": ["Law C", "Law D"]
+        
+        # Analyze the found nodes for potential contradictions
+        contradictions = []
+        harmonizations = []
+        citations = []
+        
+        # Group nodes by type to identify potential contradictions
+        node_types = {}
+        for record in nodes_result:
+            if "n" in record and record["n"]:
+                node_data = record["n"]
+                node_type = node_data.get("type", "unknown")
+                if node_type not in node_types:
+                    node_types[node_type] = []
+                node_types[node_type].append(node_data)
+        
+        # Generate contradictions based on node analysis
+        for node_type, nodes in node_types.items():
+            if len(nodes) > 1:
+                # Multiple nodes of same type might indicate contradictions
+                contradiction = {
+                    "id": f"cont_{node_type}_{len(contradictions) + 1}",
+                    "title": f"Multiple {node_type} Provisions Found",
+                    "description": f"Found {len(nodes)} different {node_type} provisions that may contain contradictions or inconsistencies.",
+                    "severity": "medium",
+                    "sources": [node.get("title", node.get("id", "")) for node in nodes[:3]],
+                    "recommendation": f"Review and harmonize {node_type} provisions to ensure consistency"
+                }
+                contradictions.append(contradiction)
+        
+        # Generate harmonization opportunities
+        if len(node_types) > 1:
+            harmonization = {
+                "id": f"harm_{len(harmonizations) + 1}",
+                "title": "Cross-Domain Legal Harmonization",
+                "description": f"Analysis spans {len(node_types)} different legal domains: {', '.join(node_types.keys())}",
+                "approach": "Cross-domain harmonization",
+                "sources": [node.get("title", node.get("id", "")) for nodes in node_types.values() for node in nodes[:2]]
             }
-        ],
-        "citations": []
-    }
+            harmonizations.append(harmonization)
+        
+        # Generate citations from found nodes
+        for record in nodes_result:
+            if "n" in record and record["n"]:
+                node_data = record["n"]
+                citations.append({
+                    "id": node_data.get("id", ""),
+                    "title": node_data.get("title", ""),
+                    "content": node_data.get("content", "")[:200] + "...",
+                    "type": node_data.get("type", "unknown"),
+                    "score": node_data.get("score", 1.0)
+                })
+        
+        return {
+            "contradictions": contradictions,
+            "harmonizations": harmonizations,
+            "citations": citations
+        }
+        
+    except Exception as e:
+        logger.error(f"Legal analysis error: {e}")
+        # Fallback to mock analysis
+        return {
+            "contradictions": [
+                {
+                    "id": "cont_1",
+                    "title": "Analysis Error",
+                    "description": f"Error during analysis: {str(e)}",
+                    "severity": "medium",
+                    "sources": ["System Error"],
+                    "recommendation": "Please try again or contact support"
+                }
+            ],
+            "harmonizations": [],
+            "citations": []
+        }

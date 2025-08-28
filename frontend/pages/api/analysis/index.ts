@@ -197,18 +197,18 @@ export default async function handler(
       return res.status(400).json({ error: 'Query is required and must be a string' });
     }
 
-    console.log(`Calling complex backend at: ${BACKEND_URL}/api/analyze`);
+    console.log(`Calling complex backend at: ${BACKEND_URL}/api/analysis`);
     
     // Call the complex backend
-    const backendResponse = await fetch(`${BACKEND_URL}/api/analyze`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/analysis`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         query,
-        scope: 'legal_contradictions',
-        max_findings: 10
+        analysis_type: 'legal_contradictions',
+        max_depth: 3
       }),
       signal: AbortSignal.timeout(30000) // 30 second timeout
     });
