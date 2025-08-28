@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8012';
+
 interface DatabaseStats {
   total_documents: number;
   total_entities: number;
@@ -360,7 +362,7 @@ function generateComprehensiveUAEKnowledgeGraph() {
   return { nodes, edges };
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<DatabaseStats | { error: string }>
 ) {
@@ -368,6 +370,50 @@ export default function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  try {
+    console.log(`Calling complex backend at: ${BACKEND_URL}/api/graph`);
+    
+    // Try to get real data from backend first
+    const backendResponse = await fetch(`${BACKEND_URL}/api/graph`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: AbortSignal.timeout(10000) // 10 second timeout
+    });
+
+    if (backendResponse.ok) {
+      const backendData = await backendResponse.json();
+      console.log('Backend stats response received:', backendData);
+      
+      // Calculate statistics from real Neo4j data
+      const nodes = backendData.nodes || [];
+      const edges = backendData.edges || [];
+      
+      // Count different types of nodes to estimate communities
+      const nodeTypes = new Set(nodes.map((node: any) => node.type || 'unknown'));
+      
+      const stats: DatabaseStats = {
+        total_documents: nodes.filter((node: any) => 
+          ['Law', 'Regulation', 'LegalDocument', 'LegalNode'].includes(node.type)
+        ).length,
+        total_entities: nodes.length,
+        total_relationships: edges.length,
+        communities: nodeTypes.size,
+        last_updated: new Date().toISOString()
+      };
+      
+      console.log('Serving real Neo4j statistics:', stats);
+      return res.status(200).json(stats);
+    } else {
+      console.log('Backend not available, falling back to mock data');
+    }
+  } catch (error) {
+    console.error('Backend stats error:', error);
+    console.log('Falling back to mock data');
+  }
+
+  // Fallback to mock data if backend is not available
   try {
     // Generate comprehensive knowledge graph data
     const { nodes, edges } = generateComprehensiveUAEKnowledgeGraph();
@@ -383,6 +429,7 @@ export default function handler(
       last_updated: new Date().toISOString()
     };
     
+    console.log('Serving mock statistics:', stats);
     res.status(200).json(stats);
   } catch (error) {
     console.error('Stats API error:', error);

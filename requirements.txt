@@ -1,0 +1,62 @@
+# UAE Legal GraphRAG - Unified Requirements
+# This file contains all Python dependencies for the project
+
+# Core FastAPI dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+loguru>=0.7.0
+tenacity>=8.2.0
+sqlmodel>=0.0.8
+
+# Database and Graph
+neo4j>=5.15.0
+graphviz>=0.20.1
+
+# AI and ML
+openai>=1.3.0
+azure-identity>=1.15.0
+azure-ai-formrecognizer>=3.3.0
+sentence-transformers>=2.2.2
+faiss-cpu>=1.7.4
+
+# Data processing
+pandas>=2.1.0
+numpy>=1.24.0
+python-multipart>=0.0.6
+
+# HTTP and networking
+httpx>=0.25.0
+requests>=2.31.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+python-decouple>=3.8
+
+# Logging and monitoring
+structlog>=23.2.0
+rich>=13.7.0
+
+# Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# CORS
+fastapi-cors>=0.0.6
+
+# Rate limiting
+slowapi>=0.1.9
+
+# Development and debugging
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+
+
+# Additional development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=22.0.0
+flake8>=5.0.0
+mypy>=1.0.0
