@@ -498,85 +498,52 @@ const LegalAssistantPage: React.FC = () => {
           <div className="flex-shrink-0 border-t border-purple-500/20 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm">
             {/* Quick Examples - Compact Version */}
             <div className="px-4 py-2 border-b border-purple-500/10">
-              <div className="flex flex-col space-y-2">
-                {/* First row - GraphRAG and Contradiction Detection */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">🔍 GraphRAG & Contradictions:</span>
-                  {[
-                    "UAE Court System 2020",
-                    "Anti-Money Laundering and Counter-Terrorism Financing 2018",
-                    "Corporate Tax Law 2022",
-                    "Data Protection Law 2021"
-                  ].map((example, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setInputValue(example)}
-                      className="text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-900/20 hover:bg-cyan-900/30 rounded px-2 py-1 transition-colors border border-cyan-500/30 whitespace-nowrap"
-                      disabled={isLoading}
-                    >
-                      {example}
-                    </button>
-                  ))}
+              <div className="flex flex-col space-y-3">
+                {/* 4 Strategic Examples */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Local GraphRAG Strategy */}
+                  <button
+                    onClick={() => setInputValue("Corporate Tax Law 2022")}
+                    className="text-sm text-cyan-400 hover:text-cyan-300 bg-cyan-900/20 hover:bg-cyan-900/30 rounded px-3 py-2 transition-colors border border-cyan-500/30 text-left"
+                    disabled={isLoading}
+                  >
+                    <div className="font-medium">🔍 Local GraphRAG</div>
+                    <div className="text-xs text-cyan-300">Corporate Tax Law 2022 (finds specific nodes)</div>
+                  </button>
+
+                  {/* Global GraphRAG Strategy */}
+                  <button
+                    onClick={() => setInputValue("UAE Court System")}
+                    className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 hover:bg-purple-900/30 rounded px-3 py-2 transition-colors border border-purple-500/30 text-left"
+                    disabled={isLoading}
+                  >
+                    <div className="font-medium">🌐 Global GraphRAG</div>
+                    <div className="text-xs text-purple-300">UAE Court System (finds relationships)</div>
+                  </button>
+
+                  {/* Hybrid GraphRAG Strategy */}
+                  <button
+                    onClick={() => setInputValue("Data Protection Law 2021")}
+                    className="text-sm text-green-400 hover:text-green-300 bg-green-900/20 hover:bg-green-900/30 rounded px-3 py-2 transition-colors border border-green-500/30 text-left"
+                    disabled={isLoading}
+                  >
+                    <div className="font-medium">🎯 Hybrid GraphRAG</div>
+                    <div className="text-xs text-green-300">Data Protection Law 2021 (combines strategies)</div>
+                  </button>
+
+                  {/* Pure Azure OpenAI Fallback */}
+                  <button
+                    onClick={() => setInputValue("What are the general principles of UAE contract law?")}
+                    className="text-sm text-orange-400 hover:text-orange-300 bg-orange-900/20 hover:bg-orange-900/30 rounded px-3 py-2 transition-colors border border-orange-500/30 text-left"
+                    disabled={isLoading}
+                  >
+                    <div className="font-medium">🔮 Azure OpenAI Fallback</div>
+                    <div className="text-xs text-orange-300">General contract law (web search + knowledge)</div>
+                  </button>
                 </div>
-                
-                {/* Second row - Complex Analysis and Fallback Scenarios */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">🌐 Complex Analysis:</span>
-                  {[
-                    "Environmental Protection Law 2020",
-                    "Intellectual Property Protection 2016",
-                    "Dubai Free Zones 2020",
-                    "Banking and Financial Regulations 2018"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 4}
-                      onClick={() => setInputValue(example)}
-                      className="text-xs text-purple-400 hover:text-purple-300 bg-purple-900/20 hover:bg-purple-900/30 rounded px-2 py-1 transition-colors border border-purple-500/30 whitespace-nowrap"
-                      disabled={isLoading}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
-                
-                {/* Third row - Fallback Scenarios and General Knowledge */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">🔮 General Knowledge:</span>
-                  {[
-                    "What are the general principles of UAE contract law?",
-                    "Explain the process of setting up a business in UAE",
-                    "How does UAE labor law protect workers?",
-                    "What are the basic requirements for UAE work visas?"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 8}
-                      onClick={() => setInputValue(example)}
-                      className="text-xs text-green-400 hover:text-green-300 bg-green-900/20 hover:bg-green-900/30 rounded px-2 py-1 transition-colors border border-green-500/30 whitespace-nowrap"
-                      disabled={isLoading}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
-                
-                {/* Fourth row - Contradiction Analysis */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">⚖️ Contradiction Analysis:</span>
-                  {[
-                    "court system",
-                    "AML reporting",
-                    "environmental standards",
-                    "free zone ownership"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 12}
-                      onClick={() => setInputValue(example)}
-                      className="text-xs text-orange-400 hover:text-orange-300 bg-orange-900/20 hover:bg-orange-900/30 rounded px-2 py-1 transition-colors border border-orange-500/30 whitespace-nowrap"
-                      disabled={isLoading}
-                    >
-                      {example}
-                    </button>
-                  ))}
+
+                <div className="text-xs text-yellow-300">
+                  💡 Tip: Each example demonstrates different AI capabilities - from specific GraphRAG strategies to general knowledge fallback.
                 </div>
               </div>
             </div>
