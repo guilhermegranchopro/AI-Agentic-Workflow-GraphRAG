@@ -131,11 +131,11 @@ const LegalAssistantPage: React.FC = () => {
            strategy_used: responseData.strategy_used || responseData.metadata?.strategy || 'multi-agent',
            confidence: undefined, // Remove confidence display
            sources: responseData.citations?.map((c: any) => ({
-             id: c.title || 'unknown',
+             id: c.id || c.title || 'unknown',
              title: c.title || 'Unknown Source',
-             content: c.source || '',
-             type: 'knowledge_graph',
-             relevanceScore: c.relevance || 0.8
+             content: c.content || '',
+             type: c.type || 'knowledge_graph',
+             relevanceScore: c.relevanceScore || 0.8
            })) || [],
            processing_time: responseData.processing_time || 2.5,
            reasoning_steps: responseData.reasoning_steps || []

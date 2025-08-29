@@ -370,7 +370,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
          // Transform backend response to frontend format
      const response = {
        text: backendData.response || 'I apologize, but I couldn\'t generate a response.',
-       citations: backendData.citations || [],
+       citations: (backendData.citations || []).map((citation: any) => ({
+         id: citation.node_id || 'unknown',
+         title: citation.metadata?.law_number ? `Federal Decree-Law No. ${citation.metadata.law_number}` : 
+                citation.metadata?.title || citation.node_id || 'Unknown Source',
+         content: citation.content || '',
+         type: citation.node_type?.toLowerCase() || 'knowledge_graph',
+         relevanceScore: citation.score || 0.8
+       })).filter((citation, index, self) => 
+         index === self.findIndex(c => c.id === citation.id)
+       ), // Remove duplicates based on ID
        agents: {
          local: 'GraphRAG',
          global: 'orchestrator'
