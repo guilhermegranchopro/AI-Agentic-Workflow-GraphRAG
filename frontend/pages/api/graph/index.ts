@@ -66,22 +66,80 @@ async function fetchRealGraphData(maxNodes: number, includeRelationships: string
 
     const data = await response.json();
     
-    // Transform backend data to frontend format
-    const nodes: GraphNode[] = data.nodes?.map((node: any) => ({
-      id: node.id,
-      label: node.title || node.content?.substring(0, 50) || node.id,
-      type: node.type,
-      properties: node.metadata || {}
-    })) || [];
+    // Transform backend data to frontend format and ensure unique node IDs
+    const usedNodeIds = new Set<string>();
+    
+    const nodes: GraphNode[] = data.nodes?.map((node: any, index: number) => {
+      // Validate and ensure node ID is not empty
+      let uniqueId = node.id || `node_${index}`;
+      
+      // Ensure node ID is unique
+      let counter = 1;
+      const originalId = uniqueId;
+      
+      while (usedNodeIds.has(uniqueId)) {
+        uniqueId = `${originalId}_${counter}`;
+        counter++;
+      }
+      usedNodeIds.add(uniqueId);
+      
+      return {
+        id: uniqueId,
+        label: node.title || node.content?.substring(0, 50) || uniqueId,
+        type: node.type || 'Unknown',
+        properties: node.metadata || {}
+      };
+    }) || [];
 
-    const edges: GraphEdge[] = data.edges?.map((edge: any, index: number) => ({
-      id: `edge_${index}`,
-      from: edge.source,
-      to: edge.target,
-      label: edge.type,
-      type: edge.type,
-      properties: edge.metadata || {}
-    })) || [];
+    // Create a Set to track used edge IDs and ensure uniqueness
+    const usedEdgeIds = new Set<string>();
+    
+    // Create a mapping from original node IDs to new unique IDs
+    const nodeIdMapping = new Map<string, string>();
+    data.nodes?.forEach((node: any, index: number) => {
+      const originalId = node.id || `node_${index}`;
+      const finalNode = nodes.find(n => n.id === originalId || n.id.startsWith(originalId));
+      if (finalNode && finalNode.id !== originalId) {
+        nodeIdMapping.set(originalId, finalNode.id);
+      }
+    });
+    
+    const edges: GraphEdge[] = data.edges?.map((edge: any, index: number) => {
+      // Validate edge data
+      if (!edge.source || !edge.target || !edge.type) {
+        console.warn(`Skipping invalid edge at index ${index}:`, edge);
+        return null;
+      }
+      
+      // Use mapped node IDs if they exist
+      const fromId = nodeIdMapping.get(edge.source) || edge.source;
+      const toId = nodeIdMapping.get(edge.target) || edge.target;
+      
+      // Ensure both nodes exist
+      if (!nodes.find(n => n.id === fromId) || !nodes.find(n => n.id === toId)) {
+        console.warn(`Skipping edge with missing nodes: ${fromId} -> ${toId}`);
+        return null;
+      }
+      
+      // Create a unique edge ID
+      let uniqueId = `edge_${index}`;
+      let counter = 1;
+      
+      while (usedEdgeIds.has(uniqueId)) {
+        uniqueId = `edge_${index}_${counter}`;
+        counter++;
+      }
+      usedEdgeIds.add(uniqueId);
+      
+      return {
+        id: uniqueId,
+        from: fromId,
+        to: toId,
+        label: edge.type,
+        type: edge.type,
+        properties: edge.metadata || {}
+      };
+    }).filter(Boolean) || [];
 
     // Filter by max nodes if specified
     if (maxNodes < nodes.length) {
