@@ -304,40 +304,10 @@ const AIAnalysisPage: React.FC = () => {
               )}
             </div>
             <p className="text-sm md:text-base lg:text-lg text-gray-300 mb-3 md:mb-4 lg:mb-6 leading-relaxed">
-              Automated legal analysis to find contradictions and suggest harmonising amendments
+              Advanced AI-powered legal analysis using GraphRAG technology to detect contradictions, analyze regulatory changes, and provide comprehensive legal insights with Neo4j knowledge graph and Azure OpenAI capabilities.
             </p>
 
-            {/* Suggested Queries */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-300 mb-3">Suggested Analysis Queries:</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                {[
-                  'VAT rates and tax regulations',
-                  'Employment notice periods',
-                  'Free zone tech licenses',
-                  'Copyright protection',
-                  'Board size requirements',
-                  'Data retention periods',
-                  'Corporate governance compliance',
-                  'Intellectual property rights',
-                  'Labor law termination',
-                  'Free zone office requirements',
-                  'Tax compliance obligations',
-                  'Data protection regulations'
-                ].map((query, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setFormData(prev => ({ ...prev, query }))}
-                    className="text-left px-3 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 hover:border-purple-500/50 rounded-lg text-sm text-gray-300 hover:text-white transition-all duration-200 group"
-                    disabled={analysisState.isRunning}
-                  >
-                    <span className="group-hover:text-purple-400 transition-colors duration-200">
-                      {query}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Analysis Form */}
             <form onSubmit={handleSubmit} className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-xl border border-purple-500/20 p-4 md:p-6 backdrop-blur-sm shadow-xl">
@@ -350,7 +320,7 @@ const AIAnalysisPage: React.FC = () => {
                     type="text"
                     value={formData.query}
                     onChange={(e) => setFormData(prev => ({ ...prev, query: e.target.value }))}
-                    placeholder="e.g., contract formation requirements, penalty provisions, liability rules"
+                    placeholder="Analyze legal contradictions, regulatory changes, or complex legal scenarios (e.g., 'Compare court systems between 2020 and 2024')"
                     className="w-full px-3 md:px-4 py-3 bg-gray-800/80 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 text-sm md:text-base"
                     disabled={analysisState.isRunning}
                   />
@@ -397,6 +367,129 @@ const AIAnalysisPage: React.FC = () => {
                   <Search className="h-4 w-4" />
                   <span>{analysisState.isRunning ? 'Analyzing...' : 'Run Analysis'}</span>
                 </button>
+              </div>
+
+              {/* Prompt Suggestions */}
+              <div className="mt-4 space-y-3">
+                <div className="text-xs text-gray-400 font-medium">💡 Analysis Suggestions:</div>
+                
+                {/* Critical Priority Contradictions */}
+                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">🚨 Critical Priority:</span>
+                  {[
+                    "Anti-Money Laundering and Counter-Terrorism Financing",
+                    "Corporate Tax Law 2022 vs 2024",
+                    "UAE Court System 2020 vs 2024"
+                  ].map((example, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
+                      className="text-xs text-red-400 hover:text-red-300 bg-red-900/20 hover:bg-red-900/30 rounded px-2 py-1 transition-colors border border-red-500/30 whitespace-nowrap"
+                      disabled={analysisState.isRunning}
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+
+                {/* High Priority Contradictions */}
+                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">⚠️ High Priority:</span>
+                  {[
+                    "Real Estate Law 2020 vs 2024",
+                    "UAE Labor Law 1980 vs 2021",
+                    "Banking and Financial Regulations",
+                    "UAE Competition Law 2012 vs 2024",
+                    "UAE E-Commerce Law 2021 vs 2024"
+                  ].map((example, index) => (
+                    <button
+                      key={index + 3}
+                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
+                      className="text-xs text-orange-400 hover:text-orange-300 bg-orange-900/20 hover:bg-orange-900/30 rounded px-2 py-1 transition-colors border border-orange-500/30 whitespace-nowrap"
+                      disabled={analysisState.isRunning}
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Medium Priority Contradictions */}
+                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">📋 Medium Priority:</span>
+                  {[
+                    "Data Protection Law 2021 vs 2024",
+                    "Environmental Protection Law 2020 vs 2024",
+                    "Intellectual Property Protection 2016 vs 2023",
+                    "UAE Insurance Law 2007 vs 2023",
+                    "UAE Consumer Protection Law 2006 vs 2024",
+                    "Dubai Free Zones 2020 vs 2024"
+                  ].map((example, index) => (
+                    <button
+                      key={index + 8}
+                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
+                      className="text-xs text-blue-400 hover:text-blue-300 bg-blue-900/20 hover:bg-blue-900/30 rounded px-2 py-1 transition-colors border border-blue-500/30 whitespace-nowrap"
+                      disabled={analysisState.isRunning}
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Category-Based Analysis */}
+                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">🏛️ By Category:</span>
+                  {[
+                    "Judicial System",
+                    "Financial Compliance",
+                    "Property Law",
+                    "Privacy & Data",
+                    "Environmental Law",
+                    "Labor Law",
+                    "Taxation",
+                    "Intellectual Property",
+                    "Banking & Finance",
+                    "Free Zones",
+                    "Competition Law",
+                    "Insurance Law",
+                    "Consumer Protection",
+                    "E-Commerce"
+                  ].map((example, index) => (
+                    <button
+                      key={index + 14}
+                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
+                      className="text-xs text-green-400 hover:text-green-300 bg-green-900/20 hover:bg-green-900/30 rounded px-2 py-1 transition-colors border border-green-500/30 whitespace-nowrap"
+                      disabled={analysisState.isRunning}
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+
+                {/* General Legal Areas (Fallback) */}
+                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
+                  <span className="text-xs text-gray-400 whitespace-nowrap">📚 General Analysis:</span>
+                  {[
+                    "Commercial Companies Law",
+                    "Commercial Transactions Law",
+                    "Business Licensing Requirements",
+                    "Work Visa Requirements",
+                    "Arbitration Framework",
+                    "UAE Constitution"
+                  ].map((example, index) => (
+                    <button
+                      key={index + 28}
+                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
+                      className="text-xs text-purple-400 hover:text-purple-300 bg-purple-900/20 hover:bg-purple-900/30 rounded px-2 py-1 transition-colors border border-purple-500/30 whitespace-nowrap"
+                      disabled={analysisState.isRunning}
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="text-xs text-yellow-300">
+                  💡 Tip: Critical/High priority suggestions will find explicit contradictions. Category-based queries analyze all related laws. General terms provide comprehensive legal review.
+                </div>
               </div>
 
               {/* Progress Bar */}
