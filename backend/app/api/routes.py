@@ -450,17 +450,12 @@ async def perform_legal_analysis(
 ) -> Dict[str, Any]:
     """Perform legal analysis using Neo4j knowledge graph."""
     try:
-        # Search for relevant legal nodes based on query
-        search_query = """
-        MATCH (n:LegalNode)
-        WHERE n.content CONTAINS $query OR n.title CONTAINS $query
-        RETURN n
-        LIMIT 10
-        """
+        # Use GraphRAG to find relevant nodes
+        from ..rag.graph_interface import GlobalGraphRAG
+        graph_rag = GlobalGraphRAG(neo4j_conn)
+        rag_result = await graph_rag.retrieve(query, max_results=10)
         
-        nodes_result = await neo4j_conn.run_cypher(search_query, {"query": query})
-        
-        if not nodes_result:
+        if not rag_result.nodes:
             # Fallback to mock analysis if no relevant nodes found
             return {
                 "contradictions": [
@@ -477,57 +472,81 @@ async def perform_legal_analysis(
                 "citations": []
             }
         
-        # Analyze the found nodes for potential contradictions
+        # Find CONTRADICTS relationships involving the retrieved nodes
+        node_ids = [node.id for node in rag_result.nodes]
+        contradictions_query = """
+        MATCH (a:LegalNode)-[r:RELATES_TO]->(b:LegalNode)
+        WHERE a.id IN $node_ids AND b.id IN $node_ids AND r.type = 'CONTRADICTS'
+        RETURN a, b, r
+        """
+        
+        contradictions_result = await neo4j_conn.run_cypher(contradictions_query, {"node_ids": node_ids})
+        
+        # Analyze contradictions
         contradictions = []
         harmonizations = []
         citations = []
         
-        # Group nodes by type to identify potential contradictions
-        node_types = {}
-        for record in nodes_result:
-            if "n" in record and record["n"]:
-                node_data = record["n"]
-                node_type = node_data.get("type", "unknown")
-                if node_type not in node_types:
-                    node_types[node_type] = []
-                node_types[node_type].append(node_data)
-        
-        # Generate contradictions based on node analysis
-        for node_type, nodes in node_types.items():
-            if len(nodes) > 1:
-                # Multiple nodes of same type might indicate contradictions
+        # Process explicit contradictions
+        for record in contradictions_result:
+            if "a" in record and "b" in record:
+                node_a = record["a"]
+                node_b = record["b"]
+                
                 contradiction = {
-                    "id": f"cont_{node_type}_{len(contradictions) + 1}",
-                    "title": f"Multiple {node_type} Provisions Found",
-                    "description": f"Found {len(nodes)} different {node_type} provisions that may contain contradictions or inconsistencies.",
-                    "severity": "medium",
-                    "sources": [node.get("title", node.get("id", "")) for node in nodes[:3]],
-                    "recommendation": f"Review and harmonize {node_type} provisions to ensure consistency"
+                    "id": f"cont_{node_a.get('id', '')}_{node_b.get('id', '')}",
+                    "title": f"Legal Contradiction: {node_a.get('title', '')} vs {node_b.get('title', '')}",
+                    "description": f"Explicit contradiction found between {node_a.get('title', '')} and {node_b.get('title', '')}. These provisions contain conflicting legal requirements.",
+                    "severity": "high",
+                    "sources": [node_a.get("title", ""), node_b.get("title", "")],
+                    "recommendation": f"Review and harmonize the conflicting provisions between {node_a.get('title', '')} and {node_b.get('title', '')}"
                 }
                 contradictions.append(contradiction)
         
+        # If no explicit contradictions found, look for potential contradictions
+        if not contradictions:
+            # Group nodes by type to identify potential contradictions
+            node_types = {}
+            for node in rag_result.nodes:
+                node_type = node.type
+                if node_type not in node_types:
+                    node_types[node_type] = []
+                node_types[node_type].append(node)
+            
+            # Generate contradictions based on node analysis
+            for node_type, nodes in node_types.items():
+                if len(nodes) > 1:
+                    # Multiple nodes of same type might indicate contradictions
+                    contradiction = {
+                        "id": f"cont_{node_type}_{len(contradictions) + 1}",
+                        "title": f"Multiple {node_type} Provisions Found",
+                        "description": f"Found {len(nodes)} different {node_type} provisions that may contain contradictions or inconsistencies.",
+                        "severity": "medium",
+                        "sources": [node.id for node in nodes[:3]],
+                        "recommendation": f"Review and harmonize {node_type} provisions to ensure consistency"
+                    }
+                    contradictions.append(contradiction)
+        
         # Generate harmonization opportunities
-        if len(node_types) > 1:
+        if contradictions:
             harmonization = {
                 "id": f"harm_{len(harmonizations) + 1}",
-                "title": "Cross-Domain Legal Harmonization",
-                "description": f"Analysis spans {len(node_types)} different legal domains: {', '.join(node_types.keys())}",
-                "approach": "Cross-domain harmonization",
-                "sources": [node.get("title", node.get("id", "")) for nodes in node_types.values() for node in nodes[:2]]
+                "title": "Legal Harmonization Required",
+                "description": f"Found {len(contradictions)} contradictions that require legal harmonization to ensure consistency and compliance.",
+                "approach": "Legal harmonization and regulatory alignment",
+                "sources": [node.id for node in rag_result.nodes[:5]]
             }
             harmonizations.append(harmonization)
         
         # Generate citations from found nodes
-        for record in nodes_result:
-            if "n" in record and record["n"]:
-                node_data = record["n"]
-                citations.append({
-                    "id": node_data.get("id", ""),
-                    "title": node_data.get("title", ""),
-                    "content": node_data.get("content", "")[:200] + "...",
-                    "type": node_data.get("type", "unknown"),
-                    "score": node_data.get("score", 1.0)
-                })
+        for node in rag_result.nodes:
+            citations.append({
+                "id": node.id,
+                "title": node.id,  # Use id as title since RAGNode doesn't have title
+                "content": node.content[:200] + "..." if len(node.content) > 200 else node.content,
+                "type": node.type,
+                "score": node.score
+            })
         
         return {
             "contradictions": contradictions,

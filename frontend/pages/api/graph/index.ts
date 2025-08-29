@@ -312,7 +312,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const maxNodes = parseInt(req.query.max_nodes as string) || 1000;
     const includeRelationships = req.query.relationships 
       ? (req.query.relationships as string).split(',')
-      : ["ESTABLISHES", "DEFINES", "REGULATES", "PROTECTS", "GOVERNED_BY", "REQUIRES", "HAS_PRINCIPLE", "ALIGNS_WITH"];
+      : ["ESTABLISHES", "DEFINES", "REGULATES", "PROTECTS", "GOVERNED_BY", "REQUIRES", "HAS_PRINCIPLE", "ALIGNS_WITH", "CONTRADICTS", "RELATES_TO", "PROVIDES", "APPLIES_TO", "INCLUDES", "ENFORCED_BY", "AFFECTS", "ENFORCES", "HAS_SPECIAL"];
 
     // Check if backend is available
     const backendAvailable = await isBackendAvailable();

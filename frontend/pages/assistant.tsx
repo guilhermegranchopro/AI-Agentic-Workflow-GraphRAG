@@ -49,6 +49,8 @@ const LegalAssistantPage: React.FC = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [processingSteps, setProcessingSteps] = useState<string[]>([]);
+  const [currentStep, setCurrentStep] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -73,6 +75,30 @@ const LegalAssistantPage: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
+    setProcessingSteps([]);
+    setCurrentStep('');
+
+    // Simulate live reasoning steps
+    const reasoningSteps = [
+      'Analyzing query intent and legal context...',
+      'Searching knowledge graph for relevant legal provisions...',
+      'Applying Local GraphRAG strategy for detailed analysis...',
+      'Applying Global GraphRAG strategy for broader context...',
+      'Synthesizing information from multiple sources...',
+      'Generating comprehensive legal response...',
+      'Validating response accuracy and completeness...'
+    ];
+
+    let stepIndex = 0;
+    const stepInterval = setInterval(() => {
+      if (stepIndex < reasoningSteps.length) {
+        setCurrentStep(reasoningSteps[stepIndex]);
+        setProcessingSteps(prev => [...prev, reasoningSteps[stepIndex]]);
+        stepIndex++;
+      } else {
+        clearInterval(stepInterval);
+      }
+    }, 800); // Update every 800ms
 
     try {
       // Prepare messages for the orchestrator
@@ -126,7 +152,10 @@ const LegalAssistantPage: React.FC = () => {
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
+      clearInterval(stepInterval);
       setIsLoading(false);
+      setProcessingSteps([]);
+      setCurrentStep('');
     }
   };
 
@@ -359,17 +388,72 @@ const LegalAssistantPage: React.FC = () => {
 
             {isLoading && (
               <div className="flex justify-start animate-fade-in">
-                <div className="max-w-xs">
-                  <div className="flex items-center space-x-2 mb-2">
+                <div className="max-w-4xl">
+                  <div className="flex items-center space-x-2 mb-3">
                     <Bot className="h-4 w-4 text-purple-400" />
-                    <span className="text-sm text-gray-300">AI is thinking...</span>
+                    <span className="text-sm font-medium text-gray-300">AI Agents Workflow</span>
+                    <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded border border-purple-500/30">
+                      🔄 Processing
+                    </span>
                   </div>
-                  <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-xl px-4 py-3 backdrop-blur-sm">
-                    <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
-                      <span className="text-gray-300 text-sm">Processing your query...</span>
+                  
+                  {/* Current Step */}
+                  {currentStep && (
+                    <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg mb-3">
+                      <div className="flex items-center space-x-3">
+                        <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-blue-300">
+                              Current Step
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              {new Date().toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <p className="text-blue-200 text-sm">{currentStep}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Processing Steps History */}
+                  {processingSteps.length > 0 && (
+                    <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Brain className="h-4 w-4 text-purple-400" />
+                        <span className="text-sm font-medium text-gray-300">Reasoning Steps</span>
+                        <span className="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded border border-green-500/30">
+                          {processingSteps.length} completed
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-gray-800/20">
+                        {processingSteps.map((step, index) => (
+                          <div key={index} className="flex items-start space-x-2 text-sm">
+                            <div className="flex-shrink-0 w-4 h-4 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mt-0.5">
+                              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                            </div>
+                            <span className="text-gray-300 flex-1">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Progress Bar */}
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+                          <span>Progress</span>
+                          <span>{Math.round((processingSteps.length / 7) * 100)}%</span>
+                        </div>
+                        <div className="w-full bg-gray-700/50 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500 ease-out"
+                            style={{ width: `${(processingSteps.length / 7) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
