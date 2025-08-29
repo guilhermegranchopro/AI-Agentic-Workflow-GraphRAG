@@ -88,7 +88,7 @@ class LocalGraphRAG(GraphRAGBase):
                OR toLower(n.title) CONTAINS toLower($query)
                OR toLower(n.content) CONTAINS toLower($query_words)
             WITH n, size([(n)-[]-() | 1]) as degree
-            ORDER BY degree DESC, n.score DESC
+            ORDER BY degree DESC
             LIMIT $max_results
             OPTIONAL MATCH (n)-[r]-(related)
             RETURN DISTINCT n, r, related
@@ -157,16 +157,14 @@ class GlobalGraphRAG(GraphRAGBase):
                OR toLower(n.title) CONTAINS toLower($query)
                OR toLower(n.content) CONTAINS toLower($query_words)
             WITH n, 
-                 size([(n)-[]-() | 1]) as degree,
-                 n.score as relevance
-            ORDER BY relevance DESC, degree DESC
+                 size([(n)-[]-() | 1]) as degree
+            ORDER BY degree DESC
             LIMIT $max_results
             MATCH (n)-[r*1..2]-(related)
             WHERE related <> n
-            WITH n, r, related, 
-                 reduce(score = 0, rel in r | score + rel.weight) as path_score
-            ORDER BY path_score DESC
-            RETURN DISTINCT n, r, related, path_score
+            WITH n, r, related
+            ORDER BY degree DESC
+            RETURN DISTINCT n, r, related
             """
             
             # Extract key words from query for better matching
@@ -231,16 +229,13 @@ class DRIFTGraphRAG(GraphRAGBase):
             MATCH (n:LegalNode)
             WHERE n.content CONTAINS $query OR n.title CONTAINS $query
             WITH n, 
-                 size([(n)-[]-() | 1]) as degree,
-                 n.score as relevance,
-                 n.timestamp as recency
-            ORDER BY relevance DESC, recency DESC, degree DESC
+                 size([(n)-[]-() | 1]) as degree
+            ORDER BY degree DESC
             LIMIT $max_results
             MATCH (n)-[r]-(related)
-            WITH n, r, related,
-                 n.score * (1 + 0.1 * log10(degree)) as drift_score
-            ORDER BY drift_score DESC
-            RETURN DISTINCT n, r, related, drift_score
+            WITH n, r, related
+            ORDER BY degree DESC
+            RETURN DISTINCT n, r, related
             """
             
             params = {"query": query, "max_results": max_results}
