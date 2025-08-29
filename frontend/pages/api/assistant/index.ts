@@ -350,7 +350,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       body: JSON.stringify({
         message: query,
-        strategy: 'hybrid',
+        strategy: 'auto', // Let the backend decide the strategy
         max_results: 10,
         conversation_id: `conv_${Date.now()}`
       }),
@@ -372,10 +372,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       text: backendData.response || 'I apologize, but I couldn\'t generate a response.',
       citations: backendData.citations || [],
       agents: {
-        local: 'graph_rag',
+        local: 'GraphRAG',
         global: 'orchestrator'
       },
-      confidence: backendData.metadata?.confidence || 0.8,
+      confidence: undefined, // Remove confidence display
       strategy_used: backendData.metadata?.strategy || 'hybrid',
       metadata: backendData.metadata || {},
       // Add reasoning steps for enhanced UI

@@ -121,26 +121,26 @@ const LegalAssistantPage: React.FC = () => {
       // Handle regular JSON response
       const responseData = await response.json();
       
-      const assistantMessage: Message = {
-        id: generateId(),
-        type: 'assistant',
-        content: responseData.text || 'I apologize, but I couldn\'t generate a response.',
-        timestamp: new Date(),
-        metadata: {
-          agent_used: responseData.agents?.local || 'orchestrator',
-          strategy_used: responseData.strategy_used || 'multi-agent',
-          confidence: responseData.confidence || 0.8,
-          sources: responseData.citations?.map((c: any) => ({
-            id: c.title || 'unknown',
-            title: c.title || 'Unknown Source',
-            content: c.source || '',
-            type: 'knowledge_graph',
-            relevanceScore: c.relevance || 0.8
-          })) || [],
-          processing_time: responseData.processing_time || 2.5,
-          reasoning_steps: responseData.reasoning_steps || []
-        }
-      };
+             const assistantMessage: Message = {
+         id: generateId(),
+         type: 'assistant',
+         content: responseData.text || 'I apologize, but I couldn\'t generate a response.',
+         timestamp: new Date(),
+         metadata: {
+           agent_used: responseData.agents?.local || 'orchestrator',
+           strategy_used: responseData.strategy_used || responseData.metadata?.strategy || 'multi-agent',
+           confidence: undefined, // Remove confidence display
+           sources: responseData.citations?.map((c: any) => ({
+             id: c.title || 'unknown',
+             title: c.title || 'Unknown Source',
+             content: c.source || '',
+             type: 'knowledge_graph',
+             relevanceScore: c.relevance || 0.8
+           })) || [],
+           processing_time: responseData.processing_time || 2.5,
+           reasoning_steps: responseData.reasoning_steps || []
+         }
+       };
 
       // Add assistant message
       setMessages(prev => [...prev, assistantMessage]);
@@ -183,6 +183,11 @@ const LegalAssistantPage: React.FC = () => {
         return '🎪';
       case 'hybrid':
         return '🔗';
+      case 'graphrag':
+      case 'graph_rag':
+        return '🔍';
+      case 'auto':
+        return '🤖';
       default:
         return '🤖';
     }
@@ -254,16 +259,12 @@ const LegalAssistantPage: React.FC = () => {
                         <span className="text-sm font-medium text-gray-300">
                           {formatAgentName(message.metadata?.agent_used)}
                         </span>
-                        {message.metadata?.strategy_used && (
-                          <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded border border-purple-500/30">
-                            {getStrategyIcon(message.metadata.strategy_used)} {message.metadata.strategy_used}
-                          </span>
-                        )}
-                        {message.metadata?.confidence && (
-                          <span className={`text-xs font-medium ${getConfidenceColor(message.metadata.confidence)}`}>
-                            {Math.round(message.metadata.confidence * 100)}% confidence
-                          </span>
-                        )}
+                                                 {message.metadata?.strategy_used && (
+                           <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded border border-purple-500/30">
+                             {getStrategyIcon(message.metadata.strategy_used)} {message.metadata.strategy_used === 'graphrag' || message.metadata.strategy_used === 'Graph_rag' ? 'GraphRAG' : message.metadata.strategy_used}
+                           </span>
+                         )}
+
                         {message.metadata?.processing_time && (
                           <span className="text-xs text-cyan-400">
                             ⏱️ {message.metadata.processing_time.toFixed(1)}s
