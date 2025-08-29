@@ -35,6 +35,10 @@ class AnalysisResponse(BaseModel):
     """Legal analysis response model."""
     query: str = Field(..., description="Original query")
     contradictions: List[Dict[str, Any]] = Field(default_factory=list, description="Found contradictions")
+    recommendations: List[Dict[str, Any]] = Field(default_factory=list, description="Generated recommendations")
+    summary: str = Field(default="", description="Analysis summary")
+    confidence: float = Field(default=0.85, description="Analysis confidence score")
+    stats: Dict[str, int] = Field(default_factory=dict, description="Analysis statistics")
     harmonizations: List[Dict[str, Any]] = Field(default_factory=list, description="Legal harmonizations")
     citations: List[RAGCitation] = Field(default_factory=list, description="Source citations")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Analysis metadata")

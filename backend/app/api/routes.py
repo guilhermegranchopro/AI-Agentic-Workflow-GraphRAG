@@ -138,6 +138,8 @@ async def analysis_endpoint(
             context
         )
         
+        logger.info(f"Analysis result received: {analysis_result}")
+        
         # Log success
         log_agent_result(request_id, "analyzer", "analysis", True, {
             "contradictions_count": len(analysis_result.get("contradictions", [])),
@@ -148,6 +150,8 @@ async def analysis_endpoint(
         contradictions = analysis_result.get("contradictions", [])
         harmonizations = analysis_result.get("harmonizations", [])
         citations = analysis_result.get("citations", [])
+        
+        logger.info(f"Transformed data - contradictions: {len(contradictions)}, harmonizations: {len(harmonizations)}")
         
         # Generate detailed recommendations from harmonizations and contradictions
         recommendations = []
@@ -235,7 +239,9 @@ async def analysis_endpoint(
             "recommendations": recommendations,
             "summary": summary,
             "confidence": 0.85,
-            "stats": stats
+            "stats": stats,
+            "harmonizations": harmonizations,
+            "citations": citations
         }
         
     except Exception as e:
@@ -618,11 +624,11 @@ async def perform_legal_analysis(
         # Generate citations from found nodes
         for node in rag_result.nodes:
             citations.append({
-                "id": node.id,
-                "title": node.id,  # Use id as title since RAGNode doesn't have title
+                "node_id": node.id,
+                "node_type": node.type,
                 "content": node.content[:200] + "..." if len(node.content) > 200 else node.content,
-                "type": node.type,
-                "score": node.score
+                "score": node.score or 1.0,
+                "metadata": {}
             })
         
         return {
