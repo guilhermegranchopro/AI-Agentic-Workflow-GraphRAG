@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
 from loguru import logger
-from ..schemas.rag import RAGResult, RAGNode, RAGEdge, RAGCitation
-from ..schemas.a2a import RAGNode as A2ARAGNode, RAGEdge as A2ARAGEdge, RAGCitation as A2ARAGCitation
+from ..schemas.rag import RAGResult
+from ..schemas.a2a import RAGNode, RAGEdge, RAGCitation
 from ..adapters.neo4j_conn import Neo4jConnection
 
 

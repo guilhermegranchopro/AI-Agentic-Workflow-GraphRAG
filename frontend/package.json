@@ -27,6 +27,7 @@
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
     "autoprefixer": "^10.4.0",
+    "dequal": "^2.0.3",
     "lucide-react": "^0.400.0",
     "neo4j-driver": "^5.28.1",
     "next": "15.5.0",

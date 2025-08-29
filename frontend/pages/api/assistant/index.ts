@@ -378,7 +378,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
          type: citation.node_type?.toLowerCase() || 'knowledge_graph',
          relevanceScore: citation.score || 0.8
        })).filter((citation, index, self) => 
-         index === self.findIndex(c => c.id === citation.id)
+         index === self.findIndex(c => c.id === citation.id && c.content === citation.content)
        ), // Remove duplicates based on ID
        agents: {
          local: 'GraphRAG',

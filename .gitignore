@@ -22,31 +22,13 @@ wheels/
 MANIFEST
 
 # Virtual Environment
-.venv/
+.env
+.venv
+env/
 venv/
 ENV/
-env/
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Next.js
-.next/
-out/
-build/
-
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.backup
-.env.example
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
@@ -68,96 +50,33 @@ Thumbs.db
 *.log
 logs/
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+.nuxt/
+dist/
+
+# Build
+build/
+dist/
+
+# Environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Database
 *.db
 *.sqlite
 *.sqlite3
 
-# Temporary files
-*.tmp
-*.temp
-temp/
-
-# Test files
-test_*.py
-debug_*.py
-*_test.py
-test_azure/
-
-# Documentation
-docs/_build/
-
-# Coverage
-.coverage
-htmlcov/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# PyCharm
-.idea/
-
-# VS Code
-.vscode/
-
-# Temporary files
-*.tmp
-*.temp
-temp/
-
-# Frontend specific
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/node_modules/
-frontend/.env.backup
-frontend/.env.example
-frontend/next-env.d.ts
-frontend/.eslintrc.json
-
-# Backend specific
-backend/venv/
-backend/tests/
-backend/scripts/
-backend/test_*.py
-backend/pyproject.toml
-backend/Dockerfile
-
-# Old files
-STARTUP_GUIDE.md
-start_backend.py
-start_complex_backend.py
+# Cache
+.cache/
+.parcel-cache/
