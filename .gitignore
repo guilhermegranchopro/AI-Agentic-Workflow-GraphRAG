@@ -45,6 +45,8 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.backup
+.env.example
 
 # IDE
 .vscode/
@@ -80,6 +82,7 @@ temp/
 test_*.py
 debug_*.py
 *_test.py
+test_azure/
 
 # Documentation
 docs/_build/
@@ -135,3 +138,26 @@ dmypy.json
 *.tmp
 *.temp
 temp/
+
+# Frontend specific
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/node_modules/
+frontend/.env.backup
+frontend/.env.example
+frontend/next-env.d.ts
+frontend/.eslintrc.json
+
+# Backend specific
+backend/venv/
+backend/tests/
+backend/scripts/
+backend/test_*.py
+backend/pyproject.toml
+backend/Dockerfile
+
+# Old files
+STARTUP_GUIDE.md
+start_backend.py
+start_complex_backend.py
