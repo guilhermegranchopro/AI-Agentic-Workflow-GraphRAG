@@ -373,122 +373,51 @@ const AIAnalysisPage: React.FC = () => {
               <div className="mt-4 space-y-3">
                 <div className="text-xs text-gray-400 font-medium">💡 Analysis Suggestions:</div>
                 
-                {/* Critical Priority Contradictions */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">🚨 Critical Priority:</span>
-                  {[
-                    "Anti-Money Laundering and Counter-Terrorism Financing",
-                    "Corporate Tax Law 2022 vs 2024",
-                    "UAE Court System 2020 vs 2024"
-                  ].map((example, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
-                      className="text-xs text-red-400 hover:text-red-300 bg-red-900/20 hover:bg-red-900/30 rounded px-2 py-1 transition-colors border border-red-500/30 whitespace-nowrap"
-                      disabled={analysisState.isRunning}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+                {/* 4 Strategic Examples */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Critical Priority */}
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, query: "Corporate Tax" }))}
+                    className="text-sm text-red-400 hover:text-red-300 bg-red-900/20 hover:bg-red-900/30 rounded px-3 py-2 transition-colors border border-red-500/30 text-left"
+                    disabled={analysisState.isRunning}
+                  >
+                    <div className="font-medium">🚨 Critical Priority</div>
+                    <div className="text-xs text-red-300">Corporate Tax (finds critical contradiction)</div>
+                  </button>
 
-                {/* High Priority Contradictions */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">⚠️ High Priority:</span>
-                  {[
-                    "Real Estate Law 2020 vs 2024",
-                    "UAE Labor Law 1980 vs 2021",
-                    "Banking and Financial Regulations",
-                    "UAE Competition Law 2012 vs 2024",
-                    "UAE E-Commerce Law 2021 vs 2024"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 3}
-                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
-                      className="text-xs text-orange-400 hover:text-orange-300 bg-orange-900/20 hover:bg-orange-900/30 rounded px-2 py-1 transition-colors border border-orange-500/30 whitespace-nowrap"
-                      disabled={analysisState.isRunning}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+                  {/* High Priority */}
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, query: "UAE Court System" }))}
+                    className="text-sm text-orange-400 hover:text-orange-300 bg-orange-900/20 hover:bg-orange-900/30 rounded px-3 py-2 transition-colors border border-orange-500/30 text-left"
+                    disabled={analysisState.isRunning}
+                  >
+                    <div className="font-medium">⚠️ High Priority</div>
+                    <div className="text-xs text-orange-300">UAE Court System (finds high priority contradiction)</div>
+                  </button>
 
-                {/* Medium Priority Contradictions */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">📋 Medium Priority:</span>
-                  {[
-                    "Data Protection Law 2021 vs 2024",
-                    "Environmental Protection Law 2020 vs 2024",
-                    "Intellectual Property Protection 2016 vs 2023",
-                    "UAE Insurance Law 2007 vs 2023",
-                    "UAE Consumer Protection Law 2006 vs 2024",
-                    "Dubai Free Zones 2020 vs 2024"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 8}
-                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
-                      className="text-xs text-blue-400 hover:text-blue-300 bg-blue-900/20 hover:bg-blue-900/30 rounded px-2 py-1 transition-colors border border-blue-500/30 whitespace-nowrap"
-                      disabled={analysisState.isRunning}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+                  {/* Medium Priority */}
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, query: "Data Protection" }))}
+                    className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 hover:bg-blue-900/30 rounded px-3 py-2 transition-colors border border-blue-500/30 text-left"
+                    disabled={analysisState.isRunning}
+                  >
+                    <div className="font-medium">📋 Medium Priority</div>
+                    <div className="text-xs text-blue-300">Data Protection (finds medium priority contradiction)</div>
+                  </button>
 
-                {/* Category-Based Analysis */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">🏛️ By Category:</span>
-                  {[
-                    "Judicial System",
-                    "Financial Compliance",
-                    "Property Law",
-                    "Privacy & Data",
-                    "Environmental Law",
-                    "Labor Law",
-                    "Taxation",
-                    "Intellectual Property",
-                    "Banking & Finance",
-                    "Free Zones",
-                    "Competition Law",
-                    "Insurance Law",
-                    "Consumer Protection",
-                    "E-Commerce"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 14}
-                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
-                      className="text-xs text-green-400 hover:text-green-300 bg-green-900/20 hover:bg-green-900/30 rounded px-2 py-1 transition-colors border border-green-500/30 whitespace-nowrap"
-                      disabled={analysisState.isRunning}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
-
-                {/* General Legal Areas (Fallback) */}
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">📚 General Analysis:</span>
-                  {[
-                    "Commercial Companies Law",
-                    "Commercial Transactions Law",
-                    "Business Licensing Requirements",
-                    "Work Visa Requirements",
-                    "Arbitration Framework",
-                    "UAE Constitution"
-                  ].map((example, index) => (
-                    <button
-                      key={index + 28}
-                      onClick={() => setFormData(prev => ({ ...prev, query: example }))}
-                      className="text-xs text-purple-400 hover:text-purple-300 bg-purple-900/20 hover:bg-purple-900/30 rounded px-2 py-1 transition-colors border border-purple-500/30 whitespace-nowrap"
-                      disabled={analysisState.isRunning}
-                    >
-                      {example}
-                    </button>
-                  ))}
+                  {/* Multi-Priority */}
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, query: "Banking" }))}
+                    className="text-sm text-green-400 hover:text-green-300 bg-green-900/20 hover:bg-green-900/30 rounded px-3 py-2 transition-colors border border-green-500/30 text-left"
+                    disabled={analysisState.isRunning}
+                  >
+                    <div className="font-medium">🎯 Multi-Priority Analysis</div>
+                    <div className="text-xs text-green-300">Banking (finds multiple contradictions)</div>
+                  </button>
                 </div>
 
                 <div className="text-xs text-yellow-300">
-                  💡 Tip: Critical/High priority suggestions will find explicit contradictions. Category-based queries analyze all related laws. General terms provide comprehensive legal review.
+                  💡 Tip: Each example demonstrates different AI Analysis capabilities - from single critical contradictions to multi-priority comprehensive analysis.
                 </div>
               </div>
 

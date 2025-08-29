@@ -149,25 +149,81 @@ async def analysis_endpoint(
         harmonizations = analysis_result.get("harmonizations", [])
         citations = analysis_result.get("citations", [])
         
-        # Generate recommendations from harmonizations
+        # Generate detailed recommendations from harmonizations and contradictions
         recommendations = []
+        
+        # Add harmonization recommendations
         for harm in harmonizations:
             recommendations.append({
                 "id": harm["id"],
                 "title": harm["title"],
                 "description": harm["description"],
                 "action": harm["approach"],
-                "priority": "medium",
-                "timeline": "Medium-term (90 days)",
-                "cost_impact": "Medium - Harmonization costs"
+                "priority": "high",
+                "timeline": "Immediate (30 days)",
+                "cost_impact": "High - Legal harmonization and compliance costs"
             })
         
-        # Generate summary
-        summary = f"Analysis of '{request.query}' revealed {len(contradictions)} potential contradictions and {len(harmonizations)} harmonization opportunities across {len(set(c.get('type', 'unknown') for c in citations))} legal domains."
+        # Add specific recommendations based on contradiction severity
+        for contradiction in contradictions:
+            severity = contradiction.get("severity", "medium")
+            category = contradiction.get("category", "Legal Compliance")
+            
+            if severity == "critical":
+                priority = "high"
+                timeline = "Immediate (7 days)"
+                cost_impact = "Critical - Immediate compliance costs"
+            elif severity == "high":
+                priority = "high"
+                timeline = "Short-term (30 days)"
+                cost_impact = "High - Compliance and harmonization costs"
+            elif severity == "medium":
+                priority = "medium"
+                timeline = "Medium-term (90 days)"
+                cost_impact = "Medium - Review and alignment costs"
+            else:
+                priority = "low"
+                timeline = "Long-term (180 days)"
+                cost_impact = "Low - Monitoring and review costs"
+            
+            recommendations.append({
+                "id": f"rec_{contradiction['id']}",
+                "title": f"Address {category} Contradiction",
+                "description": f"Implement measures to resolve the contradiction in {category}: {contradiction['title']}",
+                "action": contradiction.get("recommendation", "Review and harmonize conflicting provisions"),
+                "priority": priority,
+                "timeline": timeline,
+                "cost_impact": cost_impact
+            })
+        
+        # Generate detailed summary
+        if contradictions:
+            severity_counts = {
+                "critical": len([c for c in contradictions if c.get("severity") == "critical"]),
+                "high": len([c for c in contradictions if c.get("severity") == "high"]),
+                "medium": len([c for c in contradictions if c.get("severity") == "medium"]),
+                "low": len([c for c in contradictions if c.get("severity") == "low"])
+            }
+            
+            severity_text = []
+            if severity_counts["critical"] > 0:
+                severity_text.append(f"{severity_counts['critical']} critical")
+            if severity_counts["high"] > 0:
+                severity_text.append(f"{severity_counts['high']} high priority")
+            if severity_counts["medium"] > 0:
+                severity_text.append(f"{severity_counts['medium']} medium priority")
+            if severity_counts["low"] > 0:
+                severity_text.append(f"{severity_counts['low']} low priority")
+            
+            severity_summary = ", ".join(severity_text)
+            summary = f"Analysis of '{request.query}' identified {len(contradictions)} legal contradictions ({severity_summary}) requiring immediate attention. Found {len(harmonizations)} harmonization opportunities across {len(set(c.get('type', 'unknown') for c in citations))} legal domains."
+        else:
+            summary = f"Analysis of '{request.query}' found no explicit contradictions in the current knowledge base. Consider expanding the legal data or refining the search criteria."
         
         # Calculate stats
         stats = {
             "total_contradictions": len(contradictions),
+            "critical_priority": len([c for c in contradictions if c.get("severity") == "critical"]),
             "high_priority": len([c for c in contradictions if c.get("severity") == "high"]),
             "medium_priority": len([c for c in contradictions if c.get("severity") == "medium"]),
             "low_priority": len([c for c in contradictions if c.get("severity") == "low"])
@@ -477,7 +533,7 @@ async def perform_legal_analysis(
         contradictions_query = """
         MATCH (a:LegalNode)-[r:RELATES_TO]->(b:LegalNode)
         WHERE a.id IN $node_ids AND b.id IN $node_ids AND r.type = 'CONTRADICTS'
-        RETURN a, b, r
+        RETURN a, b, properties(r) as r_props
         """
         
         contradictions_result = await neo4j_conn.run_cypher(contradictions_query, {"node_ids": node_ids})
@@ -489,17 +545,38 @@ async def perform_legal_analysis(
         
         # Process explicit contradictions
         for record in contradictions_result:
-            if "a" in record and "b" in record:
+            if "a" in record and "b" in record and "r_props" in record:
                 node_a = record["a"]
                 node_b = record["b"]
+                relationship_props = record["r_props"]
+                
+                # Extract priority and category from relationship properties
+                priority = relationship_props.get("priority", "medium")
+                severity = relationship_props.get("severity", "medium")
+                category = relationship_props.get("category", "Legal Compliance")
+                description = relationship_props.get("description", f"Contradiction between {node_a.get('title', '')} and {node_b.get('title', '')}")
+                
+                # Map priority to severity if not provided
+                if not relationship_props.get("severity"):
+                    if priority == "critical":
+                        severity = "critical"
+                    elif priority == "high":
+                        severity = "high"
+                    elif priority == "medium":
+                        severity = "medium"
+                    else:
+                        severity = "low"
                 
                 contradiction = {
                     "id": f"cont_{node_a.get('id', '')}_{node_b.get('id', '')}",
                     "title": f"Legal Contradiction: {node_a.get('title', '')} vs {node_b.get('title', '')}",
-                    "description": f"Explicit contradiction found between {node_a.get('title', '')} and {node_b.get('title', '')}. These provisions contain conflicting legal requirements.",
-                    "severity": "high",
+                    "description": description,
+                    "severity": severity,
+                    "priority": priority,
+                    "category": category,
                     "sources": [node_a.get("title", ""), node_b.get("title", "")],
-                    "recommendation": f"Review and harmonize the conflicting provisions between {node_a.get('title', '')} and {node_b.get('title', '')}"
+                    "impact": f"High impact on {category.lower()} compliance and regulatory alignment",
+                    "recommendation": f"Review and harmonize the conflicting provisions between {node_a.get('title', '')} and {node_b.get('title', '')} to ensure {category.lower()} compliance"
                 }
                 contradictions.append(contradiction)
         
