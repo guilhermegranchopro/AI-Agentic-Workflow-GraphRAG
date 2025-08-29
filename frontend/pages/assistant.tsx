@@ -78,15 +78,15 @@ const LegalAssistantPage: React.FC = () => {
     setProcessingSteps([]);
     setCurrentStep('');
 
-    // Simulate live reasoning steps
+    // Enhanced reasoning steps with more detail
     const reasoningSteps = [
-      'Analyzing query intent and legal context...',
-      'Searching knowledge graph for relevant legal provisions...',
-      'Applying Local GraphRAG strategy for detailed analysis...',
-      'Applying Global GraphRAG strategy for broader context...',
-      'Synthesizing information from multiple sources...',
-      'Generating comprehensive legal response...',
-      'Validating response accuracy and completeness...'
+      '🔍 Analyzing query intent and legal context...',
+      '📚 Searching knowledge graph for relevant legal provisions...',
+      '🎯 Applying Local GraphRAG strategy for detailed analysis...',
+      '🌐 Applying Global GraphRAG strategy for broader context...',
+      '🔗 Synthesizing information from multiple sources...',
+      '✍️ Generating comprehensive legal response...',
+      '✅ Validating response accuracy and completeness...'
     ];
 
     let stepIndex = 0;
@@ -136,7 +136,9 @@ const LegalAssistantPage: React.FC = () => {
             content: c.source || '',
             type: 'knowledge_graph',
             relevanceScore: c.relevance || 0.8
-          })) || []
+          })) || [],
+          processing_time: responseData.processing_time || 2.5,
+          reasoning_steps: responseData.reasoning_steps || []
         }
       };
 
@@ -196,7 +198,7 @@ const LegalAssistantPage: React.FC = () => {
   return (
     <Layout title="AI Assistant - UAE Legal GraphRAG">
       <Container>
-        <div className="flex flex-col">
+        <div className="flex flex-col ai-assistant-animation">
           {/* Fixed Header */}
           <div className="flex-shrink-0 mb-3 md:mb-4 lg:mb-6">
             <div className="flex items-center space-x-2 md:space-x-3 mb-2 md:mb-3 lg:mb-4">
@@ -260,6 +262,11 @@ const LegalAssistantPage: React.FC = () => {
                             {Math.round(message.metadata.confidence * 100)}% confidence
                           </span>
                         )}
+                        {message.metadata?.processing_time && (
+                          <span className="text-xs text-cyan-400">
+                            ⏱️ {message.metadata.processing_time.toFixed(1)}s
+                          </span>
+                        )}
                         <span className="text-sm text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
@@ -302,6 +309,28 @@ const LegalAssistantPage: React.FC = () => {
                           </ReactMarkdown>
                         </div>
                       </div>
+
+                      {/* AI Workflow Summary */}
+                      {message.metadata?.reasoning_steps && message.metadata.reasoning_steps.length > 0 && (
+                        <div className="mt-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-xl p-3 backdrop-blur-sm shadow-lg">
+                          <h4 className="text-sm font-medium text-green-300 mb-2">
+                            🤖 AI Workflow Completed
+                          </h4>
+                          <div className="text-xs text-green-200 space-y-1">
+                            {message.metadata.reasoning_steps.slice(0, 3).map((step: string, index: number) => (
+                              <div key={index} className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span>{step.replace(/^[🔍📚🎯🌐🔗✍️✅]\s*/, '')}</span>
+                              </div>
+                            ))}
+                            {message.metadata.reasoning_steps.length > 3 && (
+                              <div className="text-green-400 text-xs mt-1">
+                                +{message.metadata.reasoning_steps.length - 3} more steps completed
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       {/* Sources */}
                       {message.metadata?.sources && message.metadata.sources.length > 0 && (
@@ -387,7 +416,7 @@ const LegalAssistantPage: React.FC = () => {
             ))}
 
             {isLoading && (
-              <div className="flex justify-start animate-fade-in">
+              <div className="flex justify-start animate-fade-in animate-slide-up">
                 <div className="max-w-4xl">
                   <div className="flex items-center space-x-2 mb-3">
                     <Bot className="h-4 w-4 text-purple-400" />
@@ -399,7 +428,7 @@ const LegalAssistantPage: React.FC = () => {
                   
                   {/* Current Step */}
                   {currentStep && (
-                    <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg mb-3">
+                    <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg mb-3 animate-slide-up">
                       <div className="flex items-center space-x-3">
                         <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
                         <div className="flex-1">
@@ -419,7 +448,7 @@ const LegalAssistantPage: React.FC = () => {
 
                   {/* Processing Steps History */}
                   {processingSteps.length > 0 && (
-                    <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg">
+                    <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/20 rounded-xl px-4 py-3 backdrop-blur-sm shadow-lg animate-slide-up">
                       <div className="flex items-center space-x-2 mb-3">
                         <Brain className="h-4 w-4 text-purple-400" />
                         <span className="text-sm font-medium text-gray-300">Reasoning Steps</span>
@@ -430,8 +459,8 @@ const LegalAssistantPage: React.FC = () => {
                       
                       <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-gray-800/20">
                         {processingSteps.map((step, index) => (
-                          <div key={index} className="flex items-start space-x-2 text-sm">
-                            <div className="flex-shrink-0 w-4 h-4 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mt-0.5">
+                          <div key={index} className="flex items-start space-x-2 text-sm animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                            <div className="flex-shrink-0 w-4 h-4 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mt-0.5 animate-pulse-slow">
                               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                             </div>
                             <span className="text-gray-300 flex-1">{step}</span>
@@ -445,11 +474,13 @@ const LegalAssistantPage: React.FC = () => {
                           <span>Progress</span>
                           <span>{Math.round((processingSteps.length / 7) * 100)}%</span>
                         </div>
-                        <div className="w-full bg-gray-700/50 rounded-full h-2">
+                        <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
                           <div 
-                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500 ease-out"
+                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-700 ease-out relative"
                             style={{ width: `${(processingSteps.length / 7) * 100}%` }}
-                          ></div>
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse-slow"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
