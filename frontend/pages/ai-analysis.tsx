@@ -439,27 +439,7 @@ const AIAnalysisPage: React.FC = () => {
             </form>
           </div>
 
-          {/* KPIs */}
-          {analysisState.result && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
-              <div className="bg-gradient-to-r from-purple-900/30 to-purple-800/30 border border-purple-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-purple-300">{analysisState.result.stats?.total_contradictions || 0}</div>
-                <div className="text-xs md:text-sm text-gray-300">Total Contradictions</div>
-              </div>
-              <div className="bg-gradient-to-r from-red-900/30 to-red-800/30 border border-red-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-red-300">{analysisState.result.stats?.high_priority || 0}</div>
-                <div className="text-xs md:text-sm text-gray-300">High Priority</div>
-              </div>
-              <div className="bg-gradient-to-r from-orange-900/30 to-orange-800/30 border border-orange-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-orange-300">{analysisState.result.stats?.medium_priority || 0}</div>
-                <div className="text-xs md:text-sm text-gray-300">Medium Priority</div>
-              </div>
-              <div className="bg-gradient-to-r from-green-900/30 to-green-800/30 border border-green-500/30 rounded-xl p-3 md:p-4 shadow-lg backdrop-blur-sm">
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-green-300">{analysisState.result.stats?.low_priority || 0}</div>
-                <div className="text-xs md:text-sm text-gray-300">Low Priority</div>
-              </div>
-            </div>
-          )}
+
 
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
             {/* Results Table */}
