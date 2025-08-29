@@ -81,10 +81,12 @@ class LocalGraphRAG(GraphRAGBase):
     async def retrieve(self, query: str, max_results: int = 10) -> RAGResult:
         """Retrieve nodes and edges using local graph traversal."""
         try:
-            # Cypher query for local graph traversal
+            # Cypher query for local graph traversal with flexible text matching
             cypher_query = """
             MATCH (n:LegalNode)
-            WHERE n.content CONTAINS $query OR n.title CONTAINS $query
+            WHERE toLower(n.content) CONTAINS toLower($query) 
+               OR toLower(n.title) CONTAINS toLower($query)
+               OR toLower(n.content) CONTAINS toLower($query_words)
             WITH n, size([(n)-[]-() | 1]) as degree
             ORDER BY degree DESC, n.score DESC
             LIMIT $max_results
@@ -92,7 +94,9 @@ class LocalGraphRAG(GraphRAGBase):
             RETURN DISTINCT n, r, related
             """
             
-            params = {"query": query, "max_results": max_results}
+            # Extract key words from query for better matching
+            query_words = " ".join([word for word in query.split() if len(word) > 3])
+            params = {"query": query, "query_words": query_words, "max_results": max_results}
             results = await self.neo4j_conn.run_cypher(cypher_query, params)
             
             nodes = []
@@ -146,10 +150,12 @@ class GlobalGraphRAG(GraphRAGBase):
     async def retrieve(self, query: str, max_results: int = 10) -> RAGResult:
         """Retrieve nodes and edges using global graph analysis."""
         try:
-            # Cypher query for global graph analysis
+            # Cypher query for global graph analysis with flexible text matching
             cypher_query = """
             MATCH (n:LegalNode)
-            WHERE n.content CONTAINS $query OR n.title CONTAINS $query
+            WHERE toLower(n.content) CONTAINS toLower($query) 
+               OR toLower(n.title) CONTAINS toLower($query)
+               OR toLower(n.content) CONTAINS toLower($query_words)
             WITH n, 
                  size([(n)-[]-() | 1]) as degree,
                  n.score as relevance
@@ -163,7 +169,9 @@ class GlobalGraphRAG(GraphRAGBase):
             RETURN DISTINCT n, r, related, path_score
             """
             
-            params = {"query": query, "max_results": max_results}
+            # Extract key words from query for better matching
+            query_words = " ".join([word for word in query.split() if len(word) > 3])
+            params = {"query": query, "query_words": query_words, "max_results": max_results}
             results = await self.neo4j_conn.run_cypher(cypher_query, params)
             
             nodes = []

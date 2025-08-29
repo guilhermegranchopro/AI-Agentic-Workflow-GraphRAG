@@ -284,8 +284,8 @@ async def graph_endpoint(
         nodes_query = "MATCH (n:LegalNode) RETURN n"
         nodes_result = await neo4j_conn.run_cypher(nodes_query)
         
-        # Get all relationships from Neo4j
-        edges_query = "MATCH (a:LegalNode)-[r:RELATES_TO]->(b:LegalNode) RETURN a, r, b"
+        # Get all relationships from Neo4j with properties
+        edges_query = "MATCH (a:LegalNode)-[r]->(b:LegalNode) RETURN a, type(r) as rel_type, properties(r) as rel_props, b"
         edges_result = await neo4j_conn.run_cypher(edges_query)
         
         # Transform nodes
@@ -305,20 +305,25 @@ async def graph_endpoint(
         # Transform edges
         edges = []
         for record in edges_result:
-            if "r" in record and record["r"] and "a" in record and record["a"] and "b" in record and record["b"]:
-                # Handle relationship tuple format: (start_node, relationship_type, end_node)
-                if isinstance(record["r"], tuple) and len(record["r"]) >= 3:
-                    start_node = record["r"][0]
-                    rel_type = record["r"][1]
-                    end_node = record["r"][2]
-                    
-                    edges.append({
-                        "source": start_node.get("id", "") if isinstance(start_node, dict) else str(start_node),
-                        "target": end_node.get("id", "") if isinstance(end_node, dict) else str(end_node),
-                        "type": rel_type,
-                        "weight": 1.0,
-                        "metadata": {}
-                    })
+            if "a" in record and record["a"] and "b" in record and record["b"] and "rel_type" in record and "rel_props" in record:
+                start_node = record["a"]
+                end_node = record["b"]
+                rel_type = record["rel_type"]
+                rel_props = record["rel_props"]
+                
+                # Extract relationship type from properties if available
+                if isinstance(rel_props, dict) and "type" in rel_props:
+                    relationship_type = rel_props["type"]
+                else:
+                    relationship_type = str(rel_type)
+                
+                edges.append({
+                    "source": start_node.get("id", "") if isinstance(start_node, dict) else str(start_node),
+                    "target": end_node.get("id", "") if isinstance(end_node, dict) else str(end_node),
+                    "type": relationship_type,
+                    "weight": 1.0,
+                    "metadata": rel_props if isinstance(rel_props, dict) else {}
+                })
         
         return {
             "nodes": nodes,
@@ -379,25 +384,60 @@ async def generate_ai_response(
     azure_llm: AzureLLM,
     context: Any
 ) -> str:
-    """Generate AI response using RAG results."""
-    # Prepare context from RAG results
-    context_text = "\n\n".join([
-        f"Source {i+1}: {citation.content}"
-        for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
-    ])
+    """Generate AI response using RAG results and web search when needed."""
     
-    # Create system prompt
-    system_prompt = """You are a legal research assistant for UAE law. Use the provided sources to answer questions accurately and cite your sources. If you cannot answer based on the sources, say so clearly."""
+    # Check if we have sufficient GraphRAG results
+    has_graphrag_data = len(rag_result.citations) > 0 and len(rag_result.nodes) > 0
     
-    # Prepare messages
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"Question: {message}\n\nSources:\n{context_text}\n\nPlease provide a comprehensive answer based on the sources provided."}
-    ]
+    if has_graphrag_data:
+        # Use GraphRAG results
+        context_text = "\n\n".join([
+            f"Source {i+1}: {citation.content}"
+            for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
+        ])
+        
+        # Create system prompt for GraphRAG-based response
+        system_prompt = """You are a legal research assistant for UAE law. Use the provided GraphRAG sources to answer questions accurately and cite your sources. 
+
+IMPORTANT: Always mention that you used GraphRAG techniques and cite the specific nodes/edges from the knowledge graph that were relevant to your answer.
+
+Format your response as follows:
+1. Answer the question based on the GraphRAG sources
+2. Mention which GraphRAG strategy was used (Local, Global, or Hybrid)
+3. Cite specific nodes from the knowledge graph that were relevant
+4. If you used relationships between nodes, mention those as well"""
+        
+        # Prepare messages
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Question: {message}\n\nGraphRAG Sources:\n{context_text}\n\nPlease provide a comprehensive answer based on the GraphRAG sources provided."}
+        ]
+        
+        # Generate response
+        response = await azure_llm.chat(messages, temperature=0.7, max_tokens=1500)
+        return response
     
-    # Generate response
-    response = await azure_llm.chat(messages, temperature=0.7, max_tokens=1000)
-    return response
+    else:
+        # No GraphRAG data available, use web search capabilities
+        system_prompt = """You are a legal research assistant for UAE law. Since no specific GraphRAG sources were found in the knowledge graph, you should use your general knowledge about UAE law and legal principles to provide a helpful response.
+
+IMPORTANT: 
+1. Clearly state that you are providing information based on general knowledge since no specific GraphRAG sources were found
+2. Mention that you did not use GraphRAG techniques for this response
+3. Provide accurate and helpful information about UAE law
+4. If the question is very specific and requires current legal information, suggest consulting with a legal professional
+
+For complex or time-sensitive legal matters, always recommend consulting with qualified legal professionals."""
+        
+        # Prepare messages for web-based response
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Question: {message}\n\nPlease provide a helpful response about UAE law based on your general knowledge. Clearly state that no GraphRAG sources were found and you are using general knowledge."}
+        ]
+        
+        # Generate response
+        response = await azure_llm.chat(messages, temperature=0.7, max_tokens=1500)
+        return response
 
 
 async def perform_legal_analysis(
