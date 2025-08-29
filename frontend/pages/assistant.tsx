@@ -261,7 +261,11 @@ const LegalAssistantPage: React.FC = () => {
                         </span>
                                                  {message.metadata?.strategy_used && (
                            <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded border border-purple-500/30">
-                             {getStrategyIcon(message.metadata.strategy_used)} {message.metadata.strategy_used === 'graphrag' || message.metadata.strategy_used === 'Graph_rag' ? 'GraphRAG' : message.metadata.strategy_used}
+                             {getStrategyIcon(message.metadata.strategy_used)} {
+                               message.metadata.strategy_used === 'graphrag' || message.metadata.strategy_used === 'Graph_rag' ? 'GraphRAG' : 
+                               message.metadata.strategy_used === 'auto' ? 'Auto' :
+                               message.metadata.strategy_used
+                             }
                            </span>
                          )}
 

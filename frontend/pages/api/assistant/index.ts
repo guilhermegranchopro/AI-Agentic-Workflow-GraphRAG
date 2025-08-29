@@ -367,29 +367,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const backendData = await backendResponse.json();
     console.log('Backend response received:', backendData);
 
-    // Transform backend response to frontend format
-    const response = {
-      text: backendData.response || 'I apologize, but I couldn\'t generate a response.',
-      citations: backendData.citations || [],
-      agents: {
-        local: 'GraphRAG',
-        global: 'orchestrator'
-      },
-      confidence: undefined, // Remove confidence display
-      strategy_used: backendData.metadata?.strategy || 'hybrid',
-      metadata: backendData.metadata || {},
-      // Add reasoning steps for enhanced UI
-      reasoning_steps: [
-        'Analyzing query intent and legal context...',
-        'Searching knowledge graph for relevant legal provisions...',
-        'Applying Local GraphRAG strategy for detailed analysis...',
-        'Applying Global GraphRAG strategy for broader context...',
-        'Synthesizing information from multiple sources...',
-        'Generating comprehensive legal response...',
-        'Validating response accuracy and completeness...'
-      ],
-      processing_time: backendData.metadata?.processing_time || 2.5
-    };
+         // Transform backend response to frontend format
+     const response = {
+       text: backendData.response || 'I apologize, but I couldn\'t generate a response.',
+       citations: backendData.citations || [],
+       agents: {
+         local: 'GraphRAG',
+         global: 'orchestrator'
+       },
+       confidence: undefined, // Remove confidence display
+       strategy_used: backendData.metadata?.strategy || 'auto',
+       metadata: backendData.metadata || {},
+       // Add reasoning steps for enhanced UI
+       reasoning_steps: [
+         'Analyzing query intent and legal context...',
+         'Searching knowledge graph for relevant legal provisions...',
+         'Applying Local GraphRAG strategy for detailed analysis...',
+         'Applying Global GraphRAG strategy for broader context...',
+         'Synthesizing information from multiple sources...',
+         'Generating comprehensive legal response...',
+         'Validating response accuracy and completeness...'
+       ],
+       processing_time: backendData.metadata?.processing_time || 2.5
+     };
 
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(response);
