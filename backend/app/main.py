@@ -208,23 +208,23 @@ async def health_check():
     """Health check endpoint."""
     dependencies = {}
     
-    # Check Neo4j
-    if neo4j_conn:
-        neo4j_health = await neo4j_conn.health_check()
+    # Check Neo4j using global variable from routes
+    if routes.neo4j_conn:
+        neo4j_health = await routes.neo4j_conn.health_check()
         dependencies["neo4j"] = neo4j_health.get("status", "unknown")
     else:
         dependencies["neo4j"] = "not_configured"
     
-    # Check Azure OpenAI
-    if azure_llm:
-        azure_health = await azure_llm.health_check()
+    # Check Azure OpenAI using global variable from routes
+    if routes.azure_llm:
+        azure_health = await routes.azure_llm.health_check()
         dependencies["azure_openai"] = azure_health.get("status", "unknown")
     else:
         dependencies["azure_openai"] = "not_configured"
     
-    # Check FAISS
-    if faiss_db:
-        faiss_stats = faiss_db.get_stats()
+    # Check FAISS using global variable from routes
+    if routes.faiss_db:
+        faiss_stats = routes.faiss_db.get_stats()
         dependencies["faiss"] = "healthy" if "error" not in faiss_stats else "unhealthy"
     else:
         dependencies["faiss"] = "not_configured"
