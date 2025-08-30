@@ -38,24 +38,66 @@ export default function Graph() {
   const [maxNodes, setMaxNodes] = useState(150);
   const [selectedRelationships, setSelectedRelationships] = useState([
     'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
-    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
-    'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
+    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'CONTRADICTS', 'RELATES_TO',
+    'OVERSEES', 'ENFORCES', 'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
     'REGULATED_BY', 'HAS_COURT', 'PROTECTED_BY', 'PREVENTS',
     'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN',
     'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
-    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
+    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY', 'judicial', 'foundational',
+    'legislative', 'regulatory', 'compliance', 'legal', 'system', 'AMENDED_BY',
+    'UPDATED_BY', 'COMPLEMENTS', 'BASED_ON', 'SUPPLEMENTS', 'ENFORCES',
+    'REQUIRED_BY', 'IMPACTS', 'complements', 'enhances', 'extends', 'supports',
+    'implements', 'influences', 'facilitates', 'modernizes', 'strengthens',
+    'tax_system', 'tax_compliance', 'governance', 'reporting', 'financial_services',
+    'market_regulation', 'digital_security', 'payment_systems', 'development',
+    'property_management', 'employment_policy', 'investment', 'environmental_compliance',
+    'sustainability', 'enforcement', 'legal_system', 'commercial_regulation',
+    'consumer_rights', 'competition', 'dispute_resolution', 'legal_procedure',
+    'digital_infrastructure', 'transport_regulation', 'trade_regulation',
+    'content_regulation', 'privacy_compliance', 'employment_standards',
+    'service_regulation', 'organization_regulation', 'ngo_regulation',
+    'development_regulation', 'sustainable_development', 'marine_resources',
+    'resource_management', 'alternative_to', 'supports', 'governs', 'influences',
+    'requires', 'protects', 'healthcare_regulation', 'medical_standards',
+    'research_regulation', 'genetic_privacy', 'biotechnology_regulation',
+    'aerospace_regulation', 'quantum_security', 'ai_privacy', 'digital_assets',
+    'virtual_reality', 'clean_energy', 'emissions_reduction', 'sustainable_construction',
+    'climate_resilience', 'identity_privacy', 'monetary_policy', 'asset_regulation',
+    'national_security', 'digital_regulation', 'energy_policy', 'trade_regulation',
+    'environmental_compliance'
   ]);
   const networkRef = useRef<HTMLDivElement>(null);
   const networkInstance = useRef<any>(null);
 
   const availableRelationships = [
     'ESTABLISHES', 'DEFINES', 'REGULATES', 'PROTECTS', 'GOVERNED_BY', 
-    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'OVERSEES', 'ENFORCES',
-    'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
+    'REQUIRES', 'HAS_PRINCIPLE', 'ALIGNS_WITH', 'CONTRADICTS', 'RELATES_TO',
+    'OVERSEES', 'ENFORCES', 'ADMINISTERS', 'RECOGNIZES', 'DEFINED_BY', 'PROVIDES',
     'REGULATED_BY', 'HAS_COURT', 'PROTECTED_BY', 'PREVENTS',
     'AMENDS', 'SUPPLEMENTS', 'ENFORCED_BY', 'SPECIALIZES_IN',
     'ALTERNATIVE_TO', 'PRECEDES', 'SIMILAR_TO', 'INCLUDES', 'IMPOSED_BY',
-    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY'
+    'ADMINISTERED_BY', 'GUARANTEED_BY', 'HEARD_BY', 'judicial', 'foundational',
+    'legislative', 'regulatory', 'compliance', 'legal', 'system', 'AMENDED_BY',
+    'UPDATED_BY', 'COMPLEMENTS', 'BASED_ON', 'SUPPLEMENTS', 'ENFORCES',
+    'REQUIRED_BY', 'IMPACTS', 'complements', 'enhances', 'extends', 'supports',
+    'implements', 'influences', 'facilitates', 'modernizes', 'strengthens',
+    'tax_system', 'tax_compliance', 'governance', 'reporting', 'financial_services',
+    'market_regulation', 'digital_security', 'payment_systems', 'development',
+    'property_management', 'employment_policy', 'investment', 'environmental_compliance',
+    'sustainability', 'enforcement', 'legal_system', 'commercial_regulation',
+    'consumer_rights', 'competition', 'dispute_resolution', 'legal_procedure',
+    'digital_infrastructure', 'transport_regulation', 'trade_regulation',
+    'content_regulation', 'privacy_compliance', 'employment_standards',
+    'service_regulation', 'organization_regulation', 'ngo_regulation',
+    'development_regulation', 'sustainable_development', 'marine_resources',
+    'resource_management', 'alternative_to', 'supports', 'governs', 'influences',
+    'requires', 'protects', 'healthcare_regulation', 'medical_standards',
+    'research_regulation', 'genetic_privacy', 'biotechnology_regulation',
+    'aerospace_regulation', 'quantum_security', 'ai_privacy', 'digital_assets',
+    'virtual_reality', 'clean_energy', 'emissions_reduction', 'sustainable_construction',
+    'climate_resilience', 'identity_privacy', 'monetary_policy', 'asset_regulation',
+    'national_security', 'digital_regulation', 'energy_policy', 'trade_regulation',
+    'environmental_compliance'
   ];
 
   useEffect(() => {
@@ -77,7 +119,8 @@ export default function Graph() {
       
       const params = new URLSearchParams({
         max_nodes: maxNodes.toString(),
-        relationships: selectedRelationships.join(',')
+        relationships: selectedRelationships.join(','),
+        t: Date.now().toString() // Cache busting
       });
       
       const response = await fetch(`/api/graph?${params}`);
@@ -148,8 +191,9 @@ export default function Graph() {
           label: edge.type,
           arrows: 'to',
           color: { color: '#6366f1', opacity: 0.8 },
-          width: 2,
-          font: { size: 10, color: '#ffffff', strokeWidth: 2, strokeColor: '#000000' }
+          width: 3,
+          font: { size: 10, color: '#ffffff', strokeWidth: 2, strokeColor: '#000000' },
+          smooth: { type: 'continuous', roundness: 0.2 }
         }))
       };
 
@@ -216,6 +260,8 @@ export default function Graph() {
 
       networkInstance.current = new Network(networkRef.current, data, options);
       console.log('Network created successfully!');
+      console.log('Network data:', { nodes: data.nodes.length, edges: data.edges.length });
+      console.log('Network container:', networkRef.current);
 
       // Add event listeners
       networkInstance.current.on('click', (params: any) => {
