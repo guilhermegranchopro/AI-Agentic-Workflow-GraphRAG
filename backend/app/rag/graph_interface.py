@@ -107,7 +107,7 @@ class LocalGraphRAG(GraphRAGBase):
                 if "n" in record and record["n"]:
                     node = self._create_rag_node(record["n"])
                     nodes.append(node)
-                    citations.append(self._create_rag_citation(record["n"], node.score or 0.0))
+                    citations.append(self._create_rag_citation(record["n"], 1.0))
                     
                 if "r" in record and record["r"] and "related" in record and record["related"]:
                     # Handle relationship tuple format: (start_node, relationship_type, end_node)
@@ -136,7 +136,7 @@ class LocalGraphRAG(GraphRAGBase):
                 edges=edges,
                 citations=citations,
                 coverage=self._calculate_coverage(nodes, total_nodes),
-                confidence=sum(node.score or 0.0 for node in nodes) / len(nodes) if nodes else 0.0
+                confidence=1.0 if nodes else 0.0
             )
             
         except Exception as e:
@@ -180,7 +180,7 @@ class GlobalGraphRAG(GraphRAGBase):
                 if "n" in record and record["n"]:
                     node = self._create_rag_node(record["n"])
                     nodes.append(node)
-                    citations.append(self._create_rag_citation(record["n"], node.score or 0.0))
+                    citations.append(self._create_rag_citation(record["n"], 1.0))
                     
                 if "r" in record and record["r"]:
                     # Handle path relationships
@@ -210,7 +210,7 @@ class GlobalGraphRAG(GraphRAGBase):
                 edges=edges,
                 citations=citations,
                 coverage=self._calculate_coverage(nodes, total_nodes),
-                confidence=sum(node.score or 0.0 for node in nodes) / len(nodes) if nodes else 0.0
+                confidence=1.0 if nodes else 0.0
             )
             
         except Exception as e:
@@ -249,7 +249,7 @@ class DRIFTGraphRAG(GraphRAGBase):
                 if "n" in record and record["n"]:
                     node = self._create_rag_node(record["n"])
                     nodes.append(node)
-                    citations.append(self._create_rag_citation(record["n"], node.score or 0.0))
+                    citations.append(self._create_rag_citation(record["n"], 1.0))
                     
                 if "r" in record and record["r"] and "related" in record and record["related"]:
                     # Handle relationship tuple format: (start_node, relationship_type, end_node)
@@ -278,7 +278,7 @@ class DRIFTGraphRAG(GraphRAGBase):
                 edges=edges,
                 citations=citations,
                 coverage=self._calculate_coverage(nodes, total_nodes),
-                confidence=sum(node.score or 0.0 for node in nodes) / len(nodes) if nodes else 0.0
+                confidence=1.0 if nodes else 0.0
             )
             
         except Exception as e:
