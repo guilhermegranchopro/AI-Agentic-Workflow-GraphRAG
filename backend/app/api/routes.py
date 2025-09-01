@@ -14,6 +14,10 @@ from ..adapters.azure_openai import AzureLLM
 from ..adapters.neo4j_conn import Neo4jConnection
 from ..adapters.a2a import A2AAdapter
 from ..adapters.vectordb_faiss import FAISSVectorDB
+from ..agents.orchestrator_agent import OrchestratorAgent
+from ..agents.local_graphrag_agent import LocalGraphRAGAgent
+from ..agents.global_graphrag_agent import GlobalGraphRAGAgent
+from ..agents.drift_graphrag_agent import DRIFTGraphRAGAgent
 
 # Create router
 api_router = APIRouter()
@@ -24,6 +28,12 @@ neo4j_conn: Neo4jConnection = None
 a2a_adapter: A2AAdapter = None
 faiss_db: FAISSVectorDB = None
 
+# Agent instances
+orchestrator_agent: OrchestratorAgent = None
+local_graphrag_agent: LocalGraphRAGAgent = None
+global_graphrag_agent: GlobalGraphRAGAgent = None
+drift_graphrag_agent: DRIFTGraphRAGAgent = None
+
 
 def get_services():
     """Dependency to get service instances."""
@@ -31,7 +41,11 @@ def get_services():
         "azure_llm": azure_llm,
         "neo4j_conn": neo4j_conn,
         "a2a_adapter": a2a_adapter,
-        "faiss_db": faiss_db
+        "faiss_db": faiss_db,
+        "orchestrator_agent": orchestrator_agent,
+        "local_graphrag_agent": local_graphrag_agent,
+        "global_graphrag_agent": global_graphrag_agent,
+        "drift_graphrag_agent": drift_graphrag_agent
     }
 
 
@@ -41,7 +55,7 @@ async def chat_endpoint(
     req: Request,
     services: Dict[str, Any] = Depends(get_services)
 ):
-    """Chat endpoint for AI assistant."""
+    """Chat endpoint for AI assistant using multi-agent workflow."""
     request_id = req.headers.get("X-Request-ID", "unknown")
     context = get_telemetry_context(request_id)
     
@@ -49,53 +63,55 @@ async def chat_endpoint(
         # Log agent call
         log_agent_call(request_id, "assistant", "chat", {
             "strategy": request.strategy,
-            "max_results": request.max_results
+            "max_results": request.max_results,
+            "workflow": "multi_agent"
         })
         
         # Get services
-        azure_llm = services["azure_llm"]
-        neo4j_conn = services["neo4j_conn"]
+        orchestrator_agent = services["orchestrator_agent"]
+        a2a_adapter = services["a2a_adapter"]
         
-        if not azure_llm or not neo4j_conn:
-            raise HTTPException(status_code=503, detail="Services not available")
+        if not orchestrator_agent or not a2a_adapter:
+            # Fallback to direct GraphRAG if agents not available
+            logger.warning("Agents not available, falling back to direct GraphRAG")
+            return await _fallback_chat_endpoint(request, req, services)
         
         # Create conversation ID if not provided
         conversation_id = request.conversation_id or f"conv_{request_id}"
         
-        # Perform RAG retrieval based on strategy
-        rag_result = await perform_rag_retrieval(
-            request.message,
-            request.strategy,
-            request.max_results,
-            neo4j_conn,
-            faiss_db=services["faiss_db"]
+        # Execute multi-agent workflow
+        workflow_result = await a2a_adapter.send_task(
+            conversation_id=conversation_id,
+            sender="api_gateway",
+            recipient="orchestrator_agent",
+            task_type="assistant_workflow",
+            payload={
+                "query": request.message,
+                "strategy": request.strategy,
+                "max_results": request.max_results
+            }
         )
         
-        # Generate AI response
-        response = await generate_ai_response(
-            request.message,
-            rag_result,
-            azure_llm,
-            context
-        )
+        if not workflow_result or not workflow_result.payload.get("success", False):
+            logger.error("Multi-agent workflow failed, falling back to direct GraphRAG")
+            return await _fallback_chat_endpoint(request, req, services)
+        
+        result_data = workflow_result.payload.get("result", {})
         
         # Log success
         log_agent_result(request_id, "assistant", "chat", True, {
             "conversation_id": conversation_id,
-            "citations_count": len(rag_result.citations)
+            "citations_count": len(result_data.get("citations", [])),
+            "workflow": "multi_agent"
         })
         
         return ChatResponse(
-            response=response,
+            response=result_data.get("response", ""),
             conversation_id=conversation_id,
-            citations=rag_result.citations,
-            nodes=rag_result.nodes,
-            edges=rag_result.edges,
-            metadata={
-                "strategy": request.strategy,
-                "coverage": rag_result.coverage,
-                "confidence": rag_result.confidence
-            }
+            citations=result_data.get("citations", []),
+            nodes=result_data.get("nodes", []),
+            edges=result_data.get("edges", []),
+            metadata=result_data.get("metadata", {})
         )
         
     except Exception as e:
@@ -104,13 +120,63 @@ async def chat_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+async def _fallback_chat_endpoint(
+    request: ChatRequest,
+    req: Request,
+    services: Dict[str, Any]
+) -> ChatResponse:
+    """Fallback to direct GraphRAG when agents are not available."""
+    logger.info("Using fallback direct GraphRAG approach")
+    
+    # Get services
+    azure_llm = services["azure_llm"]
+    neo4j_conn = services["neo4j_conn"]
+    
+    if not azure_llm or not neo4j_conn:
+        raise HTTPException(status_code=503, detail="Services not available")
+    
+    # Create conversation ID
+    conversation_id = request.conversation_id or f"conv_{req.headers.get('X-Request-ID', 'unknown')}"
+    
+    # Perform RAG retrieval based on strategy
+    rag_result = await perform_rag_retrieval(
+        request.message,
+        request.strategy,
+        request.max_results,
+        neo4j_conn,
+        faiss_db=services["faiss_db"]
+    )
+    
+    # Generate AI response
+    response = await generate_ai_response(
+        request.message,
+        rag_result,
+        azure_llm,
+        None
+    )
+    
+    return ChatResponse(
+        response=response,
+        conversation_id=conversation_id,
+        citations=rag_result.citations,
+        nodes=rag_result.nodes,
+        edges=rag_result.edges,
+        metadata={
+            "strategy": request.strategy,
+            "coverage": rag_result.coverage,
+            "confidence": rag_result.confidence,
+            "workflow": "fallback_direct"
+        }
+    )
+
+
 @api_router.post("/analysis", response_model=AnalysisResponse)
 async def analysis_endpoint(
     request: AnalysisRequest,
     req: Request,
     services: Dict[str, Any] = Depends(get_services)
 ):
-    """Legal analysis endpoint."""
+    """Legal analysis endpoint using multi-agent workflow."""
     request_id = req.headers.get("X-Request-ID", "unknown")
     context = get_telemetry_context(request_id)
     
@@ -118,38 +184,51 @@ async def analysis_endpoint(
         # Log agent call
         log_agent_call(request_id, "analyzer", "analysis", {
             "analysis_type": request.analysis_type,
-            "max_depth": request.max_depth
+            "max_depth": request.max_depth,
+            "workflow": "multi_agent"
         })
         
         # Get services
-        azure_llm = services["azure_llm"]
-        neo4j_conn = services["neo4j_conn"]
+        orchestrator_agent = services["orchestrator_agent"]
+        a2a_adapter = services["a2a_adapter"]
         
-        if not azure_llm or not neo4j_conn:
-            raise HTTPException(status_code=503, detail="Services not available")
+        if not orchestrator_agent or not a2a_adapter:
+            # Fallback to direct analysis if agents not available
+            logger.warning("Agents not available, falling back to direct analysis")
+            return await _fallback_analysis_endpoint(request, req, services)
         
-        # Perform legal analysis
-        analysis_result = await perform_legal_analysis(
-            request.query,
-            request.analysis_type,
-            request.max_depth,
-            azure_llm,
-            neo4j_conn,
-            context
+        # Execute multi-agent workflow
+        workflow_result = await a2a_adapter.send_task(
+            conversation_id=f"analysis_{request_id}",
+            sender="api_gateway",
+            recipient="orchestrator_agent",
+            task_type="analysis_workflow",
+            payload={
+                "query": request.query,
+                "analysis_type": request.analysis_type,
+                "max_depth": request.max_depth
+            }
         )
         
-        logger.info(f"Analysis result received: {analysis_result}")
+        if not workflow_result or not workflow_result.payload.get("success", False):
+            logger.error("Multi-agent analysis workflow failed, falling back to direct analysis")
+            return await _fallback_analysis_endpoint(request, req, services)
+        
+        result_data = workflow_result.payload.get("result", {})
+        
+        logger.info(f"Analysis result received: {result_data}")
         
         # Log success
         log_agent_result(request_id, "analyzer", "analysis", True, {
-            "contradictions_count": len(analysis_result.get("contradictions", [])),
-            "harmonizations_count": len(analysis_result.get("harmonizations", []))
+            "contradictions_count": len(result_data.get("contradictions", [])),
+            "harmonizations_count": len(result_data.get("harmonizations", [])),
+            "workflow": "multi_agent"
         })
         
         # Transform analysis result to match frontend expectations
-        contradictions = analysis_result.get("contradictions", [])
-        harmonizations = analysis_result.get("harmonizations", [])
-        citations = analysis_result.get("citations", [])
+        contradictions = result_data.get("contradictions", [])
+        harmonizations = result_data.get("harmonizations", [])
+        citations = result_data.get("citations", [])
         
         logger.info(f"Transformed data - contradictions: {len(contradictions)}, harmonizations: {len(harmonizations)}")
         
@@ -248,6 +327,34 @@ async def analysis_endpoint(
         logger.error(f"Analysis endpoint error: {e}")
         log_agent_result(request_id, "analyzer", "analysis", False, {"error": str(e)})
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def _fallback_analysis_endpoint(
+    request: AnalysisRequest,
+    req: Request,
+    services: Dict[str, Any]
+) -> AnalysisResponse:
+    """Fallback to direct analysis when agents are not available."""
+    logger.info("Using fallback direct analysis approach")
+    
+    # Get services
+    azure_llm = services["azure_llm"]
+    neo4j_conn = services["neo4j_conn"]
+    
+    if not azure_llm or not neo4j_conn:
+        raise HTTPException(status_code=503, detail="Services not available")
+    
+    # Perform legal analysis using existing function
+    analysis_result = await perform_legal_analysis(
+        request.query,
+        request.analysis_type,
+        request.max_depth,
+        azure_llm,
+        neo4j_conn,
+        None
+    )
+    
+    return analysis_result
 
 
 @api_router.get("/debug/trace/{conversation_id}", response_model=TraceResponse)

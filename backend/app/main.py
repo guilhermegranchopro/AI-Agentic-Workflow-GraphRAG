@@ -16,6 +16,10 @@ from .adapters.azure_openai import AzureLLM
 from .adapters.neo4j_conn import Neo4jConnection
 from .adapters.a2a import A2AAdapter
 from .adapters.vectordb_faiss import FAISSVectorDB
+from .agents.orchestrator_agent import OrchestratorAgent
+from .agents.local_graphrag_agent import LocalGraphRAGAgent
+from .agents.global_graphrag_agent import GlobalGraphRAGAgent
+from .agents.drift_graphrag_agent import DRIFTGraphRAGAgent
 
 
 # Global service instances
@@ -23,6 +27,12 @@ azure_llm = None
 neo4j_conn = None
 a2a_adapter = None
 faiss_db = None
+
+# Agent instances
+orchestrator_agent = None
+local_graphrag_agent = None
+global_graphrag_agent = None
+drift_graphrag_agent = None
 
 # Import routes module to update its global variables
 from .api import routes
@@ -48,6 +58,31 @@ async def lifespan(app: FastAPI):
         routes.neo4j_conn = neo4j_conn
         routes.a2a_adapter = a2a_adapter
         routes.faiss_db = faiss_db
+        
+        # Initialize AI Agents
+        logger.info("Initializing AI Agents...")
+        
+        # Initialize GraphRAG agents
+        local_graphrag_agent = LocalGraphRAGAgent(neo4j_conn, azure_llm)
+        global_graphrag_agent = GlobalGraphRAGAgent(neo4j_conn, azure_llm)
+        drift_graphrag_agent = DRIFTGraphRAGAgent(neo4j_conn, azure_llm)
+        
+        # Initialize orchestrator agent
+        orchestrator_agent = OrchestratorAgent(neo4j_conn, azure_llm, a2a_adapter)
+        
+        # Register agents with A2A adapter
+        a2a_adapter.register_router("local_graphrag_agent", local_graphrag_agent.handle_message)
+        a2a_adapter.register_router("global_graphrag_agent", global_graphrag_agent.handle_message)
+        a2a_adapter.register_router("drift_graphrag_agent", drift_graphrag_agent.handle_message)
+        a2a_adapter.register_router("orchestrator_agent", orchestrator_agent.handle_message)
+        
+        # Set agent instances in routes
+        routes.local_graphrag_agent = local_graphrag_agent
+        routes.global_graphrag_agent = global_graphrag_agent
+        routes.drift_graphrag_agent = drift_graphrag_agent
+        routes.orchestrator_agent = orchestrator_agent
+        
+        logger.info("AI Agents initialized successfully")
         
         # Load FAISS index if exists
         if faiss_db.load():
