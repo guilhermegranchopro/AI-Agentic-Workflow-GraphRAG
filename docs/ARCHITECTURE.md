@@ -1,249 +1,170 @@
-# System Architecture
+# **🏗️ UAE Legal GraphRAG Architecture - A2A Protocol Focus**
 
-This document describes the architecture of the UAE Legal GraphRAG system, including the technology stack, component interactions, and data flow.
+## **📋 Overview**
 
-## 🏗️ High-Level Architecture
+This document describes the architecture of the UAE Legal GraphRAG system with a focus on the **A2A Protocol implementation**. The system is designed as a multi-agent AI platform that provides legal research and analysis capabilities through GraphRAG (Graph-based Retrieval Augmented Generation).
 
+## **🎯 Core Architecture Principles**
+
+### **1. A2A Protocol Compliance**
+- **Agent Discovery**: Public agent cards at `/.well-known/agent.json`
+- **Standardized Communication**: HTTP+JSON transport with defined message formats
+- **Interoperability**: Can communicate with other A2A-compliant agents
+- **Security**: Bearer token and API key authentication
+
+### **2. Multi-Agent System**
+- **Orchestrator Agent**: Coordinates workflow execution
+- **Local GraphRAG Agent**: Focused neighborhood traversal
+- **Global GraphRAG Agent**: Comprehensive graph analysis
+- **DRIFT GraphRAG Agent**: Dynamic relevance tracking
+
+### **3. Graph-Based Knowledge Management**
+- **Neo4j Database**: Native graph database for legal knowledge
+- **FAISS Vector Database**: Semantic search capabilities
+- **Azure OpenAI Integration**: GPT-4o for AI processing
+
+## **🔧 Technical Architecture**
+
+### **Backend Layer (FastAPI)**
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │    │   External      │
-│   (Next.js)     │◄──►│   (FastAPI)     │◄──►│   Services      │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Mock Data     │    │   Neo4j Graph   │    │  Azure OpenAI   │
-│   (Fallback)    │    │   Database      │    │     (LLM)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## 🎯 Core Components
-
-### 1. Frontend (Next.js)
-
-**Technology Stack:**
-- **Framework**: Next.js 15.5.0
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Graph Visualization**: Vis.js
-- **State Management**: React Hooks
-
-**Key Features:**
-- **Responsive Design**: Mobile-first approach
-- **Real-time Updates**: Live data synchronization
-- **Graceful Degradation**: Automatic fallback to mock data
-- **Interactive Graphs**: 3D graph visualization with filtering
-
-**Pages:**
-- `/` - Overview dashboard
-- `/graph` - Knowledge graph visualization
-- `/ai-analysis` - Legal analysis interface
-- `/assistant` - AI chat interface
-
-### 2. Backend (FastAPI)
-
-**Technology Stack:**
-- **Framework**: FastAPI
-- **Language**: Python 3.8+
-- **Database**: Neo4j (Graph), SQLite (Events)
-- **AI Services**: Azure OpenAI
-- **Vector Search**: FAISS (optional)
-
-**Key Features:**
-- **GraphRAG Implementation**: Multi-agent system
-- **Real-time Processing**: Async/await throughout
-- **Health Monitoring**: Comprehensive health checks
-- **Error Handling**: Graceful error recovery
-
-**API Endpoints:**
-- `GET /health` - System health check
-- `GET /api/graph` - Graph data retrieval
-- `POST /api/chat` - AI assistant chat
-- `POST /api/analysis` - Legal analysis
-
-### 3. Data Layer
-
-#### Neo4j Knowledge Graph
-- **Purpose**: Store legal knowledge as a graph
-- **Schema**: Nodes (legal entities) + Relationships (legal connections)
-- **Query Language**: Cypher
-- **Features**: Complex graph queries, relationship traversal
-
-#### SQLite Event Store
-- **Purpose**: Store A2A (Agent-to-Agent) communication events
-- **Schema**: Event logs with timestamps and metadata
-- **Features**: Lightweight, embedded, ACID compliance
-
-#### FAISS Vector Database (Optional)
-- **Purpose**: Semantic search and similarity matching
-- **Features**: High-performance vector operations
-- **Fallback**: System works without FAISS
-
-### 4. AI Services
-
-#### Azure OpenAI Integration
-- **Model**: GPT-4o
-- **Purpose**: Natural language processing and generation
-- **Features**: Context-aware responses, citation support
-- **Fallback**: Mock responses when unavailable
-
-#### GraphRAG Agents
-- **LocalGraphRAG**: Local neighborhood analysis
-- **GlobalGraphRAG**: Global graph traversal
-- **DRIFTGraphRAG**: Dynamic relevance and importance tracking
-
-## 🔄 Data Flow
-
-### 1. Frontend Request Flow
-
-```
-User Action → Frontend API Route → Backend Health Check → 
-Backend API Call → Response Processing → UI Update
+┌─────────────────────────────────────────────────────────────┐
+│                    FastAPI Application                      │
+├─────────────────────────────────────────────────────────────┤
+│  A2A Protocol Endpoints    │  GraphRAG API Endpoints      │
+│  ├─ /.well-known/agent.json│  ├─ /api/chat               │
+│  ├─ /a2a/v1/message:send  │  ├─ /api/analysis           │
+│  ├─ /a2a/v1/message:stream│  ├─ /api/graph              │
+│  └─ /a2a/v1/tasks/{id}    │  └─ /api/health             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Backend Processing Flow
-
+### **Agent Layer**
 ```
-API Request → Authentication → Service Validation → 
-GraphRAG Processing → Neo4j Query → AI Enhancement → 
-Response Formatting → API Response
-```
-
-### 3. Fallback Mechanism
-
-```
-Backend Unavailable → Health Check Failure → 
-Mock Data Activation → Frontend Fallback → 
-User Experience Maintained
-```
-
-## 🛡️ Security & Reliability
-
-### Security Features
-- **Environment Variables**: Sensitive data protection
-- **CORS Configuration**: Cross-origin request handling
-- **Input Validation**: Pydantic model validation
-- **Error Handling**: No information leakage
-
-### Reliability Features
-- **Health Checks**: Continuous service monitoring
-- **Graceful Degradation**: Fallback mechanisms
-- **Connection Pooling**: Database connection management
-- **Timeout Handling**: Request timeout management
-
-## 📊 Performance Considerations
-
-### Frontend Optimization
-- **Code Splitting**: Lazy loading of components
-- **Static Generation**: Pre-rendered pages where possible
-- **Caching**: Browser and CDN caching strategies
-- **Bundle Optimization**: Tree shaking and minification
-
-### Backend Optimization
-- **Async Processing**: Non-blocking operations
-- **Connection Pooling**: Database connection reuse
-- **Caching**: Response caching where appropriate
-- **Query Optimization**: Efficient Neo4j queries
-
-## 🔧 Configuration Management
-
-### Environment Variables
-```env
-# Database Configuration
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
-
-# AI Services
-AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
-AZURE_OPENAI_API_KEY=your_api_key
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
-
-# Application Settings
-APP_ENV=development
-LOG_LEVEL=INFO
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8012
+┌─────────────────────────────────────────────────────────────┐
+│                    Agent Orchestration                      │
+├─────────────────────────────────────────────────────────────┤
+│  Orchestrator Agent                                        │
+│  ├─ Workflow Management                                    │
+│  ├─ Agent Coordination                                     │
+│  └─ A2A Protocol Handler                                   │
+├─────────────────────────────────────────────────────────────┤
+│  Specialized Agents                                        │
+│  ├─ Local GraphRAG Agent                                   │
+│  ├─ Global GraphRAG Agent                                  │
+│  └─ DRIFT GraphRAG Agent                                   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Configuration Hierarchy
-1. **Environment Variables** (highest priority)
-2. **Configuration Files** (default values)
-3. **Hard-coded Defaults** (fallback)
-
-## 🚀 Deployment Architecture
-
-### Development Environment
+### **Data Layer**
 ```
-┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │
-│   (localhost:3000) │    │   (localhost:8012) │
-└─────────────────┘    └─────────────────┘
-```
-
-### Production Environment
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Load Balancer │    │   Application   │    │   Database      │
-│   (Nginx)       │◄──►│   Servers       │◄──►│   Cluster       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                      Data Storage                          │
+├─────────────────────────────────────────────────────────────┤
+│  Neo4j Knowledge Graph     │  FAISS Vector Database       │
+│  ├─ Legal Entities         │  ├─ Document Embeddings      │
+│  ├─ Relationships          │  ├─ Semantic Search          │
+│  └─ Metadata              │  └─ Similarity Index          │
+├─────────────────────────────────────────────────────────────┤
+│  Event Store (SQLite)      │  Configuration               │
+│  ├─ A2A Envelopes         │  ├─ Environment Variables     │
+│  ├─ Conversation History   │  └─ Agent Settings           │
+│  └─ Audit Trail           │                               │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## 🔍 Monitoring & Observability
+## **🔄 Data Flow Architecture**
 
-### Health Checks
-- **Backend Health**: `/health` endpoint
-- **Database Connectivity**: Neo4j connection status
-- **AI Service Status**: Azure OpenAI availability
-- **Frontend Status**: Frontend API health checks
-
-### Logging
-- **Structured Logging**: JSON-formatted logs
-- **Log Levels**: DEBUG, INFO, WARNING, ERROR
-- **Request Tracking**: Unique request IDs
-- **Performance Metrics**: Response times and throughput
-
-### Metrics
-- **API Response Times**: Endpoint performance
-- **Error Rates**: Failure tracking
-- **Resource Usage**: CPU, memory, database connections
-- **User Activity**: Page views and interactions
-
-## 🔄 Development Workflow
-
-### Local Development
-1. **Setup**: `python setup.py`
-2. **Start Services**: `python start.py`
-3. **Development**: Hot reload enabled
-4. **Testing**: Automated tests and manual testing
-
-### Code Organization
+### **1. A2A Protocol Message Flow**
 ```
-internship_GraphRAG/
-├── frontend/           # Next.js frontend
-├── backend/            # FastAPI backend
-├── scripts/            # Utility scripts
-├── docs/               # Documentation
-├── start.py           # Unified startup script
-├── setup.py           # Setup script
-└── cleanup_repo.py    # Repository cleanup script
+External Agent → A2A Endpoint → Message Handler → Skill Router → Agent Execution → Response
+     ↓              ↓              ↓              ↓              ↓              ↓
+  Discovery    message:send   Validation    Skill Selection   GraphRAG      A2A Response
 ```
 
-## 🔮 Future Enhancements
+### **2. GraphRAG Workflow**
+```
+User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query → AI Processing → Response
+     ↓           ↓              ↓                    ↓              ↓           ↓
+  Input      Coordination    Parallel Agents      Neo4j + FAISS   GPT-4o    Structured Output
+```
 
-### Planned Features
-- **Multi-tenant Support**: Multiple legal jurisdictions
-- **Advanced Analytics**: Legal trend analysis
-- **Mobile Application**: Native mobile app
-- **API Rate Limiting**: Request throttling
-- **Advanced Caching**: Redis integration
+## **🔒 Security Architecture**
 
-### Scalability Considerations
-- **Horizontal Scaling**: Multiple backend instances
-- **Database Sharding**: Neo4j cluster deployment
-- **CDN Integration**: Global content delivery
+### **Authentication & Authorization**
+- **Bearer Token**: User authentication for API access
+- **API Key**: Service-to-service communication
+- **Rate Limiting**: Request throttling and protection
+- **CORS**: Cross-origin resource sharing control
+
+### **Data Protection**
+- **Environment Variables**: Secure configuration management
+- **Input Validation**: Pydantic schema validation
+- **Error Handling**: Secure error responses
+- **Audit Logging**: Complete request/response tracking
+
+## **📊 Performance Architecture**
+
+### **Scalability Features**
+- **Async Processing**: FastAPI async/await support
+- **Connection Pooling**: Neo4j connection management
+- **Caching**: FAISS index optimization
+- **Load Balancing**: Ready for horizontal scaling
+
+### **Monitoring & Observability**
+- **Health Checks**: Service dependency monitoring
+- **Telemetry**: Request/response logging
+- **Metrics**: Performance and usage statistics
+- **Error Tracking**: Comprehensive error logging
+
+## **🌐 Integration Architecture**
+
+### **A2A Protocol Integration**
+- **Standard Compliance**: Follows A2A Protocol specification
+- **Agent Discovery**: Public agent card publication
+- **Message Handling**: Standardized message formats
+- **Streaming Support**: Server-Sent Events for real-time updates
+
+### **External Service Integration**
+- **Azure OpenAI**: GPT-4o model integration
+- **Neo4j**: Graph database connectivity
+- **FAISS**: Vector similarity search
+- **Event Store**: SQLite-based event logging
+
+## **🚀 Deployment Architecture**
+
+### **Development Environment**
+- **Local Development**: Python virtual environment
+- **Hot Reload**: FastAPI development server
+- **Environment Configuration**: .env file management
+- **Debug Mode**: Comprehensive logging
+
+### **Production Ready**
+- **Container Support**: Docker configuration available
+- **Environment Variables**: Secure configuration
+- **Health Monitoring**: Service health endpoints
+- **Logging**: Structured logging for production
+
+## **📈 Future Architecture Considerations**
+
+### **Scalability Enhancements**
 - **Microservices**: Service decomposition
+- **Message Queues**: Asynchronous processing
+- **Distributed Caching**: Redis integration
+- **Load Balancing**: Multiple instance support
 
----
+### **Advanced A2A Features**
+- **Multi-Transport Support**: gRPC, WebSocket
+- **Agent Federation**: Multi-agent coordination
+- **Advanced Security**: OAuth2, JWT tokens
+- **Compliance Tools**: A2A Inspector integration
 
-This architecture provides a robust, scalable, and maintainable foundation for the UAE Legal GraphRAG system, with clear separation of concerns and comprehensive fallback mechanisms.
+## **🎯 Architecture Benefits**
+
+1. **A2A Protocol Compliance**: Industry-standard agent communication
+2. **Modular Design**: Easy to extend and maintain
+3. **Scalable Architecture**: Ready for production deployment
+4. **Security First**: Comprehensive security measures
+5. **Performance Optimized**: Async processing and caching
+6. **Interoperable**: Can work with other A2A agents
+
+This architecture provides a solid foundation for a production-ready A2A Protocol compliant legal AI system while maintaining flexibility for future enhancements.

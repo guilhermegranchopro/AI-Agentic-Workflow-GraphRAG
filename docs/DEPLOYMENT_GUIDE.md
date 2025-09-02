@@ -1,353 +1,256 @@
-# Deployment Guide
+# **🚀 UAE Legal GraphRAG Deployment Guide - A2A Protocol Focus**
 
-This guide covers deploying the UAE Legal GraphRAG system for different environments, from development to production.
+## **📋 Overview**
 
-## 🚀 Quick Deployment
+This guide provides step-by-step instructions for deploying the UAE Legal GraphRAG system with **A2A Protocol compliance**. The system is designed to be deployed as a production-ready A2A Protocol agent that can interoperate with other agents.
 
-### For Presentations/Demos
+## **🔧 Prerequisites**
 
+### **System Requirements**
+- **Python**: 3.11+ with pip
+- **Memory**: Minimum 8GB RAM (16GB recommended)
+- **Storage**: 10GB+ available disk space
+- **Network**: Outbound access to Azure OpenAI and Neo4j
+
+### **Required Services**
+- **Azure OpenAI**: GPT-4o deployment with API access
+- **Neo4j Database**: Neo4j 5.15+ instance
+- **Environment Variables**: Proper configuration setup
+
+## **📦 Installation Steps**
+
+### **1. Clone Repository**
 ```bash
-# 1. Clone and setup
 git clone <repository-url>
 cd internship_GraphRAG
-python setup.py
-
-# 2. Start the application
-python start.py
 ```
 
-**Access URLs:**
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8012
-- API Docs: http://localhost:8012/docs
-
-## 🔧 Environment-Specific Deployments
-
-### Development Environment
-
-**Prerequisites:**
-- Python 3.8+
-- Node.js 16+
-- Neo4j (optional)
-- Azure OpenAI (optional)
-
-**Setup:**
+### **2. Setup Python Environment**
 ```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows
+.venv\Scripts\activate
+# Linux/Mac
+source .venv/bin/activate
+
 # Install dependencies
-python setup.py
-
-# Start development servers
-python start.py
-```
-
-**Features:**
-- Hot reload enabled
-- Mock data fallback
-- Development logging
-- Debug mode
-
-### Production Environment
-
-**Prerequisites:**
-- Production server (Linux/Windows)
-- Docker (recommended)
-- Reverse proxy (Nginx)
-- SSL certificates
-- Production database
-
-**Docker Deployment:**
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# Or build individually
-docker build -t uae-legal-graphrag-backend ./backend
-docker build -t uae-legal-graphrag-frontend ./frontend
-```
-
-**Manual Deployment:**
-```bash
-# Backend
 cd backend
 pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8012
+```
 
-# Frontend
+### **3. Environment Configuration**
+Create a `.env` file in the `backend` directory:
+
+```env
+# Azure OpenAI Configuration
+AZURE_OPENAI_API_KEY=your_api_key_here
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+AZURE_OPENAI_DEPLOYMENT=gpt-4o
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
+
+# Neo4j Configuration
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your_password_here
+
+# Application Configuration
+APP_ENV=production
+PORT=8000
+```
+
+## **🚀 Deployment Options**
+
+### **Option 1: Local Development Deployment**
+
+#### **Start Backend Server**
+```bash
+cd backend
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+#### **Start Frontend (Optional)**
+```bash
 cd frontend
 npm install
-npm run build
-npm start
+npm run dev
 ```
 
-### Presentation Environment
-
-**For 2-Hour Presentations:**
-
-1. **Pre-setup (Before Presentation):**
-   ```bash
-   # Load mock data for guaranteed functionality
-   echo "Legal data loading script not yet implemented"
-   
-   # Test the system
-   python start.py --backend-only
-   # In another terminal
-   python start.py --frontend-only
-   ```
-
-2. **During Presentation:**
-   ```bash
-   # Start both services
-   python start.py
-   ```
-
-3. **Fallback Strategy:**
-   - If backend fails: Frontend automatically uses mock data
-   - If Neo4j fails: System continues with mock data
-   - If Azure OpenAI fails: System uses mock responses
-
-## 📊 System Requirements
-
-### Minimum Requirements
-- **CPU**: 2 cores
-- **RAM**: 4GB
-- **Storage**: 10GB
-- **Network**: Internet connection (for AI services)
-
-### Recommended Requirements
-- **CPU**: 4+ cores
-- **RAM**: 8GB+
-- **Storage**: 50GB SSD
-- **Network**: High-speed internet
-
-### Production Requirements
-- **CPU**: 8+ cores
-- **RAM**: 16GB+
-- **Storage**: 100GB+ SSD
-- **Network**: Load balancer, CDN
-
-## 🔒 Security Configuration
-
-### Environment Variables
-```env
-# Production Security
-APP_ENV=production
-LOG_LEVEL=WARNING
-CORS_ORIGINS=https://yourdomain.com
-
-# Database Security
-NEO4J_URI=bolt://your-neo4j-server:7687
-NEO4J_USER=your_username
-NEO4J_PASSWORD=your_secure_password
-
-# AI Services
-AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
-AZURE_OPENAI_API_KEY=your_secure_api_key
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
-```
-
-### SSL/TLS Configuration
-```nginx
-# Nginx configuration example
-server {
-    listen 443 ssl;
-    server_name yourdomain.com;
-    
-    ssl_certificate /path/to/certificate.crt;
-    ssl_certificate_key /path/to/private.key;
-    
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-    
-    location /api/ {
-        proxy_pass http://localhost:8012;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-## 📈 Performance Optimization
-
-### Backend Optimization
-```python
-# Production settings in backend/app/main.py
-app = FastAPI(
-    title="UAE Legal GraphRAG API",
-    version="1.0.0",
-    docs_url="/docs" if APP_ENV == "development" else None,
-    redoc_url="/redoc" if APP_ENV == "development" else None
-)
-
-# Database connection pooling
-NEO4J_POOL_SIZE = 20
-NEO4J_MAX_OVERFLOW = 30
-```
-
-### Frontend Optimization
-```javascript
-// next.config.js
-module.exports = {
-  compress: true,
-  poweredByHeader: false,
-  generateEtags: false,
-  experimental: {
-    optimizeCss: true,
-  },
-}
-```
-
-## 🔍 Monitoring & Health Checks
-
-### Health Check Endpoints
-- **Backend**: `GET /health`
-- **Frontend**: `GET /api/health`
-- **Database**: `GET /health` (includes Neo4j status)
-- **AI Services**: `GET /health` (includes Azure OpenAI status)
-
-### Monitoring Setup
+#### **Verify A2A Protocol**
 ```bash
-# Health check script
-curl -f http://localhost:8012/health || exit 1
-curl -f http://localhost:3000/api/health || exit 1
+# Test agent discovery
+curl http://localhost:8000/.well-known/agent.json
+
+# Test A2A health
+curl http://localhost:8000/a2a/health
+
+# Run A2A Protocol tests
+python test_a2a_protocol.py
 ```
 
-### Logging Configuration
-```python
-# Production logging
-import logging
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log'),
-        logging.StreamHandler()
-    ]
-)
+### **Option 2: Production Deployment**
+
+#### **Using Docker Compose**
+```bash
+# Start all services
+docker-compose up -d
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f backend
 ```
 
-## 🚨 Troubleshooting
+#### **Manual Production Deployment**
+```bash
+# Install production dependencies
+pip install -r requirements.txt
 
-### Common Issues
+# Start production server
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+```
 
-1. **Backend Won't Start**
-   ```bash
-   # Check logs
-   tail -f logs/app.log
-   
-   # Check dependencies
-   pip list | grep -E "(fastapi|uvicorn|neo4j)"
-   
-   # Check environment
-   python -c "import os; print(os.getenv('NEO4J_URI'))"
-   ```
+## **🔍 A2A Protocol Verification**
 
-2. **Frontend Shows Mock Data**
-   ```bash
-   # Check backend health
-   curl http://localhost:8012/health
-   
-   # Check network connectivity
-   telnet localhost 8012
-   ```
+### **1. Agent Discovery Test**
+```bash
+# Test public agent card
+curl http://your-domain/.well-known/agent.json
 
-3. **Database Connection Issues**
-   ```bash
-   # Test Neo4j connection
-   python -c "
-   from backend.app.adapters.neo4j_conn import Neo4jConnection
-   conn = Neo4jConnection()
-   print(conn.test_connection())
-   "
-   ```
+# Expected response: JSON with protocolVersion, skills, transports
+```
 
-### Emergency Procedures
+### **2. Core Endpoint Tests**
+```bash
+# Test message:send
+curl -X POST http://your-domain/a2a/v1/message:send \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-token" \
+  -d '{"message": {"role": "user", "parts": [{"kind": "text", "text": "Test"}], "metadata": {"skill_id": "ai_assistant"}}}'
 
-1. **Complete System Failure**
-   ```bash
-   # Restart all services
-   pkill -f "uvicorn\|npm\|node"
-   python start.py
-   ```
+# Test message:stream
+curl -X POST http://your-domain/a2a/v1/message:stream \
+  -H "Content-Type: application/json" \
+  -d '{"taskId": "test-task"}'
 
-2. **Database Failure**
-   ```bash
-   # Switch to mock data
-   python start.py --frontend-only
-   ```
+# Test tasks:get
+curl http://your-domain/a2a/v1/tasks/test-task
+```
 
-3. **AI Service Failure**
-   - System automatically falls back to mock responses
-   - No manual intervention required
+### **3. Compliance Testing**
+```bash
+# Run comprehensive A2A Protocol tests
+cd backend
+python test_a2a_protocol.py
+```
 
-## 📋 Deployment Checklist
+## **🔒 Security Configuration**
 
-### Pre-Deployment
+### **Authentication Setup**
+1. **Generate API Keys**: Create secure API keys for service-to-service communication
+2. **Bearer Tokens**: Implement JWT token generation and validation
+3. **Rate Limiting**: Configure appropriate rate limits for your use case
+4. **CORS Settings**: Configure allowed origins for your deployment
+
+### **Environment Security**
+1. **Secure Environment Variables**: Use secure methods to store sensitive data
+2. **Network Security**: Configure firewalls and network access controls
+3. **SSL/TLS**: Enable HTTPS for production deployments
+4. **Monitoring**: Set up security monitoring and alerting
+
+## **📊 Monitoring & Health Checks**
+
+### **Health Endpoints**
+- **`/health`**: Overall system health
+- **`/a2a/health`**: A2A Protocol health
+- **`/.well-known/health`**: Well-known endpoints health
+
+### **Monitoring Setup**
+1. **Logging**: Configure structured logging for production
+2. **Metrics**: Set up performance monitoring
+3. **Alerting**: Configure alerts for critical issues
+4. **Dashboard**: Set up monitoring dashboard
+
+## **🔄 Update & Maintenance**
+
+### **Regular Updates**
+1. **Dependencies**: Keep Python packages updated
+2. **Security Patches**: Apply security updates promptly
+3. **A2A Protocol**: Monitor for protocol specification updates
+4. **Documentation**: Keep deployment guides current
+
+### **Backup & Recovery**
+1. **Database Backups**: Regular Neo4j database backups
+2. **Configuration Backups**: Backup environment configurations
+3. **Disaster Recovery**: Plan for service restoration
+4. **Testing**: Regular backup restoration testing
+
+## **🚨 Troubleshooting**
+
+### **Common Issues**
+
+#### **Server Won't Start**
+```bash
+# Check port availability
+netstat -an | grep :8000
+
+# Check environment variables
+python -c "from app.schemas.config import settings; print(settings.port)"
+```
+
+#### **A2A Protocol Endpoints Not Working**
+```bash
+# Check route registration
+python -c "from app.main import app; print([r.path for r in app.routes if 'a2a' in str(r.path)])"
+
+# Check well-known routes
+python -c "from app.main import app; print([r.path for r in app.routes if 'well-known' in str(r.path)])"
+```
+
+#### **Database Connection Issues**
+```bash
+# Test Neo4j connection
+python -c "from app.adapters.neo4j_conn import Neo4jConnection; neo4j = Neo4jConnection(); print('Connection successful')"
+```
+
+### **Log Analysis**
+```bash
+# View application logs
+tail -f logs/app.log
+
+# View A2A Protocol logs
+grep "A2A" logs/app.log
+```
+
+## **📚 Additional Resources**
+
+- **[A2A Protocol Specification](https://a2a-protocol.org/dev/specification/)**
+- **[FastAPI Documentation](https://fastapi.tiangolo.com/)**
+- **[Neo4j Documentation](https://neo4j.com/docs/)**
+- **[Azure OpenAI Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/)**
+
+## **🎯 Deployment Checklist**
+
 - [ ] Environment variables configured
-- [ ] Database connection tested
-- [ ] AI services accessible
-- [ ] SSL certificates installed
-- [ ] Firewall rules configured
-- [ ] Monitoring setup complete
-
-### Deployment
-- [ ] Code deployed to production
 - [ ] Dependencies installed
-- [ ] Services started
-- [ ] Health checks passing
-- [ ] Load balancer configured
-- [ ] SSL certificates working
-
-### Post-Deployment
-- [ ] Performance monitoring active
-- [ ] Error logging configured
-- [ ] Backup procedures tested
+- [ ] Database connections tested
+- [ ] A2A Protocol endpoints verified
+- [ ] Security configuration applied
+- [ ] Monitoring setup completed
+- [ ] Backup procedures configured
 - [ ] Documentation updated
-- [ ] Team notified
 
-## 🔄 Update Procedures
+## **🚀 Next Steps**
 
-### Rolling Updates
-```bash
-# 1. Deploy new backend
-docker-compose up -d --no-deps backend
+After successful deployment:
 
-# 2. Health check
-curl -f http://localhost:8012/health
+1. **Test A2A Protocol compliance** using the test suite
+2. **Register your agent** with A2A Protocol directories
+3. **Connect with other agents** for interoperability testing
+4. **Monitor performance** and optimize as needed
+5. **Plan scaling** for increased usage
 
-# 3. Deploy new frontend
-docker-compose up -d --no-deps frontend
-
-# 4. Final health check
-curl -f http://localhost:3000/api/health
-```
-
-### Zero-Downtime Deployment
-```bash
-# Blue-green deployment
-# 1. Deploy to staging
-# 2. Run tests
-# 3. Switch traffic
-# 4. Monitor health
-# 5. Rollback if needed
-```
-
-## 📞 Support & Maintenance
-
-### Regular Maintenance
-- **Daily**: Health check monitoring
-- **Weekly**: Log analysis and cleanup
-- **Monthly**: Security updates and patches
-- **Quarterly**: Performance review and optimization
-
-### Support Contacts
-- **Technical Issues**: Development team
-- **Infrastructure**: DevOps team
-- **Security**: Security team
-- **Business**: Product team
-
----
-
-This deployment guide ensures reliable, secure, and scalable deployment of the UAE Legal GraphRAG system across all environments.
+Your UAE Legal GraphRAG system is now a **fully compliant A2A Protocol agent** ready for production use and agent-to-agent communication!
