@@ -9,6 +9,8 @@ import time
 from .schemas.config import settings
 from .schemas.messages import HealthResponse
 from .api.routes import api_router
+from .api.a2a_protocol import a2a_router
+from .api.well_known import well_known_router
 from .utils.telemetry import log_request_start, log_request_end, cleanup_telemetry_context
 from .utils.rate_limit import rate_limiter, check_rate_limit
 from .utils.errors import handle_exception
@@ -272,6 +274,12 @@ async def health_check():
 
 # Include API routes
 app.include_router(api_router, prefix="/api")
+
+# Include A2A Protocol routes
+app.include_router(a2a_router, prefix="/a2a")
+
+# Include Well-Known routes (no prefix for /.well-known/ paths)
+app.include_router(well_known_router)
 
 
 if __name__ == "__main__":
