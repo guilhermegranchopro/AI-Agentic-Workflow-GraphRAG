@@ -226,7 +226,7 @@ internship_GraphRAG/
 ├── docs/               # Documentation
 ├── start.py           # Unified startup script
 ├── setup.py           # Setup script
-└── cleanup.py         # Cleanup script
+└── cleanup_repo.py    # Repository cleanup script
 ```
 
 ## 🔮 Future Enhancements

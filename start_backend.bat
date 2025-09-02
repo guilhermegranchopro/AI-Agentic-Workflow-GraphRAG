@@ -7,6 +7,6 @@ call ..\.venv\Scripts\activate.bat
 echo Virtual environment activated.
 
 echo Starting backend server...
-python run_backend.py
+python start.py --backend-only
 
 pause

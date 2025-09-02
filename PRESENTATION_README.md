@@ -19,7 +19,7 @@
 ### 1. Start All Services
 ```bash
 # From project root
-python start_presentation.py
+python start.py
 ```
 
 ### 2. Manual Startup (if needed)

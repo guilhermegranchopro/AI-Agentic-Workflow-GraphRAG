@@ -86,7 +86,7 @@ npm start
 1. **Pre-setup (Before Presentation):**
    ```bash
    # Load mock data for guaranteed functionality
-   python scripts/load_mock_data.py
+   echo "Legal data loading script not yet implemented"
    
    # Test the system
    python start.py --backend-only

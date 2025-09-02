@@ -30,7 +30,7 @@ cd backend
 source ../.venv/bin/activate   # Linux/Mac
 
 # Start the backend
-python run_backend.py
+python start.py --backend-only
 ```
 
 #### Step 2: Start Frontend (in another terminal)

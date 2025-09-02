@@ -8,7 +8,7 @@ This document describes the organization and purpose of each directory and file 
 ### Core Files
 - `setup.py` - Initial project setup and dependency installation
 - `start.py` - Application startup script
-- `organize_repo.py` - Repository organization script
+
 - `cleanup_repo.py` - Repository cleanup script
 - `requirements.txt` - Python dependencies
 - `docker-compose.yml` - Docker configuration for services
@@ -66,18 +66,11 @@ This document describes the organization and purpose of each directory and file 
 ## Scripts (`scripts/`)
 
 ### Data Management
-- `load_mock_data.py` - Load mock data into Neo4j
-- `enhanced_mock_data.py` - Enhanced data loading with contradictions
-- `test_graphrag_with_data.py` - Test GraphRAG functionality
+
+
 
 ### Testing
-- `test_ai_assistant.py` - Test AI Assistant functionality
-- `test_backend_endpoints.py` - Test backend API endpoints
-
-### Maintenance
-- `check_contradictions.py` - Check for contradictions in Neo4j
 - `cleanup_repo.py` - Repository cleanup
-- `organize_repo.py` - Repository organization
 
 ## Documentation (`docs/`)
 
