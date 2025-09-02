@@ -560,11 +560,11 @@ async def generate_ai_response(
     
     if has_graphrag_data:
         # Use GraphRAG results
-    context_text = "\n\n".join([
-        f"Source {i+1}: {citation.content}"
-        for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
-    ])
-    
+        context_text = "\n\n".join([
+            f"Source {i+1}: {citation.content}"
+            for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
+        ])
+        
         # Create system prompt for GraphRAG-based response
         system_prompt = """You are a legal research assistant for UAE law. Use the provided GraphRAG sources to answer questions accurately and cite your sources. 
 
@@ -575,10 +575,10 @@ Format your response as follows:
 2. Mention which GraphRAG strategy was used (Local, Global, or Hybrid)
 3. Cite specific nodes from the knowledge graph that were relevant
 4. If you used relationships between nodes, mention those as well"""
-    
-    # Prepare messages
-    messages = [
-        {"role": "system", "content": system_prompt},
+        
+        # Prepare messages
+        messages = [
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Question: {message}\n\nGraphRAG Sources:\n{context_text}\n\nPlease provide a comprehensive answer based on the GraphRAG sources provided."}
         ]
         
@@ -626,10 +626,10 @@ async def perform_legal_analysis(
         
         if not rag_result.nodes:
             # Fallback to mock analysis if no relevant nodes found
-    return {
-        "contradictions": [
-            {
-                "id": "cont_1",
+            return {
+                "contradictions": [
+                    {
+                        "id": "cont_1",
                         "title": "No specific legal data found",
                         "description": f"No specific legal provisions found for query: {query}",
                         "severity": "low",
@@ -759,5 +759,5 @@ async def perform_legal_analysis(
                 }
             ],
             "harmonizations": [],
-        "citations": []
-    }
+            "citations": []
+        }
