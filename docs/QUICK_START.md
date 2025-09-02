@@ -92,7 +92,7 @@ python start.py --frontend-only
 
 ### Load Mock Data
 ```bash
-python scripts/load_mock_data.py
+# Note: Mock data loading is now handled automatically by the application
 ```
 
 ## 🛠️ Troubleshooting

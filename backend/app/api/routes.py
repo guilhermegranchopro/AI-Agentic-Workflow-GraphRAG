@@ -127,47 +127,47 @@ async def _fallback_chat_endpoint(
 ) -> ChatResponse:
     """Fallback to direct GraphRAG when agents are not available."""
     logger.info("Using fallback direct GraphRAG approach")
-    
-    # Get services
-    azure_llm = services["azure_llm"]
-    neo4j_conn = services["neo4j_conn"]
-    
-    if not azure_llm or not neo4j_conn:
-        raise HTTPException(status_code=503, detail="Services not available")
-    
+        
+        # Get services
+        azure_llm = services["azure_llm"]
+        neo4j_conn = services["neo4j_conn"]
+        
+        if not azure_llm or not neo4j_conn:
+            raise HTTPException(status_code=503, detail="Services not available")
+        
     # Create conversation ID
     conversation_id = request.conversation_id or f"conv_{req.headers.get('X-Request-ID', 'unknown')}"
-    
-    # Perform RAG retrieval based on strategy
-    rag_result = await perform_rag_retrieval(
-        request.message,
-        request.strategy,
-        request.max_results,
-        neo4j_conn,
-        faiss_db=services["faiss_db"]
-    )
-    
-    # Generate AI response
-    response = await generate_ai_response(
-        request.message,
-        rag_result,
-        azure_llm,
+        
+        # Perform RAG retrieval based on strategy
+        rag_result = await perform_rag_retrieval(
+            request.message,
+            request.strategy,
+            request.max_results,
+            neo4j_conn,
+            faiss_db=services["faiss_db"]
+        )
+        
+        # Generate AI response
+        response = await generate_ai_response(
+            request.message,
+            rag_result,
+            azure_llm,
         None
     )
-    
-    return ChatResponse(
-        response=response,
-        conversation_id=conversation_id,
-        citations=rag_result.citations,
-        nodes=rag_result.nodes,
-        edges=rag_result.edges,
-        metadata={
-            "strategy": request.strategy,
-            "coverage": rag_result.coverage,
+        
+        return ChatResponse(
+            response=response,
+            conversation_id=conversation_id,
+            citations=rag_result.citations,
+            nodes=rag_result.nodes,
+            edges=rag_result.edges,
+            metadata={
+                "strategy": request.strategy,
+                "coverage": rag_result.coverage,
             "confidence": rag_result.confidence,
             "workflow": "fallback_direct"
-        }
-    )
+            }
+        )
 
 
 @api_router.post("/analysis", response_model=AnalysisResponse)
@@ -336,21 +336,21 @@ async def _fallback_analysis_endpoint(
 ) -> AnalysisResponse:
     """Fallback to direct analysis when agents are not available."""
     logger.info("Using fallback direct analysis approach")
-    
-    # Get services
-    azure_llm = services["azure_llm"]
-    neo4j_conn = services["neo4j_conn"]
-    
-    if not azure_llm or not neo4j_conn:
-        raise HTTPException(status_code=503, detail="Services not available")
-    
+        
+        # Get services
+        azure_llm = services["azure_llm"]
+        neo4j_conn = services["neo4j_conn"]
+        
+        if not azure_llm or not neo4j_conn:
+            raise HTTPException(status_code=503, detail="Services not available")
+        
     # Perform legal analysis using existing function
-    analysis_result = await perform_legal_analysis(
-        request.query,
-        request.analysis_type,
-        request.max_depth,
-        azure_llm,
-        neo4j_conn,
+        analysis_result = await perform_legal_analysis(
+            request.query,
+            request.analysis_type,
+            request.max_depth,
+            azure_llm,
+            neo4j_conn,
         None
     )
     
@@ -560,11 +560,11 @@ async def generate_ai_response(
     
     if has_graphrag_data:
         # Use GraphRAG results
-        context_text = "\n\n".join([
-            f"Source {i+1}: {citation.content}"
-            for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
-        ])
-        
+    context_text = "\n\n".join([
+        f"Source {i+1}: {citation.content}"
+        for i, citation in enumerate(rag_result.citations[:5])  # Top 5 citations
+    ])
+    
         # Create system prompt for GraphRAG-based response
         system_prompt = """You are a legal research assistant for UAE law. Use the provided GraphRAG sources to answer questions accurately and cite your sources. 
 
@@ -575,10 +575,10 @@ Format your response as follows:
 2. Mention which GraphRAG strategy was used (Local, Global, or Hybrid)
 3. Cite specific nodes from the knowledge graph that were relevant
 4. If you used relationships between nodes, mention those as well"""
-        
-        # Prepare messages
-        messages = [
-            {"role": "system", "content": system_prompt},
+    
+    # Prepare messages
+    messages = [
+        {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Question: {message}\n\nGraphRAG Sources:\n{context_text}\n\nPlease provide a comprehensive answer based on the GraphRAG sources provided."}
         ]
         
@@ -602,11 +602,11 @@ For complex or time-sensitive legal matters, always recommend consulting with qu
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Question: {message}\n\nPlease provide a helpful response about UAE law based on your general knowledge. Clearly state that no GraphRAG sources were found and you are using general knowledge."}
-        ]
-        
-        # Generate response
+    ]
+    
+    # Generate response
         response = await azure_llm.chat(messages, temperature=0.7, max_tokens=1500)
-        return response
+    return response
 
 
 async def perform_legal_analysis(
@@ -626,10 +626,10 @@ async def perform_legal_analysis(
         
         if not rag_result.nodes:
             # Fallback to mock analysis if no relevant nodes found
-            return {
-                "contradictions": [
-                    {
-                        "id": "cont_1",
+    return {
+        "contradictions": [
+            {
+                "id": "cont_1",
                         "title": "No specific legal data found",
                         "description": f"No specific legal provisions found for query: {query}",
                         "severity": "low",
@@ -759,5 +759,5 @@ async def perform_legal_analysis(
                 }
             ],
             "harmonizations": [],
-            "citations": []
-        }
+        "citations": []
+    }

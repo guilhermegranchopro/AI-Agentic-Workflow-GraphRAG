@@ -25,7 +25,7 @@ interface GraphEdge {
 interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
-  stats: {
+      stats: {
     nodeCount: number;
     edgeCount: number;
     nodeTypes: Record<string, number>;
@@ -82,8 +82,8 @@ async function fetchRealGraphData(maxNodes: number, includeRelationships: string
         counter++;
       }
       usedNodeIds.add(uniqueId);
-      
-      return {
+    
+    return {
         id: uniqueId,
         label: node.title || node.content?.substring(0, 50) || uniqueId,
         type: node.type || 'Unknown',
@@ -135,8 +135,8 @@ async function fetchRealGraphData(maxNodes: number, includeRelationships: string
         id: uniqueId,
         from: fromId,
         to: toId,
-        label: edge.type,
-        type: edge.type,
+    label: edge.type,
+    type: edge.type,
         properties: edge.metadata || {}
       };
     }).filter(Boolean) || [];
@@ -189,10 +189,10 @@ function calculateStats(nodes: GraphNode[], edges: GraphEdge[]) {
   });
 
   return {
-    nodeCount: nodes.length,
+      nodeCount: nodes.length,
     edgeCount: edges.length,
-    nodeTypes,
-    edgeTypes
+      nodeTypes,
+      edgeTypes
   };
 }
 
