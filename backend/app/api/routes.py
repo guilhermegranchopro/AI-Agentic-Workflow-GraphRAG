@@ -127,47 +127,47 @@ async def _fallback_chat_endpoint(
 ) -> ChatResponse:
     """Fallback to direct GraphRAG when agents are not available."""
     logger.info("Using fallback direct GraphRAG approach")
-        
-        # Get services
-        azure_llm = services["azure_llm"]
-        neo4j_conn = services["neo4j_conn"]
-        
-        if not azure_llm or not neo4j_conn:
-            raise HTTPException(status_code=503, detail="Services not available")
-        
+    
+    # Get services
+    azure_llm = services["azure_llm"]
+    neo4j_conn = services["neo4j_conn"]
+    
+    if not azure_llm or not neo4j_conn:
+        raise HTTPException(status_code=503, detail="Services not available")
+    
     # Create conversation ID
     conversation_id = request.conversation_id or f"conv_{req.headers.get('X-Request-ID', 'unknown')}"
-        
-        # Perform RAG retrieval based on strategy
-        rag_result = await perform_rag_retrieval(
-            request.message,
-            request.strategy,
-            request.max_results,
-            neo4j_conn,
-            faiss_db=services["faiss_db"]
-        )
-        
-        # Generate AI response
-        response = await generate_ai_response(
-            request.message,
-            rag_result,
-            azure_llm,
+    
+    # Perform RAG retrieval based on strategy
+    rag_result = await perform_rag_retrieval(
+        request.message,
+        request.strategy,
+        request.max_results,
+        neo4j_conn,
+        faiss_db=services["faiss_db"]
+    )
+    
+    # Generate AI response
+    response = await generate_ai_response(
+        request.message,
+        rag_result,
+        azure_llm,
         None
     )
-        
-        return ChatResponse(
-            response=response,
-            conversation_id=conversation_id,
-            citations=rag_result.citations,
-            nodes=rag_result.nodes,
-            edges=rag_result.edges,
-            metadata={
-                "strategy": request.strategy,
-                "coverage": rag_result.coverage,
+    
+    return ChatResponse(
+        response=response,
+        conversation_id=conversation_id,
+        citations=rag_result.citations,
+        nodes=rag_result.nodes,
+        edges=rag_result.edges,
+        metadata={
+            "strategy": request.strategy,
+            "coverage": rag_result.coverage,
             "confidence": rag_result.confidence,
             "workflow": "fallback_direct"
-            }
-        )
+        }
+    )
 
 
 @api_router.post("/analysis", response_model=AnalysisResponse)
@@ -336,21 +336,21 @@ async def _fallback_analysis_endpoint(
 ) -> AnalysisResponse:
     """Fallback to direct analysis when agents are not available."""
     logger.info("Using fallback direct analysis approach")
-        
-        # Get services
-        azure_llm = services["azure_llm"]
-        neo4j_conn = services["neo4j_conn"]
-        
-        if not azure_llm or not neo4j_conn:
-            raise HTTPException(status_code=503, detail="Services not available")
-        
+    
+    # Get services
+    azure_llm = services["azure_llm"]
+    neo4j_conn = services["neo4j_conn"]
+    
+    if not azure_llm or not neo4j_conn:
+        raise HTTPException(status_code=503, detail="Services not available")
+    
     # Perform legal analysis using existing function
-        analysis_result = await perform_legal_analysis(
-            request.query,
-            request.analysis_type,
-            request.max_depth,
-            azure_llm,
-            neo4j_conn,
+    analysis_result = await perform_legal_analysis(
+        request.query,
+        request.analysis_type,
+        request.max_depth,
+        azure_llm,
+        neo4j_conn,
         None
     )
     
