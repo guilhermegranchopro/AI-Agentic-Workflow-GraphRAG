@@ -20,7 +20,30 @@ git clone <repository-url>
 cd internship_GraphRAG
 ```
 
-### 2. Python Environment
+### 2. Neo4j Database Setup
+
+**This is a critical step that must be completed before running the application.**
+
+#### Install Neo4j Desktop
+- Download Neo4j Desktop from [neo4j.com/download](https://neo4j.com/download/)
+- Install and launch Neo4j Desktop
+
+#### Create Neo4j Instance
+- Click "New" → "Create a Local Graph"
+- Choose Neo4j 5.15+ version
+- Set a secure password (remember this for your .env file)
+- Start the instance
+
+#### Import Knowledge Graph Data
+- In Neo4j Desktop, click on your instance
+- Go to "Manage" → "Import"
+- Upload the `neo4j_knowledge_graph.dump` file from the repository root
+- This populates the database with mock UAE legal system data (83+ legal entities, 103+ relationships)
+- Wait for the import to complete before proceeding
+
+**Note**: The application will not function properly without this knowledge graph data.
+
+### 3. Python Environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
@@ -29,19 +52,22 @@ source .venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### 3. Node.js Environment
+### 4. Node.js Environment
 ```bash
 cd frontend
 npm install
 ```
 
-### 4. Environment Configuration
+### 5. Environment Configuration
 ```bash
 cp .env.template .env
-# Edit .env with your configuration
+# Edit .env with your configuration, especially:
+# - NEO4J_PASSWORD: The password you set for your Neo4j instance
+# - AZURE_OPENAI_API_KEY: Your Azure OpenAI API key
+# - AZURE_OPENAI_ENDPOINT: Your Azure OpenAI endpoint
 ```
 
-### 5. Start Services
+### 6. Start Services
 ```bash
 # Backend (Terminal 1)
 cd backend
@@ -95,6 +121,7 @@ services:
       - NEO4J_AUTH=neo4j/secure-password
     volumes:
       - neo4j_data:/data
+      - ./neo4j_knowledge_graph.dump:/var/lib/neo4j/import/neo4j_knowledge_graph.dump:ro
     restart: unless-stopped
 
   redis:
@@ -120,6 +147,17 @@ docker-compose ps
 
 # View logs
 docker-compose logs -f backend
+```
+
+**Important**: After the Neo4j container starts, you need to import the knowledge graph data:
+```bash
+# Connect to Neo4j container
+docker exec -it internship_graphrag_neo4j_1 bash
+
+# Import the knowledge graph data
+cypher-shell -u neo4j -p secure-password
+# Follow Neo4j import instructions for the neo4j_knowledge_graph.dump file
+# This is required for the application to function properly
 ```
 
 ### Traditional Server Deployment
@@ -166,6 +204,25 @@ sudo systemctl enable neo4j
 # Set password
 cypher-shell -u neo4j -p neo4j
 CALL dbms.security.changePassword('secure-password')
+```
+
+#### 3. Import Knowledge Graph Data
+```bash
+# Copy the knowledge graph dump file to the server
+scp neo4j_knowledge_graph.dump user@server:/tmp/
+
+# Import the data into Neo4j
+sudo systemctl stop neo4j
+sudo cp /tmp/neo4j_knowledge_graph.dump /var/lib/neo4j/import/
+sudo chown neo4j:neo4j /var/lib/neo4j/import/neo4j_knowledge_graph.dump
+
+# Start Neo4j and import data
+sudo systemctl start neo4j
+
+# Wait for Neo4j to start, then import data
+cypher-shell -u neo4j -p secure-password
+# Follow Neo4j import instructions for the dump file
+# This populates the database with UAE legal system data
 ```
 
 #### 3. Application Deployment
