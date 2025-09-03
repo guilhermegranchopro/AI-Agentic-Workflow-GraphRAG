@@ -4,7 +4,106 @@
 
 This repository contains the implementation of a **fully compliant A2A Protocol** system for the UAE Legal GraphRAG project, developed as part of a summer internship at EY Portugal's AI & Data team in August 2025. The system provides AI-powered legal research and analysis using GraphRAG (Graph-based Retrieval Augmented Generation) and multi-agent workflows, designed for eventual deployment to the UAE.
 
+### Core Functionality
+
+The UAE Legal GraphRAG system is a comprehensive legal research platform that combines:
+
+- **Graph Database Technology**: Neo4j-based knowledge graph representing UAE legal system entities and relationships
+- **AI-Powered Analysis**: Azure OpenAI GPT-4o integration for intelligent legal research and analysis
+- **Multi-Agent Workflows**: Orchestrated AI agents specializing in different aspects of legal research
+- **Vector Search**: FAISS-based semantic search for legal document similarity and relevance
+- **Real-Time Visualization**: Interactive graph exploration and legal relationship mapping
+- **A2A Protocol Compliance**: Industry-standard agent interoperability for future integration
+
+### Frontend Application Pages
+
+#### Overview Dashboard
+- **Purpose**: Central hub providing system status and quick access to all features
+- **Features**: System health indicators, recent activities, quick navigation to core tools
+- **Use Case**: Initial landing page for users to understand system capabilities
+
+#### Graph Visualization
+- **Purpose**: Interactive exploration of the UAE legal knowledge graph
+- **Features**: 
+  - Real-time Neo4j graph visualization with 83+ legal entities
+  - 103+ legal relationships and connections
+  - Interactive node filtering and relationship exploration
+  - Zoom, pan, and search functionality
+  - Legal domain categorization and color coding
+- **Use Case**: Legal researchers exploring connections between laws, regulations, and legal entities
+
+#### AI Assistant
+- **Purpose**: Intelligent legal research assistant powered by GraphRAG technology
+- **Features**:
+  - Natural language legal queries with context-aware responses
+  - Multiple retrieval strategies (local, global, hybrid)
+  - Citation system with source legal documents
+  - Conversation history and context preservation
+  - Multi-agent coordination for comprehensive responses
+- **Use Case**: Legal professionals seeking quick answers to complex legal questions
+
+#### AI Analysis
+- **Purpose**: Advanced legal analysis including contradiction detection and harmonization
+- **Features**:
+  - Legal contradiction identification across different regulations
+  - Priority-based analysis and risk assessment
+  - Harmonization recommendations for conflicting legal provisions
+  - Compliance gap analysis
+  - Detailed legal reasoning and explanations
+- **Use Case**: Legal compliance officers and regulatory analysts
+
+### Knowledge Graph Coverage
+
+The system includes comprehensive coverage of UAE legal domains:
+- **Corporate Tax Law**: 2022 and 2024 regulations with detailed provisions
+- **Data Protection**: GDPR-compliant data handling requirements
+- **Court System**: Judicial structure and procedural rules
+- **Business Licensing**: Commercial registration and licensing requirements
+- **Environmental Regulations**: Sustainability and compliance standards
+- **Digital Innovation**: Technology and innovation laws
+- **Labor Law**: Employment regulations and worker rights
+- **Financial Services**: Banking and financial regulations
+
 **Note: This project contains proprietary EY intellectual property and is intended for internal use only.**
+
+## Multi-Agent AI System
+
+The UAE Legal GraphRAG system implements a sophisticated multi-agent architecture that coordinates specialized AI agents for comprehensive legal research:
+
+### Agent Architecture
+
+#### Orchestrator Agent
+- **Role**: Central coordinator managing workflow execution and agent coordination
+- **Responsibilities**: 
+  - Route user queries to appropriate specialized agents
+  - Coordinate multi-agent workflows for complex legal analysis
+  - Manage conversation context and history
+  - Implement A2A Protocol message handling
+
+#### Specialized GraphRAG Agents
+
+**Local GraphRAG Agent**
+- **Purpose**: Focused legal research using local graph neighborhood traversal
+- **Strategy**: Explores immediate connections and relationships around specific legal entities
+- **Use Case**: Detailed analysis of specific legal provisions and their direct implications
+
+**Global GraphRAG Agent**
+- **Purpose**: Comprehensive legal research using global graph analysis
+- **Strategy**: Analyzes the entire knowledge graph for broad legal patterns and connections
+- **Use Case**: Understanding legal system-wide implications and cross-domain relationships
+
+**DRIFT GraphRAG Agent**
+- **Purpose**: Dynamic relevance and importance tracking for legal analysis
+- **Strategy**: Identifies time-sensitive legal changes and evolving regulatory priorities
+- **Use Case**: Staying current with legal developments and regulatory updates
+
+#### AI Analysis Agent
+- **Purpose**: Advanced legal analysis including contradiction detection and harmonization
+- **Capabilities**: 
+  - Identify conflicting legal provisions across different regulations
+  - Assess compliance risks and gaps
+  - Provide harmonization recommendations
+  - Generate detailed legal reasoning and explanations
 
 ## A2A Protocol Compliance
 
@@ -78,6 +177,39 @@ The UAE Legal GraphRAG system is built as a multi-agent AI platform that leverag
 - **Future-Proof**: Enables integration with other AI agents and systems
 - **Compliance**: Meets all specification requirements for production use
 
+#### Development Tools
+- **TypeScript**: Type-safe development for frontend components
+- **Tailwind CSS**: Utility-first CSS framework for modern UI design
+- **Vis.js**: Interactive graph visualization library
+- **React Hooks**: Modern React patterns for state management
+- **FastAPI**: High-performance Python web framework
+- **Pydantic**: Data validation and settings management
+- **SQLAlchemy**: Database ORM and connection management
+- **Loguru**: Advanced logging and monitoring
+
+## Data and Knowledge Representation
+
+### Knowledge Graph Structure
+The system maintains a comprehensive knowledge graph representing the UAE legal system:
+
+- **Legal Entities**: Laws, regulations, court decisions, government bodies, and legal concepts
+- **Relationships**: Hierarchical structures, cross-references, amendments, and legal dependencies
+- **Metadata**: Effective dates, jurisdiction, legal status, and regulatory authority
+- **Content**: Full text of legal provisions, explanatory notes, and implementation guidelines
+
+### Data Sources and Coverage
+- **Primary Legislation**: Federal laws, decrees, and ministerial decisions
+- **Regulatory Framework**: Administrative regulations and implementation guidelines
+- **Judicial Precedents**: Court decisions and legal interpretations
+- **International Standards**: Alignment with international legal frameworks
+- **Industry-Specific Regulations**: Sector-specific legal requirements and compliance standards
+
+### Data Quality and Maintenance
+- **Regular Updates**: Continuous monitoring of legal changes and regulatory updates
+- **Validation**: Multi-source verification of legal accuracy and currency
+- **Version Control**: Tracking of legal document versions and amendment history
+- **Compliance Monitoring**: Regular assessment of regulatory compliance status
+
 ## Project Structure
 
 ```
@@ -102,7 +234,8 @@ The UAE Legal GraphRAG system is built as a multi-agent AI platform that leverag
 
 ### Required Software
 - **Python 3.11+** with pip
-- **Node.js 18+** and npm (Next.js with TypeScript and Tailwind CSS)
+- **Node.js 18+** and npm
+- **Next.js 15+** with Turbopack enabled
 - **Neo4j Desktop** application
 - **Git** for version control
 
@@ -279,9 +412,11 @@ curl -X POST http://localhost:8000/a2a/v1/message:send \
 
 ## Documentation
 
-- **[A2A Protocol Implementation](README_A2A_PROTOCOL.md)** - Complete A2A Protocol documentation
-- **[Startup Guide](STARTUP_GUIDE.md)** - How to get started
+- **[A2A Protocol Implementation](docs/A2A_PROTOCOL_IMPLEMENTATION.md)** - Complete A2A Protocol documentation
 - **[Architecture](docs/ARCHITECTURE.md)** - System architecture details
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
+- **[User Guide](docs/USER_GUIDE.md)** - End-user documentation and tutorials
 
 ## Project Status
 
@@ -289,9 +424,30 @@ curl -X POST http://localhost:8000/a2a/v1/message:send \
 
 Your UAE Legal GraphRAG system is now a **fully compliant A2A Protocol agent** that can interoperate with other A2A-compliant agents and follows industry standards for agent-to-agent communication.
 
+## Deployment and Production
+
+### Development Environment
+- **Local Development**: Python virtual environment with hot reload
+- **Frontend Development**: Next.js development server with Turbopack
+- **Database**: Local Neo4j instance for development and testing
+- **Environment Configuration**: .env files for local configuration management
+
+### Production Considerations
+- **Containerization**: Docker support for consistent deployment environments
+- **Environment Management**: Secure configuration management for production
+- **Monitoring**: Health checks, logging, and performance monitoring
+- **Scaling**: Horizontal scaling support for high-traffic deployments
+- **Security**: Production-grade authentication and authorization
+
+### Cloud Deployment
+- **Azure Integration**: Native integration with Microsoft Azure services
+- **Container Registry**: Support for Azure Container Registry deployment
+- **Managed Services**: Integration with Azure OpenAI and other managed services
+- **Monitoring**: Azure Monitor integration for production monitoring
+
 ## Support and Maintenance
 
-For questions about the A2A Protocol implementation, please refer to the [A2A Protocol documentation](README_A2A_PROTOCOL.md) or check the [A2A Protocol specification](https://a2a-protocol.org/dev/specification/).
+For questions about the A2A Protocol implementation, please refer to the [A2A Protocol documentation](docs/A2A_PROTOCOL_IMPLEMENTATION.md) or check the [A2A Protocol specification](https://a2a-protocol.org/dev/specification/).
 
 ## License and Proprietary Information
 

@@ -1,10 +1,10 @@
-# **🧪 UAE Legal GraphRAG Test Suite**
+# UAE Legal GraphRAG Test Suite
 
-## **📋 Overview**
+## Overview
 
 This directory contains the test suite for the UAE Legal GraphRAG system, with a focus on **A2A Protocol compliance testing**.
 
-## **🚀 Running Tests**
+## Running Tests
 
 ### **A2A Protocol Tests**
 ```bash
@@ -20,7 +20,7 @@ python -m pytest tests/ -v
 - **API Token**: Set in test file or environment
 - **Test Coverage**: Full A2A Protocol specification compliance
 
-## **📊 Test Coverage**
+## Test Coverage
 
 ### **A2A Protocol Requirements**
 1. ✅ **Agent Discovery** - `/.well-known/agent.json`
@@ -35,7 +35,7 @@ python -m pytest tests/ -v
 - **A2A Compliance Tests**: Protocol specification validation
 - **Performance Tests**: Load and stress testing
 
-## **🔧 Test Setup**
+## Test Setup
 
 ### **Prerequisites**
 1. Backend server running on port 8000
@@ -51,7 +51,7 @@ TEST_API_TOKEN=your-test-token
 TEST_TIMEOUT=30
 ```
 
-## **📈 Test Results**
+## Test Results
 
 ### **Expected Output**
 ```
@@ -92,7 +92,7 @@ Testing against: http://localhost:8000
    🎉 FULL A2A PROTOCOL COMPLIANCE ACHIEVED!
 ```
 
-## **🚨 Troubleshooting**
+## Troubleshooting
 
 ### **Common Test Issues**
 1. **Server Not Running**: Ensure backend is started on port 8000
@@ -109,13 +109,13 @@ python test_a2a_protocol.py --verbose
 python -c "from test_a2a_protocol import test_agent_discovery; test_agent_discovery()"
 ```
 
-## **📚 Test Documentation**
+## Test Documentation
 
 - **[A2A Protocol Specification](https://a2a-protocol.org/dev/specification/)**
 - **[Test Best Practices](https://docs.pytest.org/)**
 - **[FastAPI Testing](https://fastapi.tiangolo.com/tutorial/testing/)**
 
-## **🎯 Next Steps**
+## Next Steps
 
 After successful test execution:
 
@@ -124,4 +124,4 @@ After successful test execution:
 3. **Performance Testing**: Load testing and optimization
 4. **Production Deployment**: Deploy compliant system
 
-Your UAE Legal GraphRAG system is now **fully tested and A2A Protocol compliant**! 🎉
+Your UAE Legal GraphRAG system is now **fully tested and A2A Protocol compliant**!

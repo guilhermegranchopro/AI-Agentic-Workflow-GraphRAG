@@ -1,10 +1,10 @@
-# **🏗️ UAE Legal GraphRAG Architecture - A2A Protocol Focus**
+# UAE Legal GraphRAG Architecture - A2A Protocol Focus
 
-## **📋 Overview**
+## Overview
 
 This document describes the architecture of the UAE Legal GraphRAG system with a focus on the **A2A Protocol implementation**. The system is designed as a multi-agent AI platform that provides legal research and analysis capabilities through GraphRAG (Graph-based Retrieval Augmented Generation).
 
-## **🎯 Core Architecture Principles**
+## Core Architecture Principles
 
 ### **1. A2A Protocol Compliance**
 - **Agent Discovery**: Public agent cards at `/.well-known/agent.json`
@@ -23,7 +23,7 @@ This document describes the architecture of the UAE Legal GraphRAG system with a
 - **FAISS Vector Database**: Semantic search capabilities
 - **Azure OpenAI Integration**: GPT-4o for AI processing
 
-## **🔧 Technical Architecture**
+## Technical Architecture
 
 ### **Backend Layer (FastAPI)**
 ```
@@ -72,7 +72,7 @@ This document describes the architecture of the UAE Legal GraphRAG system with a
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## **🔄 Data Flow Architecture**
+## Data Flow Architecture
 
 ### **1. A2A Protocol Message Flow**
 ```
@@ -88,7 +88,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
   Input      Coordination    Parallel Agents      Neo4j + FAISS   GPT-4o    Structured Output
 ```
 
-## **🔒 Security Architecture**
+## Security Architecture
 
 ### **Authentication & Authorization**
 - **Bearer Token**: User authentication for API access
@@ -102,7 +102,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **Error Handling**: Secure error responses
 - **Audit Logging**: Complete request/response tracking
 
-## **📊 Performance Architecture**
+## Performance Architecture
 
 ### **Scalability Features**
 - **Async Processing**: FastAPI async/await support
@@ -116,7 +116,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **Metrics**: Performance and usage statistics
 - **Error Tracking**: Comprehensive error logging
 
-## **🌐 Integration Architecture**
+## Integration Architecture
 
 ### **A2A Protocol Integration**
 - **Standard Compliance**: Follows A2A Protocol specification
@@ -130,7 +130,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **FAISS**: Vector similarity search
 - **Event Store**: SQLite-based event logging
 
-## **🚀 Deployment Architecture**
+## Deployment Architecture
 
 ### **Development Environment**
 - **Local Development**: Python virtual environment
@@ -144,7 +144,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **Health Monitoring**: Service health endpoints
 - **Logging**: Structured logging for production
 
-## **📈 Future Architecture Considerations**
+## Future Architecture Considerations
 
 ### **Scalability Enhancements**
 - **Microservices**: Service decomposition
@@ -158,7 +158,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **Advanced Security**: OAuth2, JWT tokens
 - **Compliance Tools**: A2A Inspector integration
 
-## **🎯 Architecture Benefits**
+## Architecture Benefits
 
 1. **A2A Protocol Compliance**: Industry-standard agent communication
 2. **Modular Design**: Easy to extend and maintain
