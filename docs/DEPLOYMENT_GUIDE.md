@@ -6,12 +6,6 @@ This guide provides instructions for deploying the UAE Legal GraphRAG system in 
 
 ## Prerequisites
 
-### System Requirements
-- **CPU**: 4+ cores (8+ recommended)
-- **Memory**: 8GB+ RAM (16GB+ recommended)
-- **Storage**: 50GB+ available space
-- **Network**: Stable internet connection for AI services
-
 ### Software Requirements
 - **Python**: 3.11+ with pip
 - **Node.js**: 18+ with npm

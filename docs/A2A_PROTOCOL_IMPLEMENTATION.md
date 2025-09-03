@@ -1,12 +1,12 @@
-# **🤖 A2A Protocol Implementation - UAE Legal GraphRAG**
+# **A2A Protocol Implementation - UAE Legal GraphRAG**
 
-## **📋 Overview**
+## **Overview**
 
 This document describes the **official A2A Protocol** implementation in the UAE Legal GraphRAG system. We have implemented the complete A2A Protocol specification following the official standards at [a2a-protocol.org](https://a2a-protocol.org/dev/specification/).
 
 ---
 
-## **🔗 A2A Protocol Endpoints**
+## **A2A Protocol Endpoints**
 
 ### **1. Agent Discovery (Public)**
 - **`GET /.well-known/agent.json`** - Public agent card for discovery
@@ -96,7 +96,7 @@ This document describes the **official A2A Protocol** implementation in the UAE 
 
 ---
 
-## **📨 Message:Send Implementation**
+## **Message:Send Implementation**
 
 ### **Request Format**
 ```json
@@ -148,7 +148,7 @@ This document describes the **official A2A Protocol** implementation in the UAE 
 
 ---
 
-## **🔄 Message:Stream Implementation**
+## **Message:Stream Implementation**
 
 ### **Server-Sent Events (SSE)**
 The system supports real-time streaming updates for long-running tasks:
@@ -227,7 +227,7 @@ GET /a2a/v1/tasks/{task_id}
 
 ---
 
-## **🔒 Security & Authentication**
+## **Security & Authentication**
 
 ### **Security Schemes**
 1. **Bearer Token Authentication**
@@ -249,7 +249,7 @@ X-API-Key: <your-api-key>
 
 ---
 
-## **🌐 Integration Examples**
+## **Integration Examples**
 
 ### **1. Python Client Example**
 ```python
@@ -333,13 +333,13 @@ console.log('Analysis result:', result);
 ## **A2A Protocol Compliance**
 
 ### **Compliance Checklist**
-- ✅ **Agent Card**: Public discovery at `/.well-known/agent.json`
-- ✅ **Message:Send**: Synchronous message handling
-- ✅ **Message:Stream**: Server-Sent Events for streaming
-- ✅ **Tasks:Get**: Task status polling
-- ✅ **Transport**: HTTP+JSON and JSON-RPC support
-- ✅ **Security**: Bearer token and API key authentication
-- ✅ **Capabilities**: Streaming, long-running tasks, real-time updates
+- **Agent Card**: Public discovery at `/.well-known/agent.json`
+- **Message:Send**: Synchronous message handling
+- **Message:Stream**: Server-Sent Events for streaming
+- **Tasks:Get**: Task status polling
+- **Transport**: HTTP+JSON and JSON-RPC support
+- **Security**: Bearer token and API key authentication
+- **Capabilities**: Streaming, long-running tasks, real-time updates
 
 ### **Protocol Version**
 - **Current Version**: 0.3.0
@@ -376,7 +376,7 @@ curl https://uae-legal-graphrag.azurewebsites.net/a2a/health
 
 ---
 
-## **📚 Additional Resources**
+## **Additional Resources**
 
 ### **A2A Protocol Documentation**
 - [Official Specification](https://a2a-protocol.org/dev/specification/)
