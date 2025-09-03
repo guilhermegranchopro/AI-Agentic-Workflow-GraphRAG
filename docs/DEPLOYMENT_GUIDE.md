@@ -71,7 +71,7 @@ cp .env.template .env
 ```bash
 # Backend (Terminal 1)
 cd backend
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8012 --reload 
 
 # Frontend (Terminal 2)
 cd frontend
@@ -91,7 +91,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "8012:8012"
     environment:
       - APP_ENV=production
       - NEO4J_URI=bolt://neo4j:7687
@@ -107,7 +107,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:8012
     depends_on:
       - backend
     restart: unless-stopped
@@ -175,7 +175,7 @@ sudo apt install -y nodejs npm nginx redis-server
 sudo ufw allow 22/tcp    # SSH
 sudo ufw allow 80/tcp    # HTTP
 sudo ufw allow 443/tcp   # HTTPS
-sudo ufw allow 8000/tcp  # Application
+sudo ufw allow 8012/tcp  # Application
 sudo ufw enable
 ```
 
@@ -259,7 +259,7 @@ Type=exec
 User=graphrag
 WorkingDirectory=/home/graphrag/app
 Environment=PATH=/home/graphrag/app/.venv/bin
-ExecStart=/home/graphrag/app/.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+ExecStart=/home/graphrag/app/.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8012
 Restart=always
 
 [Install]
@@ -281,7 +281,7 @@ server {
     server_name your-domain.com;
     
     location / {
-        proxy_pass http://localhost:8000;
+        proxy_pass http://localhost:8012;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -301,7 +301,7 @@ sudo systemctl restart nginx
 ```env
 # Application Configuration
 APP_ENV=production
-PORT=8000
+PORT=8012
 HOST=0.0.0.0
 
 # Database Configuration
@@ -335,7 +335,7 @@ LOG_LEVEL=INFO
 ### Health Check Script
 ```bash
 #!/bin/bash
-HEALTH_URL="http://localhost:8000/health"
+HEALTH_URL="http://localhost:8012/health"
 response=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_URL)
 
 if [ $response -eq 200 ]; then
@@ -438,7 +438,7 @@ sudo ufw default allow outgoing
 sudo ufw allow ssh
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
-sudo ufw allow 8000/tcp
+sudo ufw allow 8012/tcp
 sudo ufw enable
 ```
 
@@ -447,9 +447,9 @@ sudo ufw enable
 ### Load Balancer Configuration
 ```nginx
 upstream backend_servers {
-    server 192.168.1.10:8000;
-    server 192.168.1.11:8000;
-    server 192.168.1.12:8000;
+    server 192.168.1.10:8012;
+    server 192.168.1.11:8012;
+    server 192.168.1.12:8012;
 }
 
 server {
