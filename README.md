@@ -300,7 +300,7 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 
    # Application Configuration
    APP_ENV=development
-   PORT=8000
+   PORT=8012
    ```
 
 ### Step 3: Python Environment Setup
@@ -350,13 +350,13 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 2. **Start FastAPI Server**
    ```bash
    cd backend
-   python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   uvicorn app.main:app --host 127.0.0.1 --port 8012 --reload 
    ```
 
 3. **Verify Backend**
-   - Health check: http://localhost:8000/health
-   - A2A Protocol: http://localhost:8000/.well-known/agent.json
-   - API docs: http://localhost:8000/docs
+   - Health check: http://localhost:8012/health
+   - A2A Protocol: http://localhost:8012/.well-known/agent.json
+   - API docs: http://localhost:8012/docs
 
 ### Start Frontend Application
 
@@ -383,13 +383,13 @@ python tests/test_a2a_protocol.py
 ### Manual Testing
 ```bash
 # Test agent discovery
-curl http://localhost:8000/.well-known/agent.json
+curl http://localhost:8012/.well-known/agent.json
 
 # Test A2A health
-curl http://localhost:8000/a2a/health
+curl http://localhost:8012/a2a/health
 
 # Test message sending
-curl -X POST http://localhost:8000/a2a/v1/message:send \
+curl -X POST http://localhost:8012/a2a/v1/message:send \
   -H "Content-Type: application/json" \
   -d '{"message": {"role": "user", "parts": [{"kind": "text", "text": "Test"}], "metadata": {"skill_id": "ai_assistant"}}}'
 ```
