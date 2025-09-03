@@ -364,6 +364,11 @@ const response = await fetch(`${baseUrl}/a2a/v1/message:send`, {
 ### Test Data
 The system includes mock UAE legal data for testing purposes. Use the provided Neo4j dump file to populate your test database.
 
+### Environment Setup
+- **Backend .env**: Must be located in the `backend/` folder
+- **Template**: Copy from `.env.template` in root to `backend/.env`
+- **Required Variables**: Azure OpenAI, Neo4j, and application configuration
+
 ## Support
 
 For API-related questions or issues:

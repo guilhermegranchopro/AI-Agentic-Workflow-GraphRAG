@@ -135,7 +135,7 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 ### **Development Environment**
 - **Local Development**: Python virtual environment
 - **Hot Reload**: FastAPI development server
-- **Environment Configuration**: .env file management
+- **Environment Configuration**: .env file in backend/ folder (not root)
 - **Debug Mode**: Comprehensive logging
 
 ### **Production Ready**

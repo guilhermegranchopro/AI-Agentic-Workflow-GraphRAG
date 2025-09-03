@@ -221,7 +221,7 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 │   │   └── main.py         # Main FastAPI application
 │   ├── tests/              # Test suite including A2A Protocol tests
 │   ├── data/               # Data storage
-│   └── .env                # Backend environment variables
+│   └── .env                # Backend environment variables (REQUIRED)
 ├── frontend/               # Next.js frontend application
 ├── docs/                   # Project documentation
 │   ├── extra/              # Research documentation and findings
@@ -236,13 +236,14 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 │   ├── ARCHITECTURE.md
 │   ├── DEPLOYMENT_GUIDE.md
 │   └── USER_GUIDE.md
-├── .env                    # Root environment variables
-├── .env.template           # Environment configuration template
+├── .env.template           # Environment configuration template (copy to backend/.env)
 ├── requirements.txt        # Python dependencies (root level)
 ├── neo4j_knowledge_graph.dump # Neo4j database dump with mock UAE legal data
 ├── UAE Legal AI GraphRAG Presentation.pptm # Final project presentation
 └── Recording of the Demo.mp4 # Full-stack application demonstration
 ```
+
+**Note**: The `.env` file must be created in the `backend/` folder from the `.env.template` in the root directory.
 
 ## Prerequisites
 
@@ -282,7 +283,7 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 
 1. **Create .env Template**
    ```bash
-   cp .env.template .env
+   cp .env.template backend/.env
    ```
 
 2. **Configure .env File**
@@ -302,6 +303,8 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
    APP_ENV=development
    PORT=8012
    ```
+
+**Important**: The `.env` file must be placed in the `backend/` folder, not in the root directory.
 
 ### Step 3: Python Environment Setup
 
