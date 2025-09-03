@@ -151,11 +151,21 @@ Advanced legal analysis including contradiction detection and harmonization reco
 - Verify Neo4j database connection
 - Contact system administrators for persistent issues
 
+**Environment Configuration Issues**
+- **Backend won't start**: Ensure `.env` file is in `backend/` folder, not root
+- **Missing credentials**: Check that all required environment variables are set in `backend/.env`
+- **Port conflicts**: Verify backend is running on port 8012 and frontend on port 3000
+
 ### Getting Help
 - **System Status**: Check the Overview Dashboard for system health
 - **API Health**: Verify backend connectivity at /health endpoint
 - **Documentation**: Refer to the comprehensive documentation in the docs folder
 - **Support**: Contact the development team for technical assistance
+
+### Environment Configuration
+- **Backend .env**: Must be located in the `backend/` folder (not root)
+- **Template**: Copy from `.env.template` in root to `backend/.env`
+- **Required**: Backend will not start without proper .env configuration
 
 ## Advanced Features
 

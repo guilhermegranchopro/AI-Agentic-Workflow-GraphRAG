@@ -4,6 +4,13 @@
 
 This document describes the **official A2A Protocol** implementation in the UAE Legal GraphRAG system. We have implemented the complete A2A Protocol specification following the official standards at [a2a-protocol.org](https://a2a-protocol.org/dev/specification/).
 
+## **Environment Configuration**
+
+**Critical**: The backend requires a `.env` file in the `backend/` folder (not in the root directory).
+- Copy `.env.template` from root to `backend/.env`
+- Configure all required environment variables
+- Backend will not start without proper .env configuration
+
 ---
 
 ## **A2A Protocol Endpoints**

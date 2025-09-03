@@ -60,12 +60,14 @@ npm install
 
 ### 5. Environment Configuration
 ```bash
-cp .env.template .env
-# Edit .env with your configuration, especially:
+cp .env.template backend/.env
+# Edit backend/.env with your configuration, especially:
 # - NEO4J_PASSWORD: The password you set for your Neo4j instance
 # - AZURE_OPENAI_API_KEY: Your Azure OpenAI API key
 # - AZURE_OPENAI_ENDPOINT: Your Azure OpenAI endpoint
 ```
+
+**Important**: The `.env` file must be placed in the `backend/` folder, not in the root directory.
 
 ### 6. Start Services
 ```bash
@@ -240,8 +242,8 @@ sudo -u graphrag python3.11 -m venv .venv
 sudo -u graphrag .venv/bin/pip install -r requirements.txt
 
 # Configure environment
-sudo -u graphrag cp .env.template .env
-sudo -u graphrag nano .env
+sudo -u graphrag cp .env.template backend/.env
+sudo -u graphrag nano backend/.env
 # Set production environment variables
 ```
 
