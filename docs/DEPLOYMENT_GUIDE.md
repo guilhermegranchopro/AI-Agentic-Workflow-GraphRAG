@@ -259,7 +259,7 @@ Type=exec
 User=graphrag
 WorkingDirectory=/home/graphrag/app
 Environment=PATH=/home/graphrag/app/.venv/bin
-ExecStart=/home/graphrag/app/.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8012
+ExecStart=/home/graphrag/app/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8012
 Restart=always
 
 [Install]
@@ -302,7 +302,7 @@ sudo systemctl restart nginx
 # Application Configuration
 APP_ENV=production
 PORT=8012
-HOST=0.0.0.0
+HOST=127.0.0.1
 
 # Database Configuration
 NEO4J_URI=bolt://localhost:7687
