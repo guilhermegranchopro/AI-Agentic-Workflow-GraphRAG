@@ -5,7 +5,7 @@ services:
   api:
     build: .
     ports:
-      - "8000:8000"
+      - "8012:8012"
     environment:
       - APP_ENV=production
       - NEO4J_URI=bolt://neo4j:7687

@@ -6,7 +6,7 @@ This document provides comprehensive API documentation for the UAE Legal GraphRA
 
 ## Base URLs
 
-- **Development**: http://localhost:8000
+- **Development**: http://localhost:8012
 - **Production**: https://uae-legal-graphrag.azurewebsites.net
 
 ## Authentication
@@ -330,7 +330,7 @@ All dates are in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`
 ```python
 import requests
 
-base_url = "http://localhost:8000"
+base_url = "http://localhost:8012"
 headers = {"Authorization": "Bearer your-token"}
 
 # Send message
@@ -343,7 +343,7 @@ response = requests.post(
 
 ### JavaScript/TypeScript Client
 ```typescript
-const baseUrl = "http://localhost:8000";
+const baseUrl = "http://localhost:8012";
 const headers = { "Authorization": "Bearer your-token" };
 
 // Send message

@@ -8,9 +8,9 @@ Welcome to the UAE Legal GraphRAG system! This comprehensive legal research plat
 
 ### System Access
 - **Frontend Application**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
-- **A2A Protocol**: http://localhost:8000/.well-known/agent.json
+- **Backend API**: http://localhost:8012
+- **API Documentation**: http://localhost:8012/docs
+- **A2A Protocol**: http://localhost:8012/.well-known/agent.json
 
 ### First Steps
 1. **Navigate to the Overview Dashboard** to understand system capabilities

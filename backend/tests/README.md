@@ -16,7 +16,7 @@ python -m pytest tests/ -v
 ```
 
 ### **Test Configuration**
-- **Base URL**: http://localhost:8000 (configurable)
+- **Base URL**: http://localhost:8012 (configurable)
 - **API Token**: Set in test file or environment
 - **Test Coverage**: Full A2A Protocol specification compliance
 
@@ -38,7 +38,7 @@ python -m pytest tests/ -v
 ## Test Setup
 
 ### **Prerequisites**
-1. Backend server running on port 8000
+1. Backend server running on port 8012
 2. Environment variables configured
 3. Database connections established
 4. AI services accessible
@@ -46,7 +46,7 @@ python -m pytest tests/ -v
 ### **Environment Variables**
 ```env
 # Test configuration
-TEST_BASE_URL=http://localhost:8000
+TEST_BASE_URL=http://localhost:8012
 TEST_API_TOKEN=your-test-token
 TEST_TIMEOUT=30
 ```
@@ -57,7 +57,7 @@ TEST_TIMEOUT=30
 ```
 A2A Protocol Test Suite - Following Exact Guidelines
 ======================================================================
-Testing against: http://localhost:8000
+Testing against: http://localhost:8012
 
 Testing Agent Discovery (A2A Protocol Requirement #1)...
    ✅ Agent Card at /.well-known/agent.json successful
@@ -95,7 +95,7 @@ A2A Protocol Compliance Summary:
 ## Troubleshooting
 
 ### **Common Test Issues**
-1. **Server Not Running**: Ensure backend is started on port 8000
+1. **Server Not Running**: Ensure backend is started on port 8012
 2. **Authentication Failed**: Check API token configuration
 3. **Database Connection**: Verify Neo4j connectivity
 4. **AI Service Error**: Check Azure OpenAI configuration
