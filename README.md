@@ -224,10 +224,24 @@ The system maintains a comprehensive knowledge graph representing the UAE legal 
 │   └── .env                # Backend environment variables
 ├── frontend/               # Next.js frontend application
 ├── docs/                   # Project documentation
+│   ├── extra/              # Research documentation and findings
+│   │   ├── A2A Protocol Guide.docx
+│   │   ├── Technology Stack Analysis.docx
+│   │   ├── GraphRAG Research.docx
+│   │   ├── Cost Analysis.docx
+│   │   ├── Future Ideas.docx
+│   │   └── UAE Legal AI GraphRAG Presentation.pdf
+│   ├── A2A_PROTOCOL_IMPLEMENTATION.md
+│   ├── API_REFERENCE.md
+│   ├── ARCHITECTURE.md
+│   ├── DEPLOYMENT_GUIDE.md
+│   └── USER_GUIDE.md
 ├── .env                    # Root environment variables
 ├── .env.template           # Environment configuration template
 ├── requirements.txt        # Python dependencies (root level)
-└── neo4j_knowledge_graph.dump # Neo4j database dump with mock UAE legal data
+├── neo4j_knowledge_graph.dump # Neo4j database dump with mock UAE legal data
+├── UAE Legal AI GraphRAG Presentation.pptm # Final project presentation
+└── Recording of the Demo.mp4 # Full-stack application demonstration
 ```
 
 ## Prerequisites
@@ -412,11 +426,22 @@ curl -X POST http://localhost:8000/a2a/v1/message:send \
 
 ## Documentation
 
+### Core Documentation
 - **[A2A Protocol Implementation](docs/A2A_PROTOCOL_IMPLEMENTATION.md)** - Complete A2A Protocol documentation
 - **[Architecture](docs/ARCHITECTURE.md)** - System architecture details
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
 - **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
 - **[User Guide](docs/USER_GUIDE.md)** - End-user documentation and tutorials
+
+### Research Documentation & Presentations
+- **[Research Documentation](docs/extra/)** - Comprehensive research findings and analysis
+  - A2A Protocol research and implementation guide
+  - Technology stack analysis and comparisons
+  - GraphRAG methodology research
+  - Cost analysis and projections
+  - Future development ideas and roadmap
+- **[Final Presentation](UAE Legal AI GraphRAG Presentation.pptm)** - PowerPoint presentation of the complete project
+- **[Demo Recording](Recording of the Demo.mp4)** - Full demonstration of the working Next.js application
 
 ## Project Status
 

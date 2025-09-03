@@ -158,6 +158,25 @@ User Query → Orchestrator → Multi-Agent Execution → Knowledge Graph Query 
 - **Advanced Security**: OAuth2, JWT tokens
 - **Compliance Tools**: A2A Inspector integration
 
+## Research and Development Documentation
+
+### **Comprehensive Research Findings**
+The project includes extensive research documentation in the `docs/extra/` folder covering:
+
+- **A2A Protocol Research**: Implementation strategies and compliance requirements
+- **Technology Stack Analysis**: Detailed comparisons of Neo4j vs Azure, cost projections
+- **GraphRAG Methodology**: Research on graph neural networks and traversal strategies
+- **Architecture Decisions**: Analysis of agentic traversal vs dynamic Cypher approaches
+- **Cost-Benefit Analysis**: Azure vs Neo4j cost projections and recommendations
+- **Future Development**: Roadmap and enhancement ideas for continued development
+
+### **Implementation Evidence**
+- **Final Presentation**: Complete project overview and technical demonstration
+- **Live Demo Recording**: Full-stack application demonstration showing real-time functionality
+- **Research Conclusions**: Documented findings from the research phase of the internship
+
+This comprehensive documentation provides a complete record of the research process, technical decisions, and implementation outcomes, ensuring the project's knowledge is preserved for future development teams.
+
 ## Architecture Benefits
 
 1. **A2A Protocol Compliance**: Industry-standard agent communication
