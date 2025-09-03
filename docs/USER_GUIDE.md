@@ -2,309 +2,259 @@
 
 ## Overview
 
-The UAE Legal GraphRAG system is an AI-powered legal research and analysis platform that combines graph database technology with advanced language models to provide comprehensive legal insights. This guide will help you navigate and effectively use all the features of the system.
+Welcome to the UAE Legal GraphRAG system! This comprehensive legal research platform combines advanced AI technology with a knowledge graph of UAE legal information to provide accurate, well-cited legal research assistance.
 
 ## Getting Started
 
-### Accessing the System
+### System Access
+- **Frontend Application**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+- **A2A Protocol**: http://localhost:8000/.well-known/agent.json
 
-1. **Open your web browser** and navigate to the system URL
-2. **Login** using your credentials (if authentication is enabled)
-3. **Navigate** to the Overview dashboard to see system status
-
-### System Requirements
-
-- **Browser**: Modern web browser (Chrome, Firefox, Safari, Edge)
-- **Internet Connection**: Required for AI processing and database access
-- **Screen Resolution**: Minimum 1024x768 (1920x1080 recommended)
+### First Steps
+1. **Navigate to the Overview Dashboard** to understand system capabilities
+2. **Explore the Graph Visualization** to see the legal knowledge structure
+3. **Try the AI Assistant** with a simple legal question
+4. **Use AI Analysis** for deeper legal research
 
 ## Main Application Pages
 
 ### Overview Dashboard
+The central hub providing system status and quick access to all features.
 
-The Overview dashboard serves as your central hub for system information and quick access to all features.
+**Key Features:**
+- System health indicators
+- Recent activities and usage statistics
+- Quick navigation to core tools
+- System status and performance metrics
 
-#### Key Features
-- **System Status**: Real-time health indicators for all system components
-- **Recent Activity**: Latest queries and analysis performed
-- **Quick Navigation**: Direct access to all main tools
-- **Statistics**: Overview of knowledge graph size and usage
-
-#### How to Use
-1. **Check System Status**: Verify all services are running properly
-2. **Review Recent Activity**: See what others have been researching
-3. **Navigate to Tools**: Use the quick access buttons to reach specific features
+**Use Case:** Initial landing page for users to understand system capabilities and current status.
 
 ### Graph Visualization
+Interactive exploration of the UAE legal knowledge graph with real-time data from Neo4j.
 
-The Graph Visualization page provides an interactive exploration of the UAE legal knowledge graph.
+**Key Features:**
+- Real-time Neo4j graph visualization with 83+ legal entities
+- 103+ legal relationships and connections
+- Interactive node filtering and relationship exploration
+- Zoom, pan, and search functionality
+- Legal domain categorization and color coding
+- Export capabilities for analysis and reporting
 
-#### Understanding the Graph
+**Use Case:** Legal researchers exploring connections between laws, regulations, and legal entities.
 
-**Nodes (Entities)**
-- **Laws and Regulations**: Represented as blue nodes
-- **Government Bodies**: Represented as green nodes
-- **Legal Concepts**: Represented as yellow nodes
-- **Court Decisions**: Represented as purple nodes
-
-**Edges (Relationships)**
-- **CONTAINS**: Law contains specific articles
-- **AMENDS**: One law amends another
-- **IMPLEMENTS**: Regulation implements law
-- **REFERENCES**: Cross-references between legal documents
-
-#### Navigation Controls
-
-**Zoom and Pan**
-- **Zoom In**: Scroll wheel up or double-click
-- **Zoom Out**: Scroll wheel down
-- **Pan**: Click and drag on empty space
-- **Reset View**: Click the home button
-
-**Search and Filter**
-- **Search Bar**: Type to find specific legal entities
-- **Type Filter**: Filter by node type (law, regulation, etc.)
-- **Domain Filter**: Filter by legal domain (tax, data protection, etc.)
-
-#### Interactive Features
-
-**Node Exploration**
-1. **Click on a node** to see detailed information
-2. **Hover over edges** to see relationship details
-3. **Right-click** for context menu options
-4. **Double-click** to focus on a specific node
-
-**Relationship Analysis**
-1. **Select multiple nodes** to analyze connections
-2. **Use path finding** to discover relationships between entities
-3. **Export subgraphs** for further analysis
+**Navigation Tips:**
+- Use mouse wheel to zoom in/out
+- Click and drag to pan around the graph
+- Click on nodes to see detailed information
+- Use the search bar to find specific legal entities
+- Filter by legal domain using the category selector
 
 ### AI Assistant
+Intelligent legal research assistant powered by GraphRAG technology with citation support.
 
-The AI Assistant provides intelligent legal research capabilities powered by GraphRAG technology.
+**Key Features:**
+- Natural language legal queries with context-aware responses
+- Multiple retrieval strategies (local, global, hybrid)
+- Citation system with source legal documents
+- Conversation history and context preservation
+- Multi-agent coordination for comprehensive responses
+- Confidence scoring and coverage metrics
 
-#### Starting a Conversation
+**Use Case:** Legal professionals seeking quick answers to complex legal questions.
 
-1. **Type your question** in the chat input field
-2. **Choose a strategy** (auto, local, global, or hybrid)
-3. **Set parameters** like maximum results or analysis depth
-4. **Submit your query** and wait for the AI response
-
-#### Question Examples
-
-**General Legal Questions**
-- "What are the requirements for starting a business in the UAE?"
-- "What is the corporate tax rate for foreign companies?"
-- "What are the data protection requirements for financial services?"
-
-**Specific Legal Analysis**
-- "Analyze the contradictions in the Corporate Tax Law"
-- "What are the implications of Article 5 in the Data Protection Law?"
-- "How do the Labor Law and Corporate Tax Law interact?"
-
-#### Understanding Responses
-
-**Response Structure**
-- **Direct Answer**: AI-generated response based on legal sources
-- **Citations**: References to specific legal documents and articles
-- **Confidence Score**: How certain the AI is about the answer
-- **Related Information**: Additional context and related legal provisions
-
-**Response Quality Indicators**
-- **High Confidence (90%+)**: Reliable information from authoritative sources
-- **Medium Confidence (70-89%)**: Good information with some uncertainty
-- **Low Confidence (<70%)**: Limited information available, consider consulting legal experts
-
-#### Advanced Features
-
-**Conversation History**
-- **Save conversations** for future reference
-- **Export conversations** to PDF or text format
-- **Share conversations** with team members
-
-**Multi-Strategy Queries**
-- **Local Strategy**: Focus on immediate legal context
-- **Global Strategy**: Comprehensive system-wide analysis
-- **Hybrid Strategy**: Combines both approaches for optimal results
+**Best Practices:**
+- Be specific in your questions for better results
+- Use legal terminology when possible
+- Ask follow-up questions to explore related topics
+- Review citations for source verification
+- Check confidence levels for response reliability
 
 ### AI Analysis
+Advanced legal analysis including contradiction detection and harmonization recommendations.
 
-The AI Analysis page provides advanced legal analysis capabilities including contradiction detection and harmonization.
+**Key Features:**
+- Legal contradiction identification across different regulations
+- Priority-based analysis and risk assessment
+- Harmonization recommendations for conflicting legal provisions
+- Compliance gap analysis
+- Detailed legal reasoning and explanations
+- Exportable analysis reports
 
-#### Analysis Types
+**Use Case:** Legal compliance officers and regulatory analysts.
 
-**Contradiction Detection**
-- **Purpose**: Identify conflicting legal provisions
-- **Use Case**: Compliance risk assessment and regulatory gap analysis
-- **Output**: List of contradictions with severity ratings
+**Analysis Types:**
+- **Contradiction Detection**: Identify conflicting legal provisions
+- **Harmonization Analysis**: Find ways to reconcile conflicts
+- **Compliance Assessment**: Evaluate regulatory compliance
+- **Risk Analysis**: Assess legal and compliance risks
 
-**Harmonization Analysis**
-- **Purpose**: Provide recommendations for resolving legal conflicts
-- **Use Case**: Regulatory compliance and legal framework optimization
-- **Output**: Specific harmonization strategies and implementation steps
+## Best Practices for Query Formulation
 
-**Compliance Gap Analysis**
-- **Purpose**: Identify areas where current practices don't meet legal requirements
-- **Use Case**: Internal audit and compliance monitoring
-- **Output**: Gap assessment with remediation recommendations
+### Effective Question Types
+- **Specific Legal Provisions**: "What does Article 15 of the UAE Data Protection Law state?"
+- **Comparative Analysis**: "How do the 2022 and 2024 Corporate Tax Laws differ?"
+- **Relationship Exploration**: "What are the connections between labor law and business licensing?"
+- **Compliance Questions**: "What are the requirements for data protection compliance?"
 
-#### Running Analysis
+### Query Strategies
+1. **Start Broad, Then Narrow**: Begin with general concepts and refine your search
+2. **Use Legal Terminology**: Incorporate relevant legal terms for better results
+3. **Be Specific**: Include relevant dates, jurisdictions, or legal areas
+4. **Ask Follow-ups**: Build on previous responses for deeper analysis
 
-1. **Select Analysis Type**: Choose the type of analysis you need
-2. **Define Scope**: Specify the legal domains or specific regulations to analyze
-3. **Set Parameters**: Configure analysis depth and focus areas
-4. **Run Analysis**: Execute the analysis and wait for results
-5. **Review Results**: Examine findings and recommendations
+### Common Query Patterns
+- **Definition Queries**: "What is the definition of..."
+- **Procedural Queries**: "What is the process for..."
+- **Compliance Queries**: "What are the requirements for..."
+- **Relationship Queries**: "How does X relate to Y..."
 
-#### Interpreting Results
+## Data Interpretation
 
-**Contradiction Severity Levels**
-- **Critical**: Immediate compliance risk requiring urgent attention
-- **High**: Significant compliance risk requiring prompt action
-- **Medium**: Moderate risk requiring monitoring and planning
-- **Low**: Minor issues that can be addressed during regular updates
+### Understanding Response Components
+- **Direct Answer**: Clear response to your question
+- **Legal Context**: Background information and framework
+- **Source Citations**: Specific legal references with relevance scores
+- **Related Information**: Connected legal topics and provisions
+- **Limitations**: Any uncertainties or gaps in available information
 
-**Recommendation Categories**
-- **Immediate Action**: Urgent steps to address critical issues
-- **Short-term**: Actions to be completed within 3-6 months
-- **Long-term**: Strategic changes requiring 6+ months
-- **Monitoring**: Ongoing observation and assessment
+### Confidence Levels
+- **High Confidence**: Well-supported by multiple sources
+- **Medium Confidence**: Reasonable interpretation with some uncertainty
+- **Low Confidence**: Limited information available, requires verification
 
-## Best Practices
-
-### Effective Query Formulation
-
-**Be Specific**
-- ❌ "Tell me about tax law"
-- ✅ "What are the corporate tax requirements for companies with revenue over AED 375,000?"
-
-**Use Legal Terminology**
-- ❌ "What happens if someone breaks the law?"
-- ✅ "What are the penalties for non-compliance with the Corporate Tax Law?"
-
-**Provide Context**
-- ❌ "Is this legal?"
-- ✅ "Is it legal for a foreign company to operate in the UAE without a local partner under the current Commercial Companies Law?"
-
-### Data Interpretation
-
-**Cross-Reference Information**
-- Always verify AI responses against primary legal sources
-- Check for recent updates or amendments
-- Consider the broader legal context and related regulations
-
-**Assess Confidence Levels**
-- High confidence responses can be relied upon for general guidance
-- Medium confidence responses should be verified with additional research
-- Low confidence responses require expert legal consultation
-
-**Consider Legal Updates**
-- Legal frameworks evolve over time
-- Check the effective dates of legal provisions
-- Monitor for recent amendments or new regulations
+### Coverage Metrics
+- **Node Coverage**: Number of legal entities in the knowledge graph
+- **Relationship Coverage**: Connections between legal provisions
+- **Source Quality**: Reliability of available legal sources
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-**System Not Responding**
-1. Check your internet connection
-2. Verify the system is accessible
-3. Try refreshing the page
-4. Contact system administrators if issues persist
+**No Results Found**
+- Try rephrasing your question with different terminology
+- Use broader terms and then narrow down
+- Check if the topic is covered in the knowledge graph
+- Verify spelling and legal terminology
 
-**Slow Response Times**
-1. Check system status indicators
-2. Verify database connectivity
-3. Consider reducing query complexity
-4. Try during off-peak hours
+**Limited Information**
+- The system will clearly indicate when information is unavailable
+- Consider related topics that might provide context
+- Use the graph visualization to explore connections
+- Check if the information exists in a different legal domain
 
-**Incomplete Results**
-1. Verify your query is specific enough
-2. Check if the information exists in the knowledge graph
-3. Try different search strategies
-4. Consider broadening your search scope
+**Technical Issues**
+- Refresh the page if the interface becomes unresponsive
+- Check that both backend and frontend are running
+- Verify Neo4j database connection
+- Contact system administrators for persistent issues
 
 ### Getting Help
-
-**System Support**
-- Check the system status page for known issues
-- Review error messages for specific guidance
-- Consult the troubleshooting documentation
-
-**Legal Expertise**
-- For complex legal matters, consult qualified legal professionals
-- Use the system as a research tool, not as legal advice
-- Verify all information against authoritative sources
+- **System Status**: Check the Overview Dashboard for system health
+- **API Health**: Verify backend connectivity at /health endpoint
+- **Documentation**: Refer to the comprehensive documentation in the docs folder
+- **Support**: Contact the development team for technical assistance
 
 ## Advanced Features
 
-### Custom Queries
+### Multi-Agent Coordination
+The system uses multiple specialized AI agents:
+- **Local GraphRAG Agent**: Focused neighborhood traversal
+- **Global GraphRAG Agent**: Comprehensive graph analysis
+- **DRIFT GraphRAG Agent**: Dynamic relevance tracking
+- **Orchestrator Agent**: Workflow coordination
 
-**GraphQL Queries**
-- Use advanced query syntax for complex searches
-- Combine multiple criteria for precise results
-- Export query results for external analysis
+### A2A Protocol Integration
+- **Agent Discovery**: Public agent cards for interoperability
+- **Standardized Communication**: Industry-standard agent communication
+- **Future Integration**: Ready for integration with other AI systems
 
-**Batch Processing**
-- Submit multiple queries simultaneously
-- Schedule regular analysis runs
-- Generate automated compliance reports
-
-### Data Export
-
-**Export Formats**
-- **PDF**: Formatted reports for documentation
-- **Excel**: Structured data for analysis
-- **JSON**: Raw data for integration with other systems
-- **GraphML**: Graph data for external visualization tools
-
-**Export Options**
-- **Single Results**: Export individual query results
-- **Batch Export**: Export multiple analysis results
-- **Custom Reports**: Generate tailored reports based on specific criteria
+### Export and Reporting
+- **Analysis Reports**: Downloadable PDF and JSON reports
+- **Graph Data**: Export graph data for external analysis
+- **Citation Lists**: Extract source references for research
 
 ## Security and Privacy
 
 ### Data Protection
-- All queries are logged for audit purposes
-- Personal information is handled according to data protection regulations
-- Access controls ensure appropriate data visibility
+- All queries are processed securely
+- No personal or sensitive information is stored
+- System follows UAE data protection requirements
+- Secure authentication for API access
 
-### User Responsibilities
-- Use the system only for authorized purposes
-- Maintain confidentiality of sensitive information
-- Report any security concerns immediately
+### Usage Guidelines
+- Use the system for research and analysis purposes
+- Respect intellectual property and copyright
 - Follow organizational data handling policies
+- Report any security concerns immediately
 
-## System Updates
+## System Updates and Maintenance
 
-### Regular Maintenance
-- System updates are performed during scheduled maintenance windows
-- New legal data is added as regulations are updated
-- AI models are periodically retrained for improved accuracy
+### Regular Updates
+- System improvements and new features
+- Legal knowledge graph updates
+- Performance optimizations
+- Security enhancements
 
-### Feature Updates
-- New analysis capabilities are added regularly
-- User interface improvements are implemented based on feedback
-- Performance optimizations are applied continuously
+### Maintenance Windows
+- Scheduled maintenance will be announced in advance
+- System availability will be maintained during business hours
+- Emergency maintenance will be communicated promptly
 
-## Support and Training
+## Performance Optimization
+
+### Response Time
+- Simple queries: 1-3 seconds
+- Complex analysis: 5-15 seconds
+- Large graph operations: 15-30 seconds
+
+### Best Practices for Performance
+- Use specific queries rather than broad searches
+- Leverage the graph visualization for exploration
+- Build on previous queries rather than starting fresh
+- Use appropriate analysis depth settings
+
+## Future Enhancements
+
+### Planned Features
+- Enhanced visualization capabilities
+- Additional legal domains and jurisdictions
+- Advanced contradiction detection algorithms
+- Integration with external legal databases
+- Mobile application support
+
+### User Feedback
+- Your feedback helps improve the system
+- Report bugs and suggest improvements
+- Participate in user testing and surveys
+- Contribute to system enhancement discussions
+
+## Support and Resources
+
+### Documentation
+- **API Reference**: Complete API documentation
+- **Architecture Guide**: System design and implementation details
+- **Deployment Guide**: Production deployment instructions
+- **A2A Protocol**: Agent interoperability documentation
 
 ### Training Resources
-- **Video Tutorials**: Step-by-step guides for all features
-- **Interactive Demos**: Hands-on learning experiences
-- **Documentation**: Comprehensive guides and reference materials
-- **Webinars**: Regular training sessions on new features
+- **User Tutorials**: Step-by-step guides for common tasks
+- **Best Practices**: Recommended approaches for effective use
+- **Case Studies**: Real-world usage examples
+- **Video Guides**: Visual demonstrations of key features
 
-### Getting Support
-- **Help Desk**: Technical support for system issues
-- **User Community**: Peer support and best practice sharing
-- **Expert Consultation**: Specialized support for complex legal analysis
-- **Feedback System**: Submit suggestions for system improvements
+### Contact Information
+- **Technical Support**: For system issues and technical questions
+- **User Training**: For training and onboarding assistance
+- **Feature Requests**: For new functionality suggestions
+- **General Inquiries**: For general questions about the system
 
 ## Conclusion
 
-The UAE Legal GraphRAG system provides powerful tools for legal research and analysis. By following this guide and practicing with the system, you'll be able to efficiently navigate the UAE legal landscape and gain valuable insights for your legal work.
+The UAE Legal GraphRAG system provides a powerful platform for legal research and analysis. By following this guide and best practices, you can maximize the value of the system for your legal research needs.
 
-Remember that while the system provides comprehensive legal information, it should be used as a research tool alongside professional legal expertise for critical decisions and compliance matters.
+Remember that the system is designed to assist with research and provide information, not to replace professional legal advice. Always verify important information and consult qualified legal professionals for specific legal matters.
+
+For additional support or questions, please refer to the documentation or contact the support team.

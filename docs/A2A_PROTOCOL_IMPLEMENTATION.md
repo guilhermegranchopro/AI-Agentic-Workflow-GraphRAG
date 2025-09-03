@@ -23,7 +23,7 @@ This document describes the **official A2A Protocol** implementation in the UAE 
 
 ---
 
-## **🎯 Agent Card (Agent Discovery)**
+## **Agent Card (Agent Discovery)**
 
 ### **Public Agent Card Structure**
 ```json
@@ -187,7 +187,7 @@ eventSource.onmessage = function(event) {
 
 ---
 
-## **📊 Tasks:Get Implementation**
+## **Tasks:Get Implementation**
 
 ### **Task Status Endpoint**
 ```http
@@ -330,7 +330,7 @@ console.log('Analysis result:', result);
 
 ---
 
-## **🔍 A2A Protocol Compliance**
+## **A2A Protocol Compliance**
 
 ### **Compliance Checklist**
 - ✅ **Agent Card**: Public discovery at `/.well-known/agent.json`
@@ -348,7 +348,7 @@ console.log('Analysis result:', result);
 
 ---
 
-## **🚀 Testing A2A Protocol**
+## **Testing A2A Protocol**
 
 ### **1. Test Agent Discovery**
 ```bash
@@ -392,7 +392,7 @@ curl https://uae-legal-graphrag.azurewebsites.net/a2a/health
 
 ---
 
-## **🎯 Summary**
+## **Summary**
 
 The UAE Legal GraphRAG system now implements the **complete A2A Protocol** with:
 

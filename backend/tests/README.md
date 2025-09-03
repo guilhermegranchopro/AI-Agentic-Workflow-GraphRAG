@@ -55,11 +55,11 @@ TEST_TIMEOUT=30
 
 ### **Expected Output**
 ```
-🚀 A2A Protocol Test Suite - Following Exact Guidelines
+A2A Protocol Test Suite - Following Exact Guidelines
 ======================================================================
 Testing against: http://localhost:8000
 
-🔍 Testing Agent Discovery (A2A Protocol Requirement #1)...
+Testing Agent Discovery (A2A Protocol Requirement #1)...
    ✅ Agent Card at /.well-known/agent.json successful
    ✅ A2A Protocol version 0.3.0 compliant
 
@@ -70,7 +70,7 @@ Testing against: http://localhost:8000
    ✅ AI Assistant request successful
    ✅ Legal Analysis request successful
 
-🔍 Testing A2A Protocol Compliance (Requirement #5)...
+Testing A2A Protocol Compliance (Requirement #5)...
    ✅ Agent Card: Public discovery at /.well-known/agent.json
    ✅ Message:Send: Synchronous message handling
    ✅ Message:Stream: Server-Sent Events for streaming
@@ -79,7 +79,7 @@ Testing against: http://localhost:8000
    ✅ Security: Authentication schemes defined
    ✅ Capabilities: Streaming and long-running tasks
 
-📊 A2A Protocol Compliance Summary:
+A2A Protocol Compliance Summary:
    ✅ Agent Card
    ✅ Message:Send
    ✅ Message:Stream
@@ -89,7 +89,7 @@ Testing against: http://localhost:8000
    ✅ Capabilities
 
    Compliance: 7/7 checks passed
-   🎉 FULL A2A PROTOCOL COMPLIANCE ACHIEVED!
+   FULL A2A PROTOCOL COMPLIANCE ACHIEVED!
 ```
 
 ## Troubleshooting
