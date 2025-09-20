@@ -479,8 +479,8 @@ For questions about the A2A Protocol implementation, please refer to the [A2A Pr
 
 ## License and Proprietary Information
 
-This project contains proprietary EY intellectual property and is intended for internal use only. All rights reserved by EY.
+All rights reserved.
 
 ---
 
-**Developed by [Guilherme Grancho](https://www.linkedin.com/in/guilhermegrancho/) for EY Portugal AI & Data Team - August Internship 2025**
+**Developed by [Guilherme Grancho](https://www.linkedin.com/in/guilhermegrancho/) - August 2025**
