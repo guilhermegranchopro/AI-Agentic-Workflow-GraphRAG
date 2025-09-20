@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository contains the implementation of a fully compliant A2A Protocol system for the UAE Legal GraphRAG project, developed as part of a summer internship at EY Portugal's AI & Data team in August 2025. The system provides AI-powered legal research and analysis using GraphRAG (Graph-based Retrieval Augmented Generation) and multi-agent workflows, designed for eventual deployment to the UAE.
+This repository contains the implementation of a fully compliant A2A Protocol system for the UAE Legal GraphRAG project. The system provides AI-powered legal research and analysis using GraphRAG (Graph-based Retrieval Augmented Generation) and multi-agent workflows, designed for eventual deployment to the UAE.
 
 ### Core Functionality
 
